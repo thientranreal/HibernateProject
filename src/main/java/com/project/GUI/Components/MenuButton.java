@@ -1,5 +1,7 @@
 package com.project.GUI.Components;
 
+import com.project.GUI.Fonts;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -25,7 +27,7 @@ public class MenuButton extends JButton {
         setContentAreaFilled(false);
         setBorderPainted(false);
 
-        setFont(new Font("sanserif", 1, 12));
+        setFont(Fonts.defaultFont);
         setForeground(new Color(255,255,255));
 
         this.addActionListener(e -> {

@@ -1,6 +1,7 @@
 package com.project.GUI.Components;
 
 import com.project.GUI.Colors;
+import com.project.GUI.Fonts;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,7 +12,7 @@ public class TableHeader extends JLabel {
         super(text);
         setOpaque(true);
         setBackground(Colors.secondaryColor);
-        setFont(new Font("sanserif", 1, 12));
+        setFont(Fonts.defaultFont);
         setForeground(Color.WHITE);
         setBorder(new EmptyBorder(10, 5, 10, 5));
     }

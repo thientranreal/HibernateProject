@@ -1,6 +1,7 @@
 package com.project.GUI.Components;
 
 import com.project.GUI.Colors;
+import com.project.GUI.Fonts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +9,7 @@ import java.awt.*;
 public class FormLabel extends JLabel {
     public FormLabel(String text) {
         super(text);
-        setFont(new Font("sanserif", 1, 12));
+        setFont(Fonts.defaultFont);
         setForeground(Colors.fontColor);
     }
 }

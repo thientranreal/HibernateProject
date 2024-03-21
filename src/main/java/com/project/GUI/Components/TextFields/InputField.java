@@ -1,6 +1,7 @@
 package com.project.GUI.Components.TextFields;
 
 import com.project.GUI.Colors;
+import com.project.GUI.Fonts;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -36,7 +37,7 @@ public class InputField extends JTextField {
         setBorder(unfocusedBorder);
 
 //        Set font
-        setFont(new Font("sanserif", 1, 12));
+        setFont(Fonts.defaultFont);
 
 //       Focus gain event
         addFocusListener(new FocusAdapter() {

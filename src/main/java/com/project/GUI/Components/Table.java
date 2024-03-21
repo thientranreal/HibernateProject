@@ -1,6 +1,7 @@
 package com.project.GUI.Components;
 
 import com.project.GUI.Colors;
+import com.project.GUI.Fonts;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,7 +13,7 @@ import java.awt.event.MouseMotionAdapter;
 public class Table extends JTable {
     private int hoveredRow = -1;
     public Table() {
-        setFont(new Font("sanserif", 1, 12));
+        setFont(Fonts.defaultFont);
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
         setRowHeight(40);
