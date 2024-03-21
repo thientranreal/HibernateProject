@@ -9,8 +9,8 @@ public class TestUI {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
 
-        frame.add(new DemoForm());
-//        frame.add(new DemoAddForm());
+//        frame.add(new DemoForm());
+        frame.add(new DemoAddForm());
 
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);

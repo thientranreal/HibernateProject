@@ -2,8 +2,10 @@ package com.project.GUI.Forms;
 
 import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.Buttons.ButtonSave;
+import com.project.GUI.Components.FormCheckBox;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
+import com.project.GUI.Components.RadioButton;
 import com.project.GUI.Components.TextFields.InputField;
 
 import javax.swing.*;
@@ -57,6 +59,8 @@ public class DemoAddForm extends JPanel {
         JPanel pnlBtn = new FormPanel();
         pnlBtn.add(btnSave);
         pnlBtn.add(btnCancel);
+        pnlBtn.add(new FormCheckBox("CheckBox"));
+        pnlBtn.add(new RadioButton("RadioButton"));
 
 //        Add all panel to this panel
         add(pnlInput, BorderLayout.CENTER);

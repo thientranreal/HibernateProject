@@ -1,12 +1,13 @@
 package com.project.GUI.Components;
 
+import com.project.GUI.Colors;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 public class FormPanel extends JPanel {
     public FormPanel() {
-        setBackground(Color.WHITE);
+        setBackground(Colors.bgColor);
 //        Add padding for this panel
         setBorder(new EmptyBorder(10,10,10,10));
     }
