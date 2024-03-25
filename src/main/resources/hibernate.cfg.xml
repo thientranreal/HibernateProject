@@ -20,7 +20,7 @@
         <property name="show_sql">true</property>
 
         <!-- Entity mapping -->
-        <mapping class="com.project.Entity.Example" />
+        <mapping class="com.project.Entity.ThanhVien" />
 
     </session-factory>
 </hibernate-configuration>
