@@ -1,10 +1,12 @@
 package com.project;
 
-import com.project.BLL.ExampleBLL;
+import com.project.BLL.DeviceBLL;
+import com.project.Entity.Device;
 
 public class Main {
     public static void main(String[] args) {
-        ExampleBLL ex = new ExampleBLL();
-        System.out.println(ex.getExample(4));
+        for (Device device : new DeviceBLL().getAllDevices()) {
+            System.out.println(device);
+        }
     }
 }

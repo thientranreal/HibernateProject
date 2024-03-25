@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table (name = "thanhvien")
 @Getter
 @Setter
-public class ThanhVien {
+public class Member {
     @Id
     @Column (name = "MaTV")
     private int maTV;
