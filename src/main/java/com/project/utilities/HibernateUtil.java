@@ -1,13 +1,13 @@
-package com.project.DAL;
+package com.project.utilities;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class BaseDAL {
+public class HibernateUtil {
     private static SessionFactory factory;
 
-//    Get session factory
-    public static SessionFactory instance() {
+    // Get session factory
+    public static SessionFactory getInstance() {
         try {
             if (factory == null) {
                 factory = new Configuration().configure().buildSessionFactory();
@@ -19,7 +19,7 @@ public class BaseDAL {
         return factory;
     }
 
-    //    Close SessionFactory
+    // Close SessionFactory
     public static void close() {
         if (factory != null) {
             factory.close();
