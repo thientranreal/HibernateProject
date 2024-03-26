@@ -1,12 +1,15 @@
 package com.project.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "thietbi")
+@Getter
+@Setter
 public class thietbi {
     @Id
     @Column(name = "MaTB")
@@ -18,6 +21,9 @@ public class thietbi {
     @Column(name = "MoTaTB")
     private String MoTaTB;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "thietbi")
+    private List<thongtinsd> thongtinsd;
+
     public thietbi() {
     }
 
@@ -26,44 +32,4 @@ public class thietbi {
         this.TenTB = TenTB;
         this.MoTaTB = MoTaTB;
     }
-
-    public int getMaTB() {
-        return this.MaTB;
-    }
-
-    public void setMaTB(int MaTB) {
-        this.MaTB = MaTB;
-    }
-
-    public String getTenTB() {
-        return this.TenTB;
-    }
-
-    public void setTenTB(String TenTB) {
-        this.TenTB = TenTB;
-    }
-
-    public String getMoTaTB() {
-        return this.MoTaTB;
-    }
-
-    public void setMoTaTB(String MoTaTB) {
-        this.MoTaTB = MoTaTB;
-    }
-
-    public thietbi MaTB(int MaTB) {
-        setMaTB(MaTB);
-        return this;
-    }
-
-    public thietbi TenTB(String TenTB) {
-        setTenTB(TenTB);
-        return this;
-    }
-
-    public thietbi MoTaTB(String MoTaTB) {
-        setMoTaTB(MoTaTB);
-        return this;
-    }
-
 }

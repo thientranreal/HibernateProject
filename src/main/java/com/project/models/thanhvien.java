@@ -1,12 +1,15 @@
 package com.project.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "thanhvien")
+@Getter
+@Setter
 public class thanhvien {
     @Id
     @Column(name = "MaTV")
@@ -24,6 +27,12 @@ public class thanhvien {
     @Column(name = "SDT")
     private int sdt;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "thanhvien")
+    private List<thongtinsd> thongtinsd;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "thanhvien")
+    private List<xuly> xuly;
+
     public thanhvien() {
     }
 
@@ -34,70 +43,4 @@ public class thanhvien {
         this.nganh = nganh;
         this.sdt = sdt;
     }
-
-    public int getMaTV() {
-        return this.maTV;
-    }
-
-    public void setMaTV(int maTV) {
-        this.maTV = maTV;
-    }
-
-    public String getHoTen() {
-        return this.hoTen;
-    }
-
-    public void setHoTen(String hoTen) {
-        this.hoTen = hoTen;
-    }
-
-    public String getKhoa() {
-        return this.khoa;
-    }
-
-    public void setKhoa(String khoa) {
-        this.khoa = khoa;
-    }
-
-    public String getNganh() {
-        return this.nganh;
-    }
-
-    public void setNganh(String nganh) {
-        this.nganh = nganh;
-    }
-
-    public int getSdt() {
-        return this.sdt;
-    }
-
-    public void setSdt(int sdt) {
-        this.sdt = sdt;
-    }
-
-    public thanhvien maTV(int maTV) {
-        setMaTV(maTV);
-        return this;
-    }
-
-    public thanhvien hoTen(String hoTen) {
-        setHoTen(hoTen);
-        return this;
-    }
-
-    public thanhvien khoa(String khoa) {
-        setKhoa(khoa);
-        return this;
-    }
-
-    public thanhvien nganh(String nganh) {
-        setNganh(nganh);
-        return this;
-    }
-
-    public thanhvien sdt(int sdt) {
-        setSdt(sdt);
-        return this;
-    }
-
 }

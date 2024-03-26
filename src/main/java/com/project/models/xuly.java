@@ -1,25 +1,24 @@
 package com.project.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 
 import java.sql.Date;
 
 @Entity
-@Table(name = "XuLy")
+@Table(name = "xuly")
+@Getter
+@Setter
 public class xuly {
-
     @Id
     @Column(name = "MaXL")
     private int MaXL;
 
-    @ManyToOne
-    @JoinColumn(name = "MaTV")
-    private thanhvien MaTV;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaTV", foreignKey = @ForeignKey(name = "xuly_thanhvien"))
+    private thanhvien thanhvien;
 
     @Column(name = "HinhThucXL")
     private String HinhThucXL;
@@ -36,90 +35,12 @@ public class xuly {
     public xuly() {
     }
 
-    public xuly(int MaXL, thanhvien MaTV, String HinhThucXL, int SoTien, Date NgayXL, int TrangThaiXL) {
+    public xuly(int MaXL, thanhvien thanhvien, String HinhThucXL, int SoTien, Date NgayXL, int TrangThaiXL) {
         this.MaXL = MaXL;
-        this.MaTV = MaTV;
+        this.thanhvien = thanhvien;
         this.HinhThucXL = HinhThucXL;
         this.SoTien = SoTien;
         this.NgayXL = NgayXL;
         this.TrangThaiXL = TrangThaiXL;
-    }
-
-    public int getMaXL() {
-        return this.MaXL;
-    }
-
-    public void setMaXL(int MaXL) {
-        this.MaXL = MaXL;
-    }
-
-    public thanhvien getMaTV() {
-        return this.MaTV;
-    }
-
-    public void setMaTV(thanhvien MaTV) {
-        this.MaTV = MaTV;
-    }
-
-    public String getHinhThucXL() {
-        return this.HinhThucXL;
-    }
-
-    public void setHinhThucXL(String HinhThucXL) {
-        this.HinhThucXL = HinhThucXL;
-    }
-
-    public int getSoTien() {
-        return this.SoTien;
-    }
-
-    public void setSoTien(int SoTien) {
-        this.SoTien = SoTien;
-    }
-
-    public Date getNgayXL() {
-        return this.NgayXL;
-    }
-
-    public void setNgayXL(Date NgayXL) {
-        this.NgayXL = NgayXL;
-    }
-
-    public int getTrangThaiXL() {
-        return this.TrangThaiXL;
-    }
-
-    public void setTrangThaiXL(int TrangThaiXL) {
-        this.TrangThaiXL = TrangThaiXL;
-    }
-
-    public xuly MaXL(int MaXL) {
-        setMaXL(MaXL);
-        return this;
-    }
-
-    public xuly MaTV(thanhvien MaTV) {
-        setMaTV(MaTV);
-        return this;
-    }
-
-    public xuly HinhThucXL(String HinhThucXL) {
-        setHinhThucXL(HinhThucXL);
-        return this;
-    }
-
-    public xuly SoTien(int SoTien) {
-        setSoTien(SoTien);
-        return this;
-    }
-
-    public xuly NgayXL(Date NgayXL) {
-        setNgayXL(NgayXL);
-        return this;
-    }
-
-    public xuly TrangThaiXL(int TrangThaiXL) {
-        setTrangThaiXL(TrangThaiXL);
-        return this;
     }
 }

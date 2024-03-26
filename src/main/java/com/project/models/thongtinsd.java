@@ -1,28 +1,28 @@
 package com.project.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 
 import java.sql.Date;
 
 @Entity
 @Table(name = "thongtinsd")
+@Getter
+@Setter
 public class thongtinsd {
     @Id
     @Column(name = "MaTT")
     private int MaTT;
 
-    @ManyToOne
-    @JoinColumn(name = "MaTV")
-    private thanhvien MaTV;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaTV", foreignKey = @ForeignKey(name = "thongtinsd_thanhvien"))
+    private thanhvien thanhvien;
 
-    @ManyToOne
-    @JoinColumn(name = "MaTB")
-    private thietbi MaTB;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaTB", foreignKey = @ForeignKey(name = "thongtinsd_thietbi"))
+    private thietbi thietbi;
 
     @Column(name = "TGVao")
     private Date TGVao;
@@ -36,91 +36,12 @@ public class thongtinsd {
     public thongtinsd() {
     }
 
-    public thongtinsd(int MaTT, thanhvien MaTV, thietbi MaTB, Date TGVao, Date TGMuon, Date TGTra) {
-        this.MaTT = MaTT;
-        this.MaTV = MaTV;
-        this.MaTB = MaTB;
+    public thongtinsd(int maTT, thanhvien thanhvien, thietbi thietbi, Date TGVao, Date TGMuon, Date TGTra) {
+        MaTT = maTT;
+        this.thanhvien = thanhvien;
+        this.thietbi = thietbi;
         this.TGVao = TGVao;
         this.TGMuon = TGMuon;
         this.TGTra = TGTra;
     }
-
-    public int getMaTT() {
-        return this.MaTT;
-    }
-
-    public void setMaTT(int MaTT) {
-        this.MaTT = MaTT;
-    }
-
-    public thanhvien getMaTV() {
-        return this.MaTV;
-    }
-
-    public void setMaTV(thanhvien MaTV) {
-        this.MaTV = MaTV;
-    }
-
-    public thietbi getMaTB() {
-        return this.MaTB;
-    }
-
-    public void setMaTB(thietbi MaTB) {
-        this.MaTB = MaTB;
-    }
-
-    public Date getTGVao() {
-        return this.TGVao;
-    }
-
-    public void setTGVao(Date TGVao) {
-        this.TGVao = TGVao;
-    }
-
-    public Date getTGMuon() {
-        return this.TGMuon;
-    }
-
-    public void setTGMuon(Date TGMuon) {
-        this.TGMuon = TGMuon;
-    }
-
-    public Date getTGTra() {
-        return this.TGTra;
-    }
-
-    public void setTGTra(Date TGTra) {
-        this.TGTra = TGTra;
-    }
-
-    public thongtinsd MaTT(int MaTT) {
-        setMaTT(MaTT);
-        return this;
-    }
-
-    public thongtinsd MaTV(thanhvien MaTV) {
-        setMaTV(MaTV);
-        return this;
-    }
-
-    public thongtinsd MaTB(thietbi MaTB) {
-        setMaTB(MaTB);
-        return this;
-    }
-
-    public thongtinsd TGVao(Date TGVao) {
-        setTGVao(TGVao);
-        return this;
-    }
-
-    public thongtinsd TGMuon(Date TGMuon) {
-        setTGMuon(TGMuon);
-        return this;
-    }
-
-    public thongtinsd TGTra(Date TGTra) {
-        setTGTra(TGTra);
-        return this;
-    }
-
 }
