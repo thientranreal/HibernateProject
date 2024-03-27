@@ -61,19 +61,19 @@ public class thietbiExcelUtil extends ExcelUtil {
         for (int i = 1; i < data.size(); i++) {
             List<String> row = data.get(i);
             try {
-                int MaTB;
-                try {
-                    if (row.get(0).contains("."))
-                        MaTB = (int) Float.parseFloat(row.get(0));
-                    else
-                        MaTB = Integer.parseInt(row.get(0));
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid integer value in input data", e);
-                }
+//                int MaTB;
+//                try {
+//                    if (row.get(0).contains("."))
+//                        MaTB = (int) Float.parseFloat(row.get(0));
+//                    else
+//                        MaTB = Integer.parseInt(row.get(0));
+//                } catch (NumberFormatException e) {
+//                    throw new IllegalArgumentException("Invalid integer value in input data", e);
+//                }
                 String TenTB = row.get(1);
                 String MoTaTB = row.get(2);
 
-                thietbi thietbi = new thietbi(MaTB, TenTB, MoTaTB);
+                thietbi thietbi = new thietbi(TenTB, MoTaTB);
                 thietbis.add(thietbi);
                 thietbiBLL.getInstance().addModel(thietbi);
             } catch (Exception e) {
