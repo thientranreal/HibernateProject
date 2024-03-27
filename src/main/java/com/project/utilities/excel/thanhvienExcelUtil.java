@@ -60,15 +60,15 @@ public class thanhvienExcelUtil extends ExcelUtil {
         List<thanhvien> thanhviens = new ArrayList<>();
         for (int i = 1; i < data.size(); i++) {
             List<String> row = data.get(i);
-            int id;
-            try {
-                if (row.get(0).contains("."))
-                    id = (int) Float.parseFloat(row.get(0));
-                else
-                    id = Integer.parseInt(row.get(0));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid integer value in input data", e);
-            }
+//            int id;
+//            try {
+//                if (row.get(0).contains("."))
+//                    id = (int) Float.parseFloat(row.get(0));
+//                else
+//                    id = Integer.parseInt(row.get(0));
+//            } catch (NumberFormatException e) {
+//                throw new IllegalArgumentException("Invalid integer value in input data", e);
+//            }
             String HoTen = row.get(1);
             String Khoa = row.get(2);
             String Nganh = row.get(3);
@@ -83,7 +83,7 @@ public class thanhvienExcelUtil extends ExcelUtil {
                 throw new IllegalArgumentException("Invalid integer value in input data", e);
             }
 
-            thanhvien model = new thanhvien(id, HoTen, Khoa, Nganh, Sdt);
+            thanhvien model = new thanhvien(HoTen, Khoa, Nganh, Sdt);
             thanhviens.add(model);
             thanhvienBLL.getInstance().addModel(model);
         }

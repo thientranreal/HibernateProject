@@ -37,7 +37,7 @@ public class xulyBLL {
 
     public int addModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
-        if (processing.getThanhvien() == null || processing.getHinhThucXL().isEmpty()
+        if (processing.getMaTV() <= 0 || processing.getHinhThucXL().isEmpty()
                 || processing.getHinhThucXL().length() > 200) {
             return -1;
         }
@@ -51,7 +51,7 @@ public class xulyBLL {
 
     public boolean updateModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
-        if (processing.getThanhvien() == null || processing.getHinhThucXL().isEmpty()
+        if (processing.getMaTV() <= 0 || processing.getHinhThucXL().isEmpty()
                 || processing.getHinhThucXL().length() > 200) {
             return false;
         }
@@ -87,7 +87,7 @@ public class xulyBLL {
     }
 
     public List<xuly> searchByMaTV(int id) {
-        return searchByCondition(processing -> processing.getThanhvien().getMaTV() == id);
+        return searchByCondition(processing -> processing.getMaTV() == id);
     }
 
     public List<xuly> searchByHinhThucXL(String keyword) {
