@@ -1,10 +1,15 @@
 package com.project.GUI.Components.Buttons;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class ButtonWarning extends ButtonBase {
     public ButtonWarning() {
         setText("Warning");
+
+ //        Set icon
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/warning.png");
+        setIcon(icon);
     }
 
     @Override
