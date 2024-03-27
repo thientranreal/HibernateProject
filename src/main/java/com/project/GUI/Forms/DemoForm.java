@@ -82,4 +82,16 @@ public class DemoForm extends JPanel {
         add(pnlTable, BorderLayout.CENTER);
         add(pnlAction, BorderLayout.EAST);
     }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+
+//        frame.add(new DemoForm());
+        frame.add(new DemoForm());
+
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 }
