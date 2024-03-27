@@ -1,5 +1,6 @@
-package com.project.GUI.Forms;
+package com.project.GUI.Forms.QLThanhVien;
 
+import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.Buttons.ButtonExcel;
 import com.project.GUI.Components.Buttons.ButtonRefresh;
@@ -7,7 +8,7 @@ import com.project.GUI.Components.Buttons.ButtonSave;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.TextFields.InputField;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,6 +54,8 @@ public class ThemThanhVienForm extends JFrame {
         JPanel root = new FormPanel();
         root.setLayout(new BorderLayout());
 
+        root.setBorder(BorderFactory.createLineBorder(Colors.primaryColor, 5));
+
 //        Create Header
         JPanel pnlHeader = new FormPanel();
         JLabel lbHeader = new FormLabel("Thêm mới thành viên");
@@ -61,13 +64,15 @@ public class ThemThanhVienForm extends JFrame {
         pnlHeader.add(lbHeader);
 
 //        Create input field
+        JLabel lbMaTV = new FormLabel("Mã TV: ");
+        JTextField inputMaTV = new InputField(20);
         JLabel lbHoTen = new FormLabel("Họ tên: ");
         JTextField inputHoTen = new InputField(20);
         JLabel lbKhoa = new FormLabel("Khoa: ");
         JTextField inputKhoa = new InputField(20);
         JLabel lbNganh = new FormLabel("Ngành ");
         JTextField inputNganh = new InputField(20);
-        JLabel lbSDT = new FormLabel("SDT: ");
+        JLabel lbSDT = new FormLabel("SĐT: ");
         JTextField inputSDT = new InputField(20);
 
 //        Create panel to contain input field
@@ -82,25 +87,32 @@ public class ThemThanhVienForm extends JFrame {
 //        Row 0
         constraints.gridx = 0;
         constraints.gridy = y++;
+        pnlInput.add(lbMaTV, constraints);
+        constraints.gridx = 1;
+        pnlInput.add(inputMaTV, constraints);
+
+//        Row 1
+        constraints.gridx = 0;
+        constraints.gridy = y++;
         pnlInput.add(lbHoTen, constraints);
         constraints.gridx = 1;
         pnlInput.add(inputHoTen, constraints);
 
-//        Row 1
+//        Row 2
         constraints.gridx = 0;
         constraints.gridy = y++;
         pnlInput.add(lbKhoa, constraints);
         constraints.gridx = 1;
         pnlInput.add(inputKhoa, constraints);
 
-//        Row 2
+//        Row 3
         constraints.gridx = 0;
         constraints.gridy = y++;
         pnlInput.add(lbNganh, constraints);
         constraints.gridx = 1;
         pnlInput.add(inputNganh, constraints);
 
-//        Row 3
+//        Row 4
         constraints.gridx = 0;
         constraints.gridy = y;
         pnlInput.add(lbSDT, constraints);

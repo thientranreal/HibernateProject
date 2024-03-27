@@ -7,7 +7,7 @@ public class ButtonRefresh extends ButtonBase{
         setText("Refresh");
 
 //        Set icon
-//        ImageIcon icon = new ImageIcon("src/main/resources/Images/refresh.png");
-//        setIcon(icon);
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/refresh.png");
+        setIcon(icon);
     }
 }

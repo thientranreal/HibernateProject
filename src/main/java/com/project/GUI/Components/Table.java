@@ -1,7 +1,7 @@
 package com.project.GUI.Components;
 
-import com.project.GUI.Colors;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Colors;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

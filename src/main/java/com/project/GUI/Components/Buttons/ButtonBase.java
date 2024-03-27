@@ -1,7 +1,7 @@
 package com.project.GUI.Components.Buttons;
 
-import com.project.GUI.Colors;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Colors;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +12,14 @@ public abstract class ButtonBase extends JButton {
         setContentAreaFilled(false);
         setBorderPainted(false);
         setFont(Fonts.defaultFont);
-        setPreferredSize(new Dimension(100, 40));
+        setPreferredSize(new Dimension(100, 37));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     public void setIcon(ImageIcon icon) {
         Image img = icon.getImage();
 //        Set icon button size
-        Image newImg = img.getScaledInstance(30, 25, Image.SCALE_SMOOTH);
+        Image newImg = img.getScaledInstance(15, 15, Image.SCALE_SMOOTH);
         icon = new ImageIcon(newImg);
         super.setIcon(icon);
     }

@@ -1,4 +1,4 @@
-package com.project.GUI;
+package com.project.GUI.GlobalVariables;
 
 import java.awt.*;
 

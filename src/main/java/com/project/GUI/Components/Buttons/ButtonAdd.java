@@ -7,7 +7,7 @@ public class ButtonAdd extends ButtonBase{
         setText("Add");
 
 //        Set icon
-//        ImageIcon icon = new ImageIcon("src/main/resources/Images/add.png");
-//        setIcon(icon);
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/add.png");
+        setIcon(icon);
     }
 }

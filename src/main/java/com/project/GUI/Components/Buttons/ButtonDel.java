@@ -7,7 +7,7 @@ public class ButtonDel extends ButtonBase{
         setText("Delete");
 
 //        Set icon
-//        ImageIcon icon = new ImageIcon("src/main/resources/Images/delete.png");
-//        setIcon(icon);
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/delete.png");
+        setIcon(icon);
     }
 }

@@ -1,10 +1,9 @@
 package com.project.GUI.Components;
 
-import com.project.GUI.Colors;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Colors;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class FormCheckBox extends JCheckBox {
     public FormCheckBox(String label) {

@@ -1,6 +1,6 @@
 package com.project.GUI.Components;
 
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import java.awt.*;

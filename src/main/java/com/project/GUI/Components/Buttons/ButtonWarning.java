@@ -1,17 +1,10 @@
 package com.project.GUI.Components.Buttons;
 
-import com.project.GUI.GlobalVariables.Colors;
-
-import javax.swing.*;
 import java.awt.*;
 
-public class ButtonCancel extends ButtonBase {
-    public ButtonCancel() {
-        setText("Cancel");
-
-//        Set icon
-        ImageIcon icon = new ImageIcon("src/main/resources/Images/cancel.png");
-        setIcon(icon);
+public class ButtonWarning extends ButtonBase {
+    public ButtonWarning() {
+        setText("Warning");
     }
 
     @Override
@@ -21,13 +14,13 @@ public class ButtonCancel extends ButtonBase {
 
         // If the button is being hovered over, change the color to light gray
         if (getModel().isRollover()) {
-            g2d.setColor(Color.decode("#353839"));
-            setForeground(Color.LIGHT_GRAY);
+            g2d.setColor(Color.decode("#e65100"));
+            setForeground(Color.WHITE);
         } else {
             // Otherwise, set the background color to blue
-            g2d.setColor(Colors.bgColor);
+            g2d.setColor(Color.decode("#ff9800"));
             // Set the text color to white
-            setForeground(Colors.primaryColor);
+            setForeground(Color.WHITE);
         }
 
         // Draw a rectangle with the chosen color
@@ -35,11 +28,6 @@ public class ButtonCancel extends ButtonBase {
 
         // Call the parent class's paintComponent method to paint the other components of the button
         super.jButtonPaintComponent(g2d);
-
-        // Set the border color and draw the border
-        g2d.setColor(Colors.primaryColor);
-        g2d.setStroke(new BasicStroke(2));
-        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
         // Dispose of the Graphics2D object to free up system resources
         g2d.dispose();

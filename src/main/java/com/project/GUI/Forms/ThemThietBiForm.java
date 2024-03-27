@@ -8,7 +8,7 @@ import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.TextFields.AreaField;
 import com.project.GUI.Components.TextFields.InputField;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import java.awt.*;

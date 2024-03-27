@@ -1,13 +1,13 @@
-package com.project.GUI.Forms;
+package com.project.GUI.Forms.QLThanhVien;
 
-import com.project.GUI.Colors;
+import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.Components.TextFields.SearchField;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -49,16 +49,18 @@ public class QLThanhVienPanel extends FormPanel {
                 new Object[][] {
                 },
                 new String[] {"Mã TV",
-                        "Họ tên",
+                        "Họ Tên",
                         "Khoa",
                         "Ngành",
-                        "Số ĐT"
+                        "Số ĐT",
+                        "Xử Lý"
                 })
         );
 //        Add data for table
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         for (int i = 0; i < 10; i++) {
             model_table.addRow(new Object[]{
+                    "Text",
                     "Text",
                     "Text",
                     "Text",
@@ -78,7 +80,7 @@ public class QLThanhVienPanel extends FormPanel {
         JButton btnDel = new ButtonDel();
         JButton btnBorrow = new ButtonNormal("Borrow");
         JButton btnReturn = new ButtonNormal("Return");
-        JButton btnWarning = new ButtonNormal("Warning");
+        JButton btnWarning = new ButtonWarning();
 //        Create panel to contain button
         JPanel pnlAction = new FormPanel();
         pnlAction.setLayout(new GridBagLayout());
@@ -132,6 +134,22 @@ public class QLThanhVienPanel extends FormPanel {
         add(pnlData, BorderLayout.CENTER);
         add(pnlAction, BorderLayout.EAST);
         add(pnlCheckIn, BorderLayout.WEST);
+
+//        Event listener
+//        Btn Add event listener
+        btnAdd.addActionListener(e -> {
+            new ThemThanhVienForm();
+        });
+
+//        Btn Borrow event listener
+        btnBorrow.addActionListener(e -> {
+            new MuonThietBiForm();
+        });
+
+//        Btn Return event listener
+        btnReturn.addActionListener(e -> {
+            new TraThietBiForm();
+        });
     }
 
     public static void main(String[] args) {

@@ -1,14 +1,13 @@
 package com.project.GUI.Components.TextFields;
 
-import com.project.GUI.Colors;
-import com.project.GUI.Fonts;
+import com.project.GUI.GlobalVariables.Colors;
+import com.project.GUI.GlobalVariables.Fonts;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
-import java.awt.*;
 import java.awt.event.*;
 
 public class InputField extends JTextField {

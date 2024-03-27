@@ -7,7 +7,7 @@ public class ButtonSearch extends ButtonBase {
         setText("Search");
 
 //        Set icon
-//        ImageIcon icon = new ImageIcon("src/main/resources/Images/search.png");
-//        setIcon(icon);
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/search.png");
+        setIcon(icon);
     }
 }
