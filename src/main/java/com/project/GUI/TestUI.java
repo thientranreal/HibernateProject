@@ -1,7 +1,7 @@
 package com.project.GUI;
 
-import com.project.GUI.Forms.DemoAddForm;
-import com.project.GUI.Forms.DemoForm;
+import com.project.GUI.Forms.ThemThanhVienForm;
+
 import javax.swing.*;
 
 
@@ -10,7 +10,7 @@ public class TestUI {
         JFrame frame = new JFrame();
 
 //        frame.add(new DemoForm());
-        frame.add(new DemoAddForm());
+        frame.add(new ThemThanhVienForm());
 
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);

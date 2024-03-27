@@ -36,7 +36,7 @@ public class thongtinsdBLL {
 
     public int addModel(thongtinsd usageInformation) { 
         //MaTV can't be null:
-        if (usageInformation.getMaTV() == null) {
+        if (usageInformation.getThanhvien() == null) {
             return -1;
         }
         
@@ -49,7 +49,7 @@ public class thongtinsdBLL {
 
     public int updateModel(thongtinsd usageInformation) {
         //MaTV can't be null:
-        if (usageInformation.getMaTV() == null) {
+        if (usageInformation.getThanhvien() == null) {
             return -1;
         }
 

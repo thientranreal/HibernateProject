@@ -11,17 +11,19 @@ import com.project.GUI.Components.TextFields.InputField;
 import javax.swing.*;
 import java.awt.*;
 
-public class DemoAddForm extends JPanel {
-    public DemoAddForm() {
+public class ThemThanhVienForm extends JPanel {
+    public ThemThanhVienForm() {
         setLayout(new BorderLayout());
 
 //        Create input field
-        JLabel label = new FormLabel("Text");
-        JTextField input = new InputField(20);
-        JLabel label2 = new FormLabel("Text");
-        JTextField input2 = new InputField(20);
-        JLabel label3 = new FormLabel("Text");
-        JTextField input3 = new InputField(20);
+        JLabel lbHoTen = new FormLabel("Họ tên");
+        JTextField inputHoTen = new InputField(20);
+        JLabel lbKhoa = new FormLabel("Khoa");
+        JTextField inputKhoa = new InputField(20);
+        JLabel lbNganh = new FormLabel("Nganh");
+        JTextField inputNganh = new InputField(20);
+        JLabel lbSDT = new FormLabel("SDT");
+        JTextField inputSDT = new InputField(20);
 
 //        Create panel to contain input field
         JPanel pnlInput = new FormPanel();
@@ -34,23 +36,30 @@ public class DemoAddForm extends JPanel {
 //        Row 0
         constraints.gridx = 0;
         constraints.gridy = 0;
-        pnlInput.add(label, constraints);
+        pnlInput.add(lbHoTen, constraints);
         constraints.gridx = 1;
-        pnlInput.add(input, constraints);
+        pnlInput.add(inputHoTen, constraints);
 
 //        Row 1
         constraints.gridx = 0;
         constraints.gridy = 1;
-        pnlInput.add(label2, constraints);
+        pnlInput.add(lbKhoa, constraints);
         constraints.gridx = 1;
-        pnlInput.add(input2, constraints);
+        pnlInput.add(inputKhoa, constraints);
 
 //        Row 2
         constraints.gridx = 0;
         constraints.gridy = 2;
-        pnlInput.add(label3, constraints);
+        pnlInput.add(lbNganh, constraints);
         constraints.gridx = 1;
-        pnlInput.add(input3, constraints);
+        pnlInput.add(inputNganh, constraints);
+
+//        Row 3
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        pnlInput.add(lbSDT, constraints);
+        constraints.gridx = 1;
+        pnlInput.add(inputSDT, constraints);
 
 //        Create button save, button cancel
         JButton btnSave = new ButtonSave();
@@ -59,11 +68,20 @@ public class DemoAddForm extends JPanel {
         JPanel pnlBtn = new FormPanel();
         pnlBtn.add(btnSave);
         pnlBtn.add(btnCancel);
-        pnlBtn.add(new FormCheckBox("CheckBox"));
-        pnlBtn.add(new RadioButton("RadioButton"));
 
 //        Add all panel to this panel
         add(pnlInput, BorderLayout.CENTER);
         add(pnlBtn, BorderLayout.SOUTH);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+
+        frame.add(new ThemThanhVienForm());
+
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        frame.pack();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 }
