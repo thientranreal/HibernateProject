@@ -24,6 +24,10 @@ public abstract class ButtonBase extends JButton {
         super.setIcon(icon);
     }
 
+    protected void jButtonPaintComponent(Graphics g) {
+        super.paintComponent(g);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         // Create a Graphics2D object from the Graphics object

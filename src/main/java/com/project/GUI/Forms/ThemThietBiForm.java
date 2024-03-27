@@ -6,6 +6,7 @@ import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSave;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
+import com.project.GUI.Components.TextFields.AreaField;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.Fonts;
 
@@ -14,9 +15,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ThemThanhVienForm extends JFrame {
+public class ThemThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
-    public ThemThanhVienForm() {
+    public ThemThietBiForm() {
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -55,20 +56,17 @@ public class ThemThanhVienForm extends JFrame {
 
 //        Create Header
         JPanel pnlHeader = new FormPanel();
-        JLabel lbHeader = new FormLabel("Thêm mới thành viên");
+        JLabel lbHeader = new FormLabel("Thêm mới thiết bị");
         lbHeader.setFont(Fonts.headerFont);
         lbHeader.setForeground(Color.BLACK);
         pnlHeader.add(lbHeader);
 
 //        Create input field
-        JLabel lbHoTen = new FormLabel("Họ tên: ");
-        JTextField inputHoTen = new InputField(20);
-        JLabel lbKhoa = new FormLabel("Khoa: ");
-        JTextField inputKhoa = new InputField(20);
-        JLabel lbNganh = new FormLabel("Ngành ");
-        JTextField inputNganh = new InputField(20);
-        JLabel lbSDT = new FormLabel("SDT: ");
-        JTextField inputSDT = new InputField(20);
+        JLabel lbTenTB = new FormLabel("Tên thiết bị: ");
+        JTextField inputTenTB = new InputField(20);
+        JLabel lbMoTa = new FormLabel("Mô tả: ");
+        JTextArea inputMoTa = new AreaField(5,20);
+        JScrollPane scrollMota = new JScrollPane(inputMoTa);
 
 //        Create panel to contain input field
         JPanel pnlInput = new FormPanel();
@@ -82,30 +80,16 @@ public class ThemThanhVienForm extends JFrame {
 //        Row 0
         constraints.gridx = 0;
         constraints.gridy = y++;
-        pnlInput.add(lbHoTen, constraints);
+        pnlInput.add(lbTenTB, constraints);
         constraints.gridx = 1;
-        pnlInput.add(inputHoTen, constraints);
+        pnlInput.add(inputTenTB, constraints);
 
 //        Row 1
         constraints.gridx = 0;
-        constraints.gridy = y++;
-        pnlInput.add(lbKhoa, constraints);
-        constraints.gridx = 1;
-        pnlInput.add(inputKhoa, constraints);
-
-//        Row 2
-        constraints.gridx = 0;
-        constraints.gridy = y++;
-        pnlInput.add(lbNganh, constraints);
-        constraints.gridx = 1;
-        pnlInput.add(inputNganh, constraints);
-
-//        Row 3
-        constraints.gridx = 0;
         constraints.gridy = y;
-        pnlInput.add(lbSDT, constraints);
+        pnlInput.add(lbMoTa, constraints);
         constraints.gridx = 1;
-        pnlInput.add(inputSDT, constraints);
+        pnlInput.add(scrollMota, constraints);
 
 //        Create button
         JButton btnSave = new ButtonSave();
@@ -140,6 +124,6 @@ public class ThemThanhVienForm extends JFrame {
     }
 
     public static void main(String[] args) {
-        new ThemThanhVienForm();
+        new ThemThietBiForm();
     }
 }
