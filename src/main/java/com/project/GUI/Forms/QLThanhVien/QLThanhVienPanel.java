@@ -38,7 +38,7 @@ public class QLThanhVienPanel extends FormPanel {
     private final Table table;
     private final InputField inputMaTV;
     private final SearchField searchInput;
-    public static int maSV;
+    public static int maSV,maTT;
 
     public QLThanhVienPanel() {
 //        Add constraints to make button align vertically
@@ -150,6 +150,7 @@ public class QLThanhVienPanel extends FormPanel {
                     BigInteger curSV = new BigInteger(inputMaTV.getText());
                     thongtinsd curInfo = new thongtinsd(curSV,null,newTimestamp,null,null);
 
+                    maTT = curInfo.getMaTT();
                     int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
                     if(result > 0) {
@@ -200,11 +201,11 @@ public class QLThanhVienPanel extends FormPanel {
             int index = table.getSelectedRow();
 
             if (index == -1) {
-                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xem danh sách mượn thiết bị", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Chọn thành viên để cho mượn thiết bị");
+                return;
             } else {
                 BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
-                new MuonThietBiForm(maSV);
+                new MuonThietBiForm(maSV,maTT);
             }
         });
 
@@ -213,8 +214,8 @@ public class QLThanhVienPanel extends FormPanel {
             int index = table.getSelectedRow();
 
             if (index == -1) {
-                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xem danh sách trả thiết bị", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Chọn thành viên để xem thời gian trả thiết bị");
+                return;
             } else {
                 BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
                 new TraThietBiForm(maSV);

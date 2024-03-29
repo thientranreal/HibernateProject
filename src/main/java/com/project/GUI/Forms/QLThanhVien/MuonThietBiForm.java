@@ -32,10 +32,12 @@ public class MuonThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
 
     public static BigInteger currentSV;
+    public static int maTT;
     private Table table;
 
-    public MuonThietBiForm(BigInteger maSV) {
+    public MuonThietBiForm(BigInteger maSV,int maTT) {
         currentSV = maSV;
+        maTT = maTT;
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -169,24 +171,36 @@ public class MuonThietBiForm extends JFrame {
                 if (index == -1) {
                     JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn mượn thiết bị", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    int maTB = (int) table.getModel().getValueAt(index,0);
-                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    return;
+                }
 
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(timestamp.getTime());
+                int maTB = (int) table.getModel().getValueAt(index, 0);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(timestamp.getTime());
 
-                    calendar.add(Calendar.HOUR_OF_DAY, 7);
+                calendar.add(Calendar.HOUR_OF_DAY, 7);
 
-                    for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                        if(currentSV.equals(info.getThanhvien()) && (maTB == info.getThietbi()) && (timestamp.compareTo(info.getTGMuon()) >= 0 && timestamp.compareTo(info.getTGTra()) <= 0)) {
-                            JOptionPane.showMessageDialog(null,"Bạn đang mượn thiết bị này");
-                            dispose();
-                            return;
-                        }
-                    }
+                if(isBorrowed(maTB,timestamp)) {
+                    JOptionPane.showMessageDialog(null,"Bạn đang mượn thiết bị này");
+                    dispose();
+                    return;
+                }
 
-                    borrowDevice(timestamp,maTB);
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(timestamp.getTime());
+                cal.add(Calendar.HOUR_OF_DAY, 9); // set current payback time is current time(hour) + 2
+
+                Timestamp paybackTimestamp = new Timestamp(cal.getTime().getTime());
+
+                thongtinsd curInfo = new thongtinsd(currentSV,maTB,null,timestamp,paybackTimestamp);
+                int result = thongtinsdBLL.getInstance().addModel(curInfo);
+
+                if(result > 0) {
+                    JOptionPane.showMessageDialog(null,"Mượn thiết bị thành công");
+                    dispose();
+                }else {
+                    JOptionPane.showMessageDialog(null,"Mượn thiết bị thất bại");
                 }
             }
         });
@@ -214,24 +228,14 @@ public class MuonThietBiForm extends JFrame {
         return root;
     }
 
-    public void borrowDevice(Timestamp timestamp,int maTB) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
-        cal.add(Calendar.HOUR_OF_DAY, 9); // set current payback time is current time(hour) + 2
-
-        Timestamp paybackTimestamp = new Timestamp(cal.getTime().getTime());
-
-        thongtinsd curInfo = new thongtinsd(currentSV,maTB,null,timestamp,paybackTimestamp);
-        int result = thongtinsdBLL.getInstance().addModel(curInfo);
-
-        if(result > 0) {
-            JOptionPane.showMessageDialog(null,"Mượn thiết bị thành công");
-            dispose();
-        }else {
-            JOptionPane.showMessageDialog(null,"Mượn thiết bị thất bại");
+    public boolean isBorrowed(int maTB, Timestamp timestamp) {
+        for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+            if(currentSV.equals(info.getThanhvien()) && (maTB == info.getThietbi()) && (timestamp.compareTo(info.getTGMuon()) >= 0 && timestamp.compareTo(info.getTGTra()) <= 0)) {
+                return true;
+            }
         }
+        return false;
     }
-
 
     public void updateBorrowFromList() {
         thietbiBLL.getInstance().refresh();
@@ -268,6 +272,6 @@ public class MuonThietBiForm extends JFrame {
 
 
     public static void main(String[] args) {
-        new MuonThietBiForm(currentSV);
+        new MuonThietBiForm(currentSV,maTT);
     }
 }
