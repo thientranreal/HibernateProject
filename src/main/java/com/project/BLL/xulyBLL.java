@@ -1,8 +1,10 @@
 package com.project.BLL;
 
 import com.project.DAL.xulyDAL;
+import com.project.models.thanhvien;
 import com.project.models.xuly;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -34,6 +36,7 @@ public class xulyBLL {
     public xuly getModelById(int id) {
         return xulyDAL.getInstance().getHandleById(id);
     }
+
 
     public int addModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:

@@ -1,5 +1,6 @@
 package com.project.GUI.Forms.QLThanhVien;
 
+import com.project.BLL.thanhvienBLL;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.Buttons.ButtonExcel;
@@ -9,14 +10,32 @@ import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Fonts;
+import com.project.models.thanhvien;
+import com.project.utilities.excel.thanhvienExcelUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Objects;
 
 public class ThemThanhVienForm extends JFrame {
     private Point mouseDownCompCoords;
+    private ButtonSave btnSave;
+    private ButtonCancel btnCancel;
+    private ButtonRefresh btnRefresh;
+    private ButtonExcel btnExcel;
+    private InputField inputMaTV;
+    private InputField inputHoTen;
+    private InputField inputKhoa;
+    private InputField inputNganh;
+    private InputField inputSDT;
+
     public ThemThanhVienForm() {
 //        Add Content into JFrame
         add(initCompontent());
@@ -65,15 +84,15 @@ public class ThemThanhVienForm extends JFrame {
 
 //        Create input field
         JLabel lbMaTV = new FormLabel("Mã TV: ");
-        JTextField inputMaTV = new InputField(20);
+        inputMaTV = new InputField(20);
         JLabel lbHoTen = new FormLabel("Họ tên: ");
-        JTextField inputHoTen = new InputField(20);
+        inputHoTen = new InputField(20);
         JLabel lbKhoa = new FormLabel("Khoa: ");
-        JTextField inputKhoa = new InputField(20);
+        inputKhoa = new InputField(20);
         JLabel lbNganh = new FormLabel("Ngành ");
-        JTextField inputNganh = new InputField(20);
+        inputNganh = new InputField(20);
         JLabel lbSDT = new FormLabel("SĐT: ");
-        JTextField inputSDT = new InputField(20);
+        inputSDT = new InputField(20);
 
 //        Create panel to contain input field
         JPanel pnlInput = new FormPanel();
@@ -120,10 +139,10 @@ public class ThemThanhVienForm extends JFrame {
         pnlInput.add(inputSDT, constraints);
 
 //        Create button
-        JButton btnSave = new ButtonSave();
-        JButton btnCancel = new ButtonCancel();
-        JButton btnRefresh = new ButtonRefresh();
-        JButton btnExcel = new ButtonExcel();
+        btnSave = new ButtonSave();
+        btnCancel = new ButtonCancel();
+        btnRefresh = new ButtonRefresh();
+        btnExcel = new ButtonExcel();
 //        Create panel to contain button
         JPanel pnlBtn = new FormPanel();
         pnlBtn.add(btnSave);
@@ -148,7 +167,71 @@ public class ThemThanhVienForm extends JFrame {
         btnCancel.addActionListener(e -> {
             dispose();
         });
+
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addMember();
+                clearForm();
+                dispose();
+            }
+        });
+
+        btnExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if(!Objects.requireNonNull(thanhvienExcelUtil.readthanhviensFromExcel()).isEmpty()) {
+                        JOptionPane.showMessageDialog(null,"Thêm thành công");
+
+                    }else {
+                        JOptionPane.showMessageDialog(null,"Thêm thất bại");
+                    }
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearForm();
+            }
+        });
+
         return root;
+    }
+
+    public void clearForm() {
+        inputMaTV.setText("");
+        inputHoTen.setText("");
+        inputKhoa.setText("");
+        inputNganh.setText("");
+        inputSDT.setText("");
+    }
+
+    public void addMember() {
+        BigInteger maSV = new BigInteger(inputMaTV.getText().trim());
+        String tenSV =inputHoTen.getText();
+        String khoa =inputKhoa.getText();
+        String nganh =inputNganh.getText();
+        String sdt =inputSDT.getText();
+
+        thanhvien newMember = new thanhvien(maSV,tenSV,khoa,nganh,sdt);
+
+        BigInteger newMemberResult = thanhvienBLL.getInstance().addModel(newMember);
+
+        if(newMemberResult.compareTo(BigInteger.ZERO) > 0) {
+            JOptionPane.showMessageDialog(null,"Thêm thành công");
+            QLThanhVienPanel panel = new QLThanhVienPanel();
+            panel.updateMemberFromList();
+            clearForm();
+        }else {
+            JOptionPane.showMessageDialog(null,"Thêm thất bại");
+
+        }
     }
 
     public static void main(String[] args) {
