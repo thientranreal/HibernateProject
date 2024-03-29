@@ -1,4 +1,4 @@
-package com.project.GUI.Forms.QLThietBi;
+package com.project.GUI.Forms.QLViPham;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,16 +22,17 @@ import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSave;
 import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.TextFields.InputField;
+import com.project.GUI.Forms.QLViPham.ThaoTac;
 import com.project.GUI.GlobalVariables.Colors;
 
-public class DanhSachThietBi extends JPanel {
-    public DanhSachThietBi() {
+public class DanhSachViPham extends JPanel {
+    public DanhSachViPham() {
         initCompontent();
     }
 
     public void initCompontent() {
         pnlMain = new FormPanel();
-        lbTitle = new FormLabel("Danh sách thiết bị");
+        lbTitle = new FormLabel("Danh sách vi phạm");
         pnlInfor = new FormPanel();
         pnlButtons = new FormPanel();
         btnAdd = new ButtonAdd();
@@ -39,12 +40,20 @@ public class DanhSachThietBi extends JPanel {
         btnRefresh = new ButtonRefresh();
         btnExcel = new ButtonExcel();
         btnEdit = new ButtonEdit();
-        lbId = new FormLabel("ID");
-        lbName = new FormLabel("Tên thiết bị");
-        lbDecription = new FormLabel("Mô tả");
-        inputId = new InputField(7);
-        inputName = new InputField(7);
-        inputDecription = new InputField(7);
+        lbMaVP = new FormLabel("Mã VP");
+        lbMaTV = new FormLabel("Mã Thành viên");
+        lbTenTV = new FormLabel("Tên thành viên");
+        lbHinhThuc = new FormLabel("Hình thức");
+        lbSoTien = new FormLabel("Số tiền");
+        lbNgayXL = new FormLabel("Ngày xử lý");
+        lbTrangThai = new FormLabel("Trạng thái");
+        inputMaVP = new InputField(7);
+        inputMaTV = new InputField(7);
+        inputTenTV = new InputField(7);
+        inputHinhThuc = new InputField(7);
+        inputSoTien = new InputField(7);
+        inputNgayXL = new InputField(7);
+        inputTrangThai = new InputField(7);
         pnlSearch = new FormPanel();
         lbSearch = new FormLabel("Tìm kiếm");
         inputSearch = new InputField(10);
@@ -56,66 +65,94 @@ public class DanhSachThietBi extends JPanel {
         setLayout(new BorderLayout());
 
         pnlMain.setLayout(new GridBagLayout());
-
-        //add Title
         pnlMain.add(lbTitle);
 
-        //setLayout pnlInfor
+        //addlayout to pnlInfor
         pnlInfor.setPreferredSize(new Dimension(400, 200));
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] {0, 10, 0};
-        gridBagLayout.rowHeights = new int[] {0, 10, 0, 10, 0};
+        gridBagLayout.columnWidths = new int[] { 10, 10, 10, 10, 10, 10 };
+        gridBagLayout.rowHeights = new int[] { 10, 10, 10, 10, 10, 10 };
         pnlInfor.setLayout(gridBagLayout);
 
-        //add lb and txt to pnlInfor
+        //add input + txt to pnlInfor
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        pnlInfor.add(lbId, gbc);
+        pnlInfor.add(lbMaVP, gbc);
 
-        inputId.setPreferredSize(new Dimension(200,35));
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 0;
-        pnlInfor.add(inputId, gbc);
+        pnlInfor.add(inputMaVP, gbc);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 2;
-        pnlInfor.add(lbName, gbc);
+        pnlInfor.add(lbMaTV, gbc);
 
-        inputName.setPreferredSize(new Dimension(200,35));
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 2;
-        pnlInfor.add(inputName, gbc);
+        pnlInfor.add(inputMaTV, gbc);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 4;
-        pnlInfor.add(lbDecription, gbc);
+        pnlInfor.add(lbHinhThuc, gbc);
 
-        inputDecription.setPreferredSize(new Dimension(200,35));
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 4;
-        pnlInfor.add(inputDecription, gbc);
+        pnlInfor.add(inputHinhThuc, gbc);
 
-        //add pnlInfor to pnlMain
+        gbc = new GridBagConstraints();
+        gbc.gridx = 4;
+        gbc.gridy = 2;
+        pnlInfor.add(lbTenTV, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 6;
+        gbc.gridy = 2;
+        pnlInfor.add(inputTenTV, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 4;
+        gbc.gridy = 4;
+        pnlInfor.add(lbSoTien, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 6;
+        gbc.gridy = 4;
+        pnlInfor.add(inputSoTien, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        pnlInfor.add(lbNgayXL, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 6;
+        pnlInfor.add(inputNgayXL, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 4;
+        gbc.gridy = 6;
+        pnlInfor.add(lbTrangThai, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 6;
+        gbc.gridy = 6;
+        pnlInfor.add(inputTrangThai, gbc);
+
+        // add pnlInfor to pnlMain
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         pnlMain.add(pnlInfor, gbc);
 
-        //pnlButtons
-        pnlButtons.setPreferredSize(new Dimension(800, 60));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-
-        //add button to pnlbuttons
-        pnlButtons.add(btnRefresh);
-        pnlButtons.add(btnExcel);
+        // add button to pnlButtons
 
         btnAdd.addActionListener(actionAdd);
         pnlButtons.add(btnAdd);
@@ -123,22 +160,22 @@ public class DanhSachThietBi extends JPanel {
         btnEdit.addActionListener(actionEdit);
         pnlButtons.add(btnEdit);
         pnlButtons.add(btnDel);
-        pnlButtons.add(btnDelAll);
-        
-        //add pnlButtons to pnlMain
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         pnlMain.add(pnlButtons, gbc);
 
         //pnlSearch
-        pnlSearch.setPreferredSize(new Dimension(800, 60));
         pnlSearch.add(lbSearch);
         pnlSearch.add(inputSearch);
         pnlSearch.add(btnSearch);
 
-        //add pnlSearch to pnlMain
+        // add pnlSearch to pnlMain
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
-        pnlMain.add(pnlSearch,gbc);
+        pnlMain.add(pnlSearch, gbc);
 
         add(pnlMain, BorderLayout.NORTH);
 
@@ -147,9 +184,13 @@ public class DanhSachThietBi extends JPanel {
         table.setModel(new DefaultTableModel(
                 new Object[][] {
                 },
-                new String[] { "Mã TB",
-                        "Tên Thiết Bị",
-                        "Mô tả",
+                new String[] { "Mã VP",
+                        "Mã thàn viên",
+                        "Tên thành viên",
+                        "Hình thức xử lý",
+                        "Số tiền",
+                        "Ngày xử lý",
+                        "Trạng thái"
                 }));
         // Add data for table
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
@@ -157,7 +198,11 @@ public class DanhSachThietBi extends JPanel {
             model_table.addRow(new Object[] {
                     "Text",
                     "Text",
-                    "Text"
+                    "Text",
+                    "Text",
+                    "T",
+                    "T",
+                    "T"
             });
         }
 
@@ -180,12 +225,20 @@ public class DanhSachThietBi extends JPanel {
     private JButton btnRefresh;
     private JButton btnExcel;
     private JButton btnEdit;
-    private FormLabel lbId;
-    private FormLabel lbName;
-    private FormLabel lbDecription;
-    private InputField inputId;
-    private InputField inputName;
-    private InputField inputDecription;
+    private FormLabel lbMaVP;
+    private FormLabel lbMaTV;
+    private FormLabel lbTenTV;
+    private FormLabel lbHinhThuc;
+    private FormLabel lbSoTien;
+    private FormLabel lbNgayXL;
+    private FormLabel lbTrangThai;
+    private InputField inputMaVP;
+    private InputField inputMaTV;
+    private InputField inputTenTV;
+    private InputField inputHinhThuc;
+    private InputField inputSoTien;
+    private InputField inputNgayXL;
+    private InputField inputTrangThai;
     private FormLabel lbSearch;
     private InputField inputSearch;
     private JButton btnDelAll;
@@ -193,7 +246,7 @@ public class DanhSachThietBi extends JPanel {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        frame.add(new DanhSachThietBi());
+        frame.add(new DanhSachViPham());
         frame.setVisible(true);
     }
 
@@ -204,7 +257,7 @@ public class DanhSachThietBi extends JPanel {
             ThaoTac thaoTac = new ThaoTac();
             thaoTac.setVisible(true);
         }
-        
+
     };
     public ActionListener actionEdit = new ActionListener() {
 
@@ -213,6 +266,6 @@ public class DanhSachThietBi extends JPanel {
             ThaoTac thaoTac = new ThaoTac();
             thaoTac.setVisible(true);
         }
-        
+
     };
 }

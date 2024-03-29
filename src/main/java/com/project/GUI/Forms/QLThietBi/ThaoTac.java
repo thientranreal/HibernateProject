@@ -7,6 +7,7 @@ import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Buttons.ButtonDel;
 import com.project.GUI.Components.Buttons.ButtonSave;
+import com.project.GUI.Components.TextFields.InputField;
 
 public class ThaoTac extends JFrame{
 
@@ -19,9 +20,9 @@ public class ThaoTac extends JFrame{
         lbId = new FormLabel("ID");
         lbName = new FormLabel("Tên thiết bị");
         lbDecription = new FormLabel("Mô tả");
-        inputId = new JTextField();
-        inputName = new JTextField();
-        inputDecription = new JTextField();
+        inputId = new InputField(7);
+        inputName = new InputField(7);
+        inputDecription = new InputField(7);
         btnDel = new ButtonDel();
         btnSave = new ButtonSave();
 
