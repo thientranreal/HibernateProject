@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -12,9 +13,8 @@ import java.util.List;
 @Setter
 public class thanhvien {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MaTV")
-    private int maTV;
+    private BigInteger maTV;
 
     @Column(name = "HoTen")
     private String hoTen;
@@ -26,29 +26,30 @@ public class thanhvien {
     private String nganh;
 
     @Column(name = "SDT")
-    private int sdt;
+    private String sdt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "thanhvien")
     private List<thongtinsd> thongtinsd;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "thanhvien")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "thanhvien")
     private List<xuly> xuly;
 
     public thanhvien() {
     }
 
-    public thanhvien(String hoTen, String khoa, String nganh, int sdt) {
+    public thanhvien(BigInteger maSV,String hoTen, String khoa, String nganh, String sdt) {
+        this.maTV = maSV;
         this.hoTen = hoTen;
         this.khoa = khoa;
         this.nganh = nganh;
         this.sdt = sdt;
     }
 
-    public int getMaTV() {
+    public BigInteger getMaTV() {
         return maTV;
     }
 
-    public void setMaTV(int maTV) {
+    public void setMaTV(BigInteger maTV) {
         this.maTV = maTV;
     }
 
@@ -76,11 +77,11 @@ public class thanhvien {
         this.nganh = nganh;
     }
 
-    public int getSdt() {
+    public String getSdt() {
         return sdt;
     }
 
-    public void setSdt(int sdt) {
+    public void setSdt(String sdt) {
         this.sdt = sdt;
     }
 

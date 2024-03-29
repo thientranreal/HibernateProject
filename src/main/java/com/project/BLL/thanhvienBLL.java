@@ -3,6 +3,8 @@ package com.project.BLL;
 import com.project.DAL.thanhvienDAL;
 import com.project.models.thanhvien;
 
+import javax.swing.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -31,54 +33,90 @@ public class thanhvienBLL {
         members.addAll(thanhvienDAL.getInstance().getMemberList());
     }
 
-    public thanhvien getModelById(int id) {
+
+    public thanhvien getModelById(BigInteger id) {
         return thanhvienDAL.getInstance().getById(id);
     }
 
-    public int addModel(thanhvien member) {
+    public BigInteger addModel(thanhvien member) {
         // Nothing can be null: MaTV, HoTen, Khoa, Nganh, SDT:
-        if (member.getHoTen().isEmpty() || member.getHoTen().length() > 50 || member.getHoTen().trim() == null) {
-            return -1;
+        if (String.valueOf(member.getMaTV()).isEmpty() || String.valueOf(member.getMaTV()).length() < 10) {
+            JOptionPane.showMessageDialog(null,"Mã thành viên chưa hợp lệ");
+            return BigInteger.valueOf(-1);
         }
-        if (member.getKhoa().isEmpty() || member.getKhoa().length() > 50 || member.getKhoa().trim() == null) {
-            return -1;
+
+        if (member.getHoTen().isEmpty() || member.getHoTen().length() > 50) {
+            JOptionPane.showMessageDialog(null,"Họ tên không hợp lệ");
+            return BigInteger.valueOf(-1);
         }
-        if (member.getNganh().isEmpty() || member.getNganh().length() > 50 || member.getNganh().trim() == null) {
-            return -1;
+        if (member.getKhoa().isEmpty() || member.getKhoa().length() > 50) {
+            JOptionPane.showMessageDialog(null,"Khoa không hợp lệ");
+            return BigInteger.valueOf(-1);
         }
-        if (member.getSdt() <= 0) {
-            return -1;
+        if (member.getNganh().isEmpty() || member.getNganh().length() > 50) {
+            JOptionPane.showMessageDialog(null,"Ngành không hợp lệ");
+            return BigInteger.valueOf(-1);
         }
+        if (member.getSdt().isEmpty() || member.getSdt().charAt(0) != '0' || member.getSdt().length() < 10) {
+            JOptionPane.showMessageDialog(null,"Số điện thoại không hợp lệ");
+            return BigInteger.valueOf(-1);
+        }
+
+        for (thanhvien member1 : members) {
+            if (member1.getMaTV().equals(member.getMaTV())) {
+                JOptionPane.showMessageDialog(null, "Mã thành viên đã tồn tại");
+                return BigInteger.valueOf(-1);
+            }
+        }
+
 
         if (thanhvienDAL.getInstance().create(member)) {
             members.add(member);
             return member.getMaTV();
         }
-        return -1;
+        return BigInteger.valueOf(-1);
     }
 
-    public int updateModel(thanhvien member) {
+    public BigInteger updateModel(thanhvien member) {
+
         // Nothing can be null: MaTV, HoTen, Khoa, Nganh, SDT:
-        if (member.getHoTen().isEmpty() || member.getHoTen().length() > 50 || member.getHoTen().trim() == null) {
-            return -1;
-        }
-        if (member.getKhoa().isEmpty() || member.getKhoa().length() > 50 || member.getKhoa().trim() == null) {
-            return -1;
-        }
-        if (member.getNganh().isEmpty() || member.getNganh().length() > 50 || member.getNganh().trim() == null) {
-            return -1;
-        }
-        if (member.getSdt() <= 0) {
-            return -1;
+        if ((String.valueOf(member.getMaTV()).isEmpty() || String.valueOf(member.getMaTV()).length() < 10)) {
+            JOptionPane.showMessageDialog(null,"Mã thành viên chưa hợp lệ");
+            return BigInteger.valueOf(-1);
         }
 
+        if (member.getHoTen().isEmpty() || member.getHoTen().length() > 50) {
+            JOptionPane.showMessageDialog(null,"Họ tên không hợp lệ");
+            return BigInteger.valueOf(-1);
+        }
+        if (member.getKhoa().isEmpty() || member.getKhoa().length() > 50) {
+            JOptionPane.showMessageDialog(null,"Khoa không hợp lệ");
+            return BigInteger.valueOf(-1);
+        }
+        if (member.getNganh().isEmpty() || member.getNganh().length() > 50) {
+            JOptionPane.showMessageDialog(null,"Ngành không hợp lệ");
+            return BigInteger.valueOf(-1);
+        }
+        if (member.getSdt().isEmpty() || member.getSdt().charAt(0) != '0' || member.getSdt().length() < 10) {
+            JOptionPane.showMessageDialog(null,"Số điện thoại không hợp lệ");
+            return BigInteger.valueOf(-1);
+        }
+
+        for (thanhvien member1 : members) {
+            if (member1.getSdt().equals(member.getSdt()) && !member1.getMaTV().equals(member.getMaTV())) {
+                JOptionPane.showMessageDialog(null,"Số điện thoại đã tồn tại");
+                return BigInteger.valueOf(-1);
+            }
+        }
+
+        System.out.println("test bus: "+member);
         if (thanhvienDAL.getInstance().update(member)) {
             return member.getMaTV();
         }
-        return -1;
+        return BigInteger.valueOf(-1);
     }
 
-    public boolean deleteModel(int id) {
+    public boolean deleteModel(BigInteger id) {
         thanhvien member = getModelById(id);
         boolean result = thanhvienDAL.getInstance().delete(member.getMaTV());
         if (result) {
@@ -87,30 +125,8 @@ public class thanhvienBLL {
         return result;
     }
 
-    public List<thanhvien> searchModelByCriteria(Predicate<thanhvien> criteria) {
-        List<thanhvien> result = new ArrayList<>();
-        for (thanhvien member : members) {
-            if (criteria.test(member)) {
-                result.add(member);
-            }
-        }
-        return result;
-    }
-
-    public List<thanhvien> searchModelByHoTen(String hoTen) {
-        return searchModelByCriteria(member -> member.getHoTen().toLowerCase().contains(hoTen.toLowerCase()));
-    }
-
-    public List<thanhvien> searchModelByKhoa(String khoa) {
-        return searchModelByCriteria(member -> member.getKhoa().toLowerCase().contains(khoa.toLowerCase()));
-    }
-
-    public List<thanhvien> searchModelByNganh(String nganh) {
-        return searchModelByCriteria(member -> member.getNganh().toLowerCase().contains(nganh.toLowerCase()));
-    }
-
-    public List<thanhvien> searchModelBySDT(int sdt) {
-        return searchModelByCriteria(member -> member.getSdt() == sdt);
+    public List<thanhvien> searchListThanhVien(String keyword) {
+        return thanhvienDAL.getInstance().search(keyword);
     }
 
 }

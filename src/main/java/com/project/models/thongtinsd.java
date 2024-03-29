@@ -5,7 +5,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import java.math.BigInteger;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "thongtinsd")
@@ -18,25 +20,23 @@ public class thongtinsd {
     private int MaTT;
 
     @Column(name = "MaTV")
-    private int thanhvien;
+    private BigInteger thanhvien;
 
     @Column(name = "MaTB")
     private Integer thietbi;
 
     @Column(name = "TGVao")
-    private Date TGVao;
+    private Timestamp TGVao;
 
     @Column(name = "TGMuon")
-    private Date TGMuon;
+    private Timestamp TGMuon;
 
     @Column(name = "TGTra")
-    private Date TGTra;
+    private Timestamp TGTra;
 
-    public thongtinsd() {
-    }
+    public thongtinsd(){}
 
-    public thongtinsd(int maTT, int thanhvien, Integer thietbi, Date TGVao, Date TGMuon, Date TGTra) {
-        MaTT = maTT;
+    public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
         this.thanhvien = thanhvien;
         this.thietbi = thietbi;
         this.TGVao = TGVao;
@@ -52,11 +52,11 @@ public class thongtinsd {
         MaTT = maTT;
     }
 
-    public int getThanhvien() {
+    public BigInteger getThanhvien() {
         return thanhvien;
     }
 
-    public void setThanhvien(int thanhvien) {
+    public void setThanhvien(BigInteger thanhvien) {
         this.thanhvien = thanhvien;
     }
 
@@ -68,27 +68,27 @@ public class thongtinsd {
         this.thietbi = thietbi;
     }
 
-    public Date getTGVao() {
+    public Timestamp getTGVao() {
         return TGVao;
     }
 
-    public void setTGVao(Date TGVao) {
+    public void setTGVao(Timestamp TGVao) {
         this.TGVao = TGVao;
     }
 
-    public Date getTGMuon() {
+    public Timestamp getTGMuon() {
         return TGMuon;
     }
 
-    public void setTGMuon(Date TGMuon) {
+    public void setTGMuon(Timestamp TGMuon) {
         this.TGMuon = TGMuon;
     }
 
-    public Date getTGTra() {
+    public Timestamp getTGTra() {
         return TGTra;
     }
 
-    public void setTGTra(Date TGTra) {
+    public void setTGTra(Timestamp TGTra) {
         this.TGTra = TGTra;
     }
 

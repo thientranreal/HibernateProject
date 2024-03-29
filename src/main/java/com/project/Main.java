@@ -15,14 +15,14 @@ import java.text.SimpleDateFormat;
 
 public class Main {
     public static void main(String[] args) {
-//        thietbi device = new thietbi("Laptop sieucap vjp pro","rat la xin xo");
-//        int result = thietbiBLL.getInstance().addModel(device);
-//
-//        if(result > 0) {
-//            System.out.println("OK");
-//        }else {
-//            System.out.println("KO OK");
-//        }
+        thietbi device = new thietbi("lalala","rat la xin xo");
+        int result = thietbiBLL.getInstance().addModel(device);
+
+        if(result > 0) {
+            System.out.println("OK");
+        }else {
+            System.out.println("KO OK");
+        }
 
 //        String dateString = "2023-09-12 08:00:00";
 //

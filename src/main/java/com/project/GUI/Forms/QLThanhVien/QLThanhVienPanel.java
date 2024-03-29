@@ -1,5 +1,8 @@
 package com.project.GUI.Forms.QLThanhVien;
 
+import com.project.BLL.thanhvienBLL;
+import com.project.BLL.thongtinsdBLL;
+import com.project.BLL.xulyBLL;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
@@ -8,13 +11,35 @@ import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Fonts;
+import com.project.models.thanhvien;
+import com.project.models.thongtinsd;
+import com.project.models.xuly;
+import org.apache.poi.ss.formula.functions.T;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
 
 public class QLThanhVienPanel extends FormPanel {
+
+
+    private final Table table;
+    private final InputField inputMaTV;
+    private final SearchField searchInput;
+    public static int maSV;
+
     public QLThanhVienPanel() {
 //        Add constraints to make button align vertically
         GridBagConstraints constraints = new GridBagConstraints();
@@ -32,7 +57,7 @@ public class QLThanhVienPanel extends FormPanel {
         pnlHeader.add(lbHeader);
 
 //        Create search input, button search, button refresh
-        JTextField searchInput = new SearchField(20);
+        searchInput = new SearchField(20);
         JButton btnSearch = new ButtonSearch();
         JButton btnRefresh = new ButtonRefresh();
 
@@ -43,7 +68,7 @@ public class QLThanhVienPanel extends FormPanel {
         pnlSearch.add(btnRefresh);
 
 //        Create table for showing data
-        JTable table = new Table();
+        table = new Table();
 //        Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -54,20 +79,14 @@ public class QLThanhVienPanel extends FormPanel {
                         "Ngành",
                         "Số ĐT",
                         "Xử Lý"
-                })
+                }) {
+                           @Override
+                           public boolean isCellEditable(int row, int column) {
+                               return column != getColumnCount() - 6 && column != getColumnCount() - 1;
+                           }
+                       }
         );
-//        Add data for table
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < 10; i++) {
-            model_table.addRow(new Object[]{
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text"
-            });
-        }
+
 
 //        Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
@@ -104,10 +123,45 @@ public class QLThanhVienPanel extends FormPanel {
 
 //        Panel check in
         JLabel lbMaTV = new FormLabel("Mã TV");
-        JTextField inputMaTV = new InputField(20);
+        inputMaTV = new InputField(20);
         JButton btnCheckIn = new ButtonNormal("Check in");
         JPanel pnlCheckIn = new FormPanel();
         pnlCheckIn.setLayout(new GridBagLayout());
+
+        btnCheckIn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BigInteger maSV = new BigInteger(inputMaTV.getText());
+
+                thanhvien currentMember = thanhvienBLL.getInstance().getModelById(maSV);
+
+                if(currentMember == null) {
+                    JOptionPane.showMessageDialog(null,"Không tìm thấy thành viên");
+                    return;
+                }else {
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(timestamp.getTime());
+                    cal.add(Calendar.HOUR_OF_DAY,7);
+
+                    Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
+
+                    BigInteger curSV = new BigInteger(inputMaTV.getText());
+                    thongtinsd curInfo = new thongtinsd(curSV,null,newTimestamp,null,null);
+
+                    int result = thongtinsdBLL.getInstance().addModel(curInfo);
+
+                    if(result > 0) {
+                        JOptionPane.showMessageDialog(null,"Mã số: "+curSV+"\n"
+                                +"Tên thành viên: "+currentMember.getHoTen()+"\n"
+                                +"Khoa: "+currentMember.getKhoa()+"\n"
+                                +"Ngành: "+currentMember.getNganh()+"\n"
+                                +"SĐT: "+currentMember.getSdt());
+                    }
+                }
+            }
+        });
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -143,13 +197,163 @@ public class QLThanhVienPanel extends FormPanel {
 
 //        Btn Borrow event listener
         btnBorrow.addActionListener(e -> {
-            new MuonThietBiForm();
+            int index = table.getSelectedRow();
+
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xem danh sách mượn thiết bị", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
+                new MuonThietBiForm(maSV);
+            }
         });
 
 //        Btn Return event listener
         btnReturn.addActionListener(e -> {
-            new TraThietBiForm();
+            int index = table.getSelectedRow();
+
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xem danh sách trả thiết bị", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
+                new TraThietBiForm(maSV);
+            }
         });
+
+        btnDel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+
+                if(index == -1) {
+                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }else {
+                    int choice = JOptionPane.showConfirmDialog(null,"Bạn có chắc chắn muốn xóa thành viên này?");
+                    if(choice == JOptionPane.YES_OPTION) {
+                        BigInteger memberID = new BigInteger(String.valueOf(table.getModel().getValueAt(index,0)));
+
+                        deleteMember(memberID);
+                        updateMemberFromList();
+                    }
+                }
+            }
+        });
+
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateMemberFromList();
+                clearForm();
+            }
+        });
+
+        table.getDefaultEditor(String.class).addCellEditorListener(new CellEditorListener() {
+            public void editingStopped(ChangeEvent e) {
+                int selectedRow = table.getSelectedRow();
+                Object maTV = table.getValueAt(selectedRow,0);
+                Object hoTen = table.getValueAt(selectedRow,1);
+                Object khoa = table.getValueAt(selectedRow,2);
+                Object nganh = table.getValueAt(selectedRow,3);
+                Object sdt = table.getValueAt(selectedRow,4);
+
+                thanhvien updateMember = new thanhvien(new BigInteger(maTV.toString()),hoTen.toString(),khoa.toString(),nganh.toString(),sdt.toString());
+
+                BigInteger result = thanhvienBLL.getInstance().updateModel(updateMember);
+
+                if(result.compareTo(BigInteger.ZERO) > 0) {
+                    JOptionPane.showMessageDialog(null, "Save successful");
+                    updateMemberFromList();
+                }else {
+                    JOptionPane.showMessageDialog(null, "Save failed");
+                }
+            }
+
+            public void editingCanceled(ChangeEvent e) {
+                System.out.println("Editing canceled");
+            }
+        });
+
+        searchInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String searchValue = searchInput.getText().trim();
+                    List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVien(searchValue);
+                    showSearchResult(searchResult);
+                }
+            }
+        });
+
+
+        updateMemberFromList();
+    }
+
+    public void updateMemberFromList() {
+        String handleStatus = null;
+        thanhvienBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+            for(xuly handle : xulyBLL.getInstance().getAllModels()) {
+                if(member.getMaTV().equals(handle.getMaTV())) {
+                    handleStatus = handle.getHinhThucXL();
+                }
+            }
+
+            model_table.addRow(new Object[]{
+                    member.getMaTV(),
+                    member.getHoTen(),
+                    member.getKhoa(),
+                    member.getNganh(),
+                    member.getSdt(),
+                    handleStatus == null ? "Không vi phạm" : handleStatus
+            });
+        }
+    }
+
+    public void clearForm() {
+        searchInput.setText("");
+        inputMaTV.setText("");
+    }
+
+    public void deleteMember(BigInteger id) {
+        try{
+            if(thanhvienBLL.getInstance().deleteModel(id)) {
+                JOptionPane.showMessageDialog(null,"Xóa thành công");
+            }
+        }catch(Exception e) {
+            JOptionPane.showMessageDialog(null,"Xóa thất bại");
+        }
+    }
+
+    public void showSearchResult(List<thanhvien> search) {
+        String handleStatus = null;
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (thanhvien member : search) {
+            for (xuly handle : xulyBLL.getInstance().getAllModels()) {
+                if (member.getMaTV().equals(handle.getMaTV())) {
+                    handleStatus = handle.getHinhThucXL();
+                }
+            }
+
+            model.addRow(new Object[]{
+                    member.getMaTV(),
+                    member.getHoTen(),
+                    member.getKhoa(),
+                    member.getNganh(),
+                    member.getSdt(),
+                    handleStatus == null ? "Không vi phạm" : handleStatus
+            });
+        }
     }
 
     public static void main(String[] args) {

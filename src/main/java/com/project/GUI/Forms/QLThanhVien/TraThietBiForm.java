@@ -1,5 +1,9 @@
 package com.project.GUI.Forms.QLThanhVien;
 
+import com.project.BLL.thanhvienBLL;
+import com.project.BLL.thietbiBLL;
+import com.project.BLL.thongtinsdBLL;
+import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.FormLabel;
@@ -7,17 +11,31 @@ import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Fonts;
+import com.project.models.thanhvien;
+import com.project.models.thietbi;
+import com.project.models.thongtinsd;
+import com.project.models.xuly;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class TraThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
-    public TraThietBiForm() {
+
+    private static BigInteger currentSV;
+    private Table table;
+
+    public TraThietBiForm(BigInteger maSV) {
+        currentSV = maSV;
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -67,7 +85,7 @@ public class TraThietBiForm extends JFrame {
         JLabel lbDSThietBi = new FormLabel("Danh sách thiết bị đang mượn");
 
 //        Create table for showing data
-        JTable table = new Table();
+        table = new Table();
 //        Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -75,17 +93,14 @@ public class TraThietBiForm extends JFrame {
                 new String[] {"Mã TB",
                         "Tên TB",
                         "Mô tả",
-                })
+                        "Thời gian trả"
+                }){
+                           @Override
+                           public boolean isCellEditable(int row, int column) {
+                               return column == getColumnCount();
+                           }
+                       }
         );
-//        Add data for table
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < 10; i++) {
-            model_table.addRow(new Object[]{
-                    "Text",
-                    "Text",
-                    "Text"
-            });
-        }
 
 //        Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
@@ -144,10 +159,88 @@ public class TraThietBiForm extends JFrame {
         btnCancel.addActionListener(e -> {
             dispose();
         });
+
+        searchInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String searchValue = searchInput.getText().trim();
+                    List<thongtinsd> searchResult = thongtinsdBLL.getInstance().searchListThietBi(searchValue);
+                    showSearchResult(searchResult);
+                }
+            }
+        });
+
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchInput.setText("");
+                updateReturnFromList();
+            }
+        });
+
+        updateReturnFromList();
         return root;
     }
 
+    public void updateReturnFromList() {
+        thietbiBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+            for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                if(currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == device.getMaTB()) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(info.getTGTra().getTime());
+
+                    calendar.add(Calendar.HOUR_OF_DAY, -7);
+
+                    Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
+
+                    model_table.addRow(new Object[]{
+                            device.getMaTB(),
+                            device.getTenTB(),
+                            device.getMoTaTB(),
+                            newTimestamp
+                    });
+                }
+            }
+        }
+    }
+
+    public void showSearchResult(List<thongtinsd> search) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+            for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                if(currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == device.getMaTB()) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(info.getTGTra().getTime());
+
+                    calendar.add(Calendar.HOUR_OF_DAY, -7);
+
+                    Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
+
+                    model.addRow(new Object[]{
+                            device.getMaTB(),
+                            device.getTenTB(),
+                            device.getMoTaTB(),
+                            newTimestamp
+                    });
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        new TraThietBiForm();
+        new TraThietBiForm(currentSV);
     }
 }

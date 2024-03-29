@@ -2,6 +2,8 @@ package com.project.utilities.excel;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,35 +60,42 @@ public class thanhvienExcelUtil extends ExcelUtil {
 
     private static List<thanhvien> convertTothanhvienList(List<List<String>> data) {
         List<thanhvien> thanhviens = new ArrayList<>();
+        DecimalFormat decimalFormat = new DecimalFormat("0");
         for (int i = 1; i < data.size(); i++) {
             List<String> row = data.get(i);
-//            int id;
-//            try {
-//                if (row.get(0).contains("."))
-//                    id = (int) Float.parseFloat(row.get(0));
-//                else
-//                    id = Integer.parseInt(row.get(0));
-//            } catch (NumberFormatException e) {
-//                throw new IllegalArgumentException("Invalid integer value in input data", e);
-//            }
+            BigInteger id;
+            try {
+                String idString = row.get(0);
+                if (idString.contains(".")) {
+                    double idDouble = Double.parseDouble(idString);
+                    idString = decimalFormat.format(idDouble);
+                }
+                id = new BigInteger(idString);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid integer value in input data", e);
+            }
             String HoTen = row.get(1);
             String Khoa = row.get(2);
             String Nganh = row.get(3);
             // Sdt is int type in database:
-            int Sdt;
+            String Sdt;
             try {
-                if (row.get(4).contains("."))
-                    Sdt = (int) Float.parseFloat(row.get(4));
-                else
-                    Sdt = Integer.parseInt(row.get(4));
+                if (row.get(4).contains(".")) {
+                    float floatValue = Float.parseFloat(row.get(4));
+                    int intValue = (int) floatValue;
+                    Sdt = String.valueOf(intValue);
+                } else {
+                    Sdt = row.get(4);
+                }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid integer value in input data", e);
             }
 
-            thanhvien model = new thanhvien(HoTen, Khoa, Nganh, Sdt);
+            thanhvien model = new thanhvien(id,HoTen, Khoa, Nganh, Sdt);
             thanhviens.add(model);
             thanhvienBLL.getInstance().addModel(model);
         }
+
         return thanhviens;
     }
 
@@ -100,11 +109,11 @@ public class thanhvienExcelUtil extends ExcelUtil {
         // Write data rows
         for (thanhvien thanhvien : thanhviens) {
             List<String> values = Arrays.asList(
-                    Integer.toString(thanhvien.getMaTV()),
+                    thanhvien.getMaTV().toString(),
                     thanhvien.getHoTen(),
                     thanhvien.getKhoa(),
                     thanhvien.getNganh(),
-                    Integer.toString(thanhvien.getSdt()));
+                    thanhvien.getSdt());
             data.add(values);
         }
 

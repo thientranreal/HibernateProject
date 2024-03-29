@@ -5,6 +5,9 @@ import org.hibernate.Transaction;
 
 import com.project.utilities.HibernateUtil;
 import com.project.models.thanhvien;
+import org.hibernate.query.Query;
+
+import java.math.BigInteger;
 import java.util.List;
 
 public class thanhvienDAL {
@@ -47,7 +50,7 @@ public class thanhvienDAL {
         });
     }
 
-    public boolean delete(int id) {
+    public boolean delete(BigInteger id) {
         return executeTransaction(session -> {
             thanhvien member = session.get(thanhvien.class, id);
             if (member != null) {
@@ -57,7 +60,7 @@ public class thanhvienDAL {
         });
     }
 
-    public thanhvien getById(int id) {
+    public thanhvien getById(BigInteger id) {
         try (Session session = HibernateUtil.getInstance().openSession()) {
             return session.get(thanhvien.class, id);
         }
@@ -66,6 +69,15 @@ public class thanhvienDAL {
     public List<thanhvien> getMemberList() {
         try (Session session = HibernateUtil.getInstance().openSession()) {
             return session.createQuery("from thanhvien", thanhvien.class).list();
+        }
+    }
+
+    public List<thanhvien> search(String keyword) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString = "from thanhvien where LOWER(CONCAT(MaTV, HoTen, Khoa, Nganh, SDT)) like :keyword";
+            Query<thanhvien> query = session.createQuery(queryString, thanhvien.class);
+            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
+            return query.list();
         }
     }
 

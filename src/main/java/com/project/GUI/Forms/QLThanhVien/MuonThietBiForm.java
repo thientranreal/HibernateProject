@@ -1,5 +1,9 @@
 package com.project.GUI.Forms.QLThanhVien;
 
+import com.project.BLL.thanhvienBLL;
+import com.project.BLL.thietbiBLL;
+import com.project.BLL.thongtinsdBLL;
+import com.project.BLL.xulyBLL;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
@@ -7,17 +11,31 @@ import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Fonts;
+import com.project.models.thanhvien;
+import com.project.models.thietbi;
+import com.project.models.thongtinsd;
+import com.project.models.xuly;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
 
 public class MuonThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
-    public MuonThietBiForm() {
+
+    public static BigInteger currentSV;
+    private Table table;
+
+    public MuonThietBiForm(BigInteger maSV) {
+        currentSV = maSV;
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -51,6 +69,8 @@ public class MuonThietBiForm extends JFrame {
     }
 
     private JPanel initCompontent() {
+        QLThanhVienPanel form = new QLThanhVienPanel();
+
         JPanel root = new FormPanel();
         root.setLayout(new BorderLayout());
 
@@ -67,7 +87,7 @@ public class MuonThietBiForm extends JFrame {
         JLabel lbDSThietBi = new FormLabel("Danh sách thiết bị có thể mượn");
 
 //        Create table for showing data
-        JTable table = new Table();
+        table = new Table();
 //        Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -75,17 +95,13 @@ public class MuonThietBiForm extends JFrame {
                 new String[] {"Mã TB",
                         "Tên TB",
                         "Mô tả",
-                })
+                }) {
+                           @Override
+                           public boolean isCellEditable(int row, int column) {
+                               return column == getColumnCount();
+                           }
+                       }
         );
-//        Add data for table
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < 10; i++) {
-            model_table.addRow(new Object[]{
-                    "Text",
-                    "Text",
-                    "Text"
-            });
-        }
 
 //        Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
@@ -144,10 +160,114 @@ public class MuonThietBiForm extends JFrame {
         btnCancel.addActionListener(e -> {
             dispose();
         });
+
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+
+                if (index == -1) {
+                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn mượn thiết bị", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    int maTB = (int) table.getModel().getValueAt(index,0);
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(timestamp.getTime());
+
+                    calendar.add(Calendar.HOUR_OF_DAY, 7);
+
+                    for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                        if(currentSV.equals(info.getThanhvien()) && (maTB == info.getThietbi()) && (timestamp.compareTo(info.getTGMuon()) >= 0 && timestamp.compareTo(info.getTGTra()) <= 0)) {
+                            JOptionPane.showMessageDialog(null,"Bạn đang mượn thiết bị này");
+                            dispose();
+                            return;
+                        }
+                    }
+
+                    borrowDevice(timestamp,maTB);
+                }
+            }
+        });
+
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchInput.setText("");
+                updateBorrowFromList();
+            }
+        });
+
+        searchInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String searchValue = searchInput.getText().trim();
+                    List<thietbi> searchResult = thietbiBLL.getInstance().searchListThietBi(searchValue);
+                    showSearchResult(searchResult);
+                }
+            }
+        });
+
+        updateBorrowFromList();
         return root;
     }
 
+    public void borrowDevice(Timestamp timestamp,int maTB) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp.getTime());
+        cal.add(Calendar.HOUR_OF_DAY, 9); // set current payback time is current time(hour) + 2
+
+        Timestamp paybackTimestamp = new Timestamp(cal.getTime().getTime());
+
+        thongtinsd curInfo = new thongtinsd(currentSV,maTB,null,timestamp,paybackTimestamp);
+        int result = thongtinsdBLL.getInstance().addModel(curInfo);
+
+        if(result > 0) {
+            JOptionPane.showMessageDialog(null,"Mượn thiết bị thành công");
+            dispose();
+        }else {
+            JOptionPane.showMessageDialog(null,"Mượn thiết bị thất bại");
+        }
+    }
+
+
+    public void updateBorrowFromList() {
+        thietbiBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+            model_table.addRow(new Object[]{
+                    device.getMaTB(),
+                    device.getTenTB(),
+                    device.getMoTaTB(),
+            });
+
+        }
+    }
+
+    public void showSearchResult(List<thietbi> search) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (thietbi device : search) {
+            model.addRow(new Object[]{
+                    device.getMaTB(),
+                    device.getTenTB(),
+                    device.getMoTaTB(),
+            });
+        }
+    }
+    
+
+
+
     public static void main(String[] args) {
-        new MuonThietBiForm();
+        new MuonThietBiForm(currentSV);
     }
 }

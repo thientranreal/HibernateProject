@@ -1,9 +1,12 @@
 package com.project.BLL;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.project.DAL.thietbiDAL;
 import com.project.DAL.thongtinsdDAL;
+import com.project.models.thietbi;
 import com.project.models.thongtinsd;
 
 public class thongtinsdBLL {
@@ -36,7 +39,7 @@ public class thongtinsdBLL {
 
     public int addModel(thongtinsd usageInformation) { 
         //MaTV can't be null:
-        if (usageInformation.getThanhvien() <= 0) {
+        if (usageInformation.getThanhvien().compareTo(BigInteger.ZERO) <= 0) {
             return -1;
         }
         
@@ -49,7 +52,7 @@ public class thongtinsdBLL {
 
     public int updateModel(thongtinsd usageInformation) {
         //MaTV can't be null:
-        if (usageInformation.getThanhvien() <= 0) {
+        if (usageInformation.getThanhvien().compareTo(BigInteger.ZERO) <= 0) {
             return -1;
         }
 
@@ -70,6 +73,7 @@ public class thongtinsdBLL {
         return result;
     }
 
-    // public List<thongtinsd> searchModels(String keyword) {
-    // }
+    public List<thongtinsd> searchListThietBi(String keyword) {
+        return thongtinsdDAL.getInstance().search(keyword);
+    }
 }
