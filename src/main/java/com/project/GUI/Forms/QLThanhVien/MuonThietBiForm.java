@@ -32,12 +32,10 @@ public class MuonThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
 
     public static BigInteger currentSV;
-    public static int maTT;
     private Table table;
 
-    public MuonThietBiForm(BigInteger maSV,int maTT) {
+    public MuonThietBiForm(BigInteger maSV) {
         currentSV = maSV;
-        maTT = maTT;
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -272,6 +270,6 @@ public class MuonThietBiForm extends JFrame {
 
 
     public static void main(String[] args) {
-        new MuonThietBiForm(currentSV,maTT);
+        new MuonThietBiForm(currentSV);
     }
 }

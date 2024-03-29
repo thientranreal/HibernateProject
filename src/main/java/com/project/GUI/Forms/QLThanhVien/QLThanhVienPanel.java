@@ -38,7 +38,7 @@ public class QLThanhVienPanel extends FormPanel {
     private final Table table;
     private final InputField inputMaTV;
     private final SearchField searchInput;
-    public static int maSV,maTT;
+    public static int maSV;
 
     public QLThanhVienPanel() {
 //        Add constraints to make button align vertically
@@ -150,7 +150,6 @@ public class QLThanhVienPanel extends FormPanel {
                     BigInteger curSV = new BigInteger(inputMaTV.getText());
                     thongtinsd curInfo = new thongtinsd(curSV,null,newTimestamp,null,null);
 
-                    maTT = curInfo.getMaTT();
                     int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
                     if(result > 0) {
@@ -205,7 +204,7 @@ public class QLThanhVienPanel extends FormPanel {
                 return;
             } else {
                 BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
-                new MuonThietBiForm(maSV,maTT);
+                new MuonThietBiForm(maSV);
             }
         });
 
