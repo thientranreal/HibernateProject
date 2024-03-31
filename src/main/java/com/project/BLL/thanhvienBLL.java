@@ -3,11 +3,9 @@ package com.project.BLL;
 import com.project.DAL.thanhvienDAL;
 import com.project.models.thanhvien;
 
-import javax.swing.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class thanhvienBLL {
     private final List<thanhvien> members = new ArrayList<>();
@@ -33,7 +31,6 @@ public class thanhvienBLL {
         members.addAll(thanhvienDAL.getInstance().getMemberList());
     }
 
-
     public thanhvien getModelById(BigInteger id) {
         return thanhvienDAL.getInstance().getById(id);
     }
@@ -41,34 +38,29 @@ public class thanhvienBLL {
     public BigInteger addModel(thanhvien member) {
         // Nothing can be null: MaTV, HoTen, Khoa, Nganh, SDT:
         if (String.valueOf(member.getMaTV()).isEmpty() || String.valueOf(member.getMaTV()).length() < 10) {
-            JOptionPane.showMessageDialog(null,"Mã thành viên chưa hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Mã thành viên chưa hợp lệ");
         }
 
         if (member.getHoTen().isEmpty() || member.getHoTen().length() > 50) {
-            JOptionPane.showMessageDialog(null,"Họ tên không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Họ tên không hợp lệ");
         }
         if (member.getKhoa().isEmpty() || member.getKhoa().length() > 50) {
-            JOptionPane.showMessageDialog(null,"Khoa không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Khoa không hợp lệ");
         }
         if (member.getNganh().isEmpty() || member.getNganh().length() > 50) {
-            JOptionPane.showMessageDialog(null,"Ngành không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Ngành không hợp lệ");
         }
         if (member.getSdt().isEmpty() || member.getSdt().charAt(0) != '0' || member.getSdt().length() < 10) {
-            JOptionPane.showMessageDialog(null,"Số điện thoại không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
 
-        for (thanhvien member1 : members) {
-            if (member1.getMaTV().equals(member.getMaTV())) {
-                JOptionPane.showMessageDialog(null, "Mã thành viên đã tồn tại");
-                return BigInteger.valueOf(-1);
-            }
+        if (isIdTaken(member.getMaTV())) {
+            throw new IllegalArgumentException("Mã thành viên đã tồn tại");
         }
 
+        if (isPhoneNumberTaken(member.getSdt())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+        }
 
         if (thanhvienDAL.getInstance().create(member)) {
             members.add(member);
@@ -78,38 +70,27 @@ public class thanhvienBLL {
     }
 
     public BigInteger updateModel(thanhvien member) {
-
         // Nothing can be null: MaTV, HoTen, Khoa, Nganh, SDT:
         if ((String.valueOf(member.getMaTV()).isEmpty() || String.valueOf(member.getMaTV()).length() < 10)) {
-            JOptionPane.showMessageDialog(null,"Mã thành viên chưa hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Mã thành viên chưa hợp lệ");
         }
-
         if (member.getHoTen().isEmpty() || member.getHoTen().length() > 50) {
-            JOptionPane.showMessageDialog(null,"Họ tên không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Họ tên không hợp lệ");
         }
         if (member.getKhoa().isEmpty() || member.getKhoa().length() > 50) {
-            JOptionPane.showMessageDialog(null,"Khoa không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Khoa không hợp lệ");
         }
         if (member.getNganh().isEmpty() || member.getNganh().length() > 50) {
-            JOptionPane.showMessageDialog(null,"Ngành không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Ngành không hợp lệ");
         }
         if (member.getSdt().isEmpty() || member.getSdt().charAt(0) != '0' || member.getSdt().length() < 10) {
-            JOptionPane.showMessageDialog(null,"Số điện thoại không hợp lệ");
-            return BigInteger.valueOf(-1);
+            throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
 
-        for (thanhvien member1 : members) {
-            if (member1.getSdt().equals(member.getSdt()) && !member1.getMaTV().equals(member.getMaTV())) {
-                JOptionPane.showMessageDialog(null,"Số điện thoại đã tồn tại");
-                return BigInteger.valueOf(-1);
-            }
+        if (isPhoneNumberTaken(member.getSdt())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại");
         }
 
-        System.out.println("test bus: "+member);
         if (thanhvienDAL.getInstance().update(member)) {
             return member.getMaTV();
         }
@@ -127,6 +108,14 @@ public class thanhvienBLL {
 
     public List<thanhvien> searchListThanhVien(String keyword) {
         return thanhvienDAL.getInstance().search(keyword);
+    }
+
+    private boolean isPhoneNumberTaken(String phoneNumber) {
+        return members.stream().anyMatch(member -> member.getSdt().equals(phoneNumber));
+    }
+
+    private boolean isIdTaken(BigInteger id) {
+        return members.stream().anyMatch(member -> member.getMaTV().equals(id));
     }
 
 }

@@ -6,7 +6,6 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import java.math.BigInteger;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -15,7 +14,6 @@ import java.sql.Timestamp;
 @Setter
 public class thongtinsd {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MaTT")
     private int MaTT;
 
@@ -37,6 +35,16 @@ public class thongtinsd {
     public thongtinsd(){}
 
     public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
+        this.thanhvien = thanhvien;
+        this.thietbi = thietbi;
+        this.TGVao = TGVao;
+        this.TGMuon = TGMuon;
+        this.TGTra = TGTra;
+    }
+
+
+    public thongtinsd(int MaTT, BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
+        this.MaTT = MaTT;
         this.thanhvien = thanhvien;
         this.thietbi = thietbi;
         this.TGVao = TGVao;

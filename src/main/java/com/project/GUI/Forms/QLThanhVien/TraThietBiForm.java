@@ -1,9 +1,7 @@
 package com.project.GUI.Forms.QLThanhVien;
 
-import com.project.BLL.thanhvienBLL;
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
-import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.FormLabel;
@@ -11,11 +9,8 @@ import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Fonts;
-import com.project.models.thanhvien;
 import com.project.models.thietbi;
 import com.project.models.thongtinsd;
-import com.project.models.xuly;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -25,18 +20,16 @@ import java.awt.event.*;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class TraThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
-
     private static BigInteger currentSV;
     private Table table;
 
     public TraThietBiForm(BigInteger maSV) {
         currentSV = maSV;
-//        Add Content into JFrame
+        // Add Content into JFrame
         add(initCompontent());
 
         setUndecorated(true);
@@ -74,88 +67,86 @@ public class TraThietBiForm extends JFrame {
 
         root.setBorder(BorderFactory.createLineBorder(Colors.primaryColor, 5));
 
-//        Create Header
+        // Create Header
         JPanel pnlHeader = new FormPanel();
         JLabel lbHeader = new FormLabel("Trả thiết bị");
         lbHeader.setFont(Fonts.headerFont);
         lbHeader.setForeground(Color.BLACK);
         pnlHeader.add(lbHeader);
 
-//        Create label danh sach thiet bi
+        // Create label danh sach thiet bi
         JLabel lbDSThietBi = new FormLabel("Danh sách thiết bị đang mượn");
 
-//        Create table for showing data
+        // Create table for showing data
         table = new Table();
-//        Create header for table
+        // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
                 },
-                new String[] {"Mã TB",
+                new String[] { "Mã TB",
                         "Tên TB",
                         "Mô tả",
-                        "Thời gian trả"
-                }){
-                           @Override
-                           public boolean isCellEditable(int row, int column) {
-                               return column == getColumnCount();
-                           }
-                       }
-        );
+                        "Thời gian mượn"
+                }) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == getColumnCount();
+            }
+        });
 
-//        Create panel to contain table
+        // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
 
-//        Create panel to contain show data
+        // Create panel to contain show data
         JPanel pnlDS = new FormPanel();
         pnlDS.setLayout(new GridBagLayout());
-//        Add constraints
+        // Add constraints
         GridBagConstraints constraints = new GridBagConstraints();
-//          Add padding bottom 10px
+        // Add padding bottom 10px
         constraints.insets = new Insets(0, 0, 10, 0);
 
-//        Row 0
+        // Row 0
         constraints.gridx = 0;
         constraints.gridy = 0;
         pnlDS.add(lbDSThietBi, constraints);
 
-//        Row 1
+        // Row 1
         constraints.gridy = 1;
-//        Create search input, button search, button refresh
+        // Create search input, button search, button refresh
         JTextField searchInput = new SearchField(20);
         JButton btnSearch = new ButtonSearch();
         JButton btnRefresh = new ButtonRefresh();
 
-//        Create panel to contain search input
+        // Create panel to contain search input
         JPanel pnlSearch = new FormPanel();
         pnlSearch.add(searchInput);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
-//        Add panel search into pnlDS
+        // Add panel search into pnlDS
         pnlDS.add(pnlSearch, constraints);
 
-//        Row 2
+        // Row 2
         constraints.gridy = 2;
         pnlDS.add(pnlTable, constraints);
 
-
-//        Create button
+        // Create button
         JButton btnSave = new ButtonSave();
         JButton btnCancel = new ButtonCancel();
 
-//        Create panel to contain button
+        // Create panel to contain button
         JPanel pnlBtn = new FormPanel();
         pnlBtn.add(btnSave);
         pnlBtn.add(btnCancel);
 
-//        Add all panel to this panel
+        // Add all panel to this panel
         root.add(pnlHeader, BorderLayout.PAGE_START);
         root.add(pnlDS, BorderLayout.CENTER);
         root.add(pnlBtn, BorderLayout.SOUTH);
 
-//        Add event listener for cancel button
+        // Add event listener for cancel button
         btnCancel.addActionListener(e -> {
             dispose();
         });
@@ -179,11 +170,50 @@ public class TraThietBiForm extends JFrame {
             }
         });
 
+        btnSave.addActionListener(e -> {
+            int index = table.getSelectedRow();
+            // Get MãTB column from selected row:
+            int maTB = (int) table.getValueAt(index, 0);
+
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn trả thiết bị", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            boolean result = traThietBi(currentSV, maTB);
+            if (result) {
+                JOptionPane.showMessageDialog(null, "Trả thiết bị thành công", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateReturnFromList();
+            } else {
+                JOptionPane.showMessageDialog(null, "Trả thiết bị thất bại", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
         updateReturnFromList();
         return root;
     }
 
+    private boolean traThietBi(BigInteger currentSV, int maTB) {
+        for (thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+            if (currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == maTB && info.getTGMuon() != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.add(Calendar.HOUR_OF_DAY, 7);
+                Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
+                info.setTGTra(newTimestamp);
+                int result = thongtinsdBLL.getInstance().updateModel(info);
+                if (result > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void updateReturnFromList() {
+        thongtinsdBLL.getInstance().refresh();
         thietbiBLL.getInstance().refresh();
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         model_table.setRowCount(0);
@@ -191,24 +221,29 @@ public class TraThietBiForm extends JFrame {
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                if(currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == device.getMaTB()) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(info.getTGTra().getTime());
+        List<thongtinsd> currentList = thongtinsdBLL.getInstance().getAllModels();
 
-                    calendar.add(Calendar.HOUR_OF_DAY, -7);
-
-                    Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
-
-                    model_table.addRow(new Object[]{
-                            device.getMaTB(),
-                            device.getTenTB(),
-                            device.getMoTaTB(),
-                            newTimestamp
-                    });
-                }
+        for (thongtinsd info : currentList) {
+            if (info.getTGTra() != null) {
+                continue;
             }
+            if (currentSV.equals(info.getThanhvien()) && info.getThietbi() != null
+                    && info.getTGMuon() != null) {
+                thietbi device = thietbiBLL.getInstance().getModelById(info.getThietbi());
+                model_table.addRow(new Object[] {
+                        device.getMaTB(),
+                        device.getTenTB(),
+                        device.getMoTaTB(),
+                        // Get TGMuon from database:
+                        info.getTGMuon()
+                });
+            }
+        }
+
+        if (model_table.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Không có thiết bị nào để trả", "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
         }
     }
 
@@ -220,8 +255,9 @@ public class TraThietBiForm extends JFrame {
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                if(currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == device.getMaTB()) {
+            for (thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                if (currentSV.equals(info.getThanhvien()) && info.getThietbi() != null
+                        && info.getThietbi() == device.getMaTB()) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(info.getTGTra().getTime());
 
@@ -229,7 +265,7 @@ public class TraThietBiForm extends JFrame {
 
                     Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                    model.addRow(new Object[]{
+                    model.addRow(new Object[] {
                             device.getMaTB(),
                             device.getTenTB(),
                             device.getMoTaTB(),

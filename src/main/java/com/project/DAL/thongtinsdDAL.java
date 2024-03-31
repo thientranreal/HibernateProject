@@ -1,6 +1,5 @@
 package com.project.DAL;
 
-import com.project.models.thietbi;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

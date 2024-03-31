@@ -4,9 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.project.DAL.thietbiDAL;
 import com.project.DAL.thongtinsdDAL;
-import com.project.models.thietbi;
 import com.project.models.thongtinsd;
 
 public class thongtinsdBLL {
