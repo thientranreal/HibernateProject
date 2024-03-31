@@ -140,7 +140,8 @@ public class QLThanhVienPanel extends FormPanel {
                 if (currentMember == null) {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
                     return;
-                } else {
+                } else if (currentMember != null) {
+                    int maTT = (int) (Math.random() * 1000000);
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
                     Calendar cal = Calendar.getInstance();
@@ -150,7 +151,7 @@ public class QLThanhVienPanel extends FormPanel {
                     Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
 
                     BigInteger curSV = new BigInteger(inputMaTV.getText());
-                    thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null);
+                    thongtinsd curInfo = new thongtinsd(maTT, curSV, null, newTimestamp, null, null);
 
                     int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
