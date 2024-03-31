@@ -79,12 +79,6 @@ public class thietbiBLL {
     }
 
     public List<thietbi> searchListThietBi(String keyword) {
-        List<thietbi> result = new ArrayList<>();
-        for (thietbi device : devices) {
-            if (device.getTenTB().toLowerCase().contains(keyword.toLowerCase()) || device.getMoTaTB().toLowerCase().contains(keyword.toLowerCase())) {
-                result.add(device);
-            }
-        }
-        return result;
+        return thietbiDAL.getInstance().search(keyword);
     }
 }

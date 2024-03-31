@@ -36,7 +36,7 @@ public class MuonThietBiForm extends JFrame {
     public MuonThietBiForm(BigInteger maSV) {
         currentSV = maSV;
         // Add Content into JFrame
-        add(initCompontent());
+        add(initComponent());
 
         setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,7 +67,7 @@ public class MuonThietBiForm extends JFrame {
         });
     }
 
-    private JPanel initCompontent() {
+    private JPanel initComponent() {
         JPanel root = new FormPanel();
         root.setLayout(new BorderLayout());
 

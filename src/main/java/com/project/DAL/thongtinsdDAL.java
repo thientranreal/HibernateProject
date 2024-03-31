@@ -70,13 +70,4 @@ public class thongtinsdDAL {
             return session.createQuery("from thongtinsd", thongtinsd.class).list();
         }
     }
-
-    public List<thongtinsd> search(String keyword) {
-        try (Session session = HibernateUtil.getInstance().openSession()) {
-            String queryString = "from thongtinsd where LOWER(CONCAT(MaTB, TenTB, MoTaTB)) like :keyword";
-            Query<thongtinsd> query = session.createQuery(queryString, thongtinsd.class);
-            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
-            return query.list();
-        }
-    }
 }

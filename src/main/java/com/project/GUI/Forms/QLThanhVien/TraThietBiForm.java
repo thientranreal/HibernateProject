@@ -156,7 +156,7 @@ public class TraThietBiForm extends JFrame {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String searchValue = searchInput.getText().trim();
-                    List<thongtinsd> searchResult = thongtinsdBLL.getInstance().searchListThietBi(searchValue);
+                    List<thongtinsd> searchResult = thongtinsdBLL.getInstance().searchThongTinSdByCriteria(searchValue, null);
                     showSearchResult(searchResult);
                 }
             }
