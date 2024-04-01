@@ -136,6 +136,7 @@ public class QLThietBiPanel extends FormPanel {
         add(pnlHeader, BorderLayout.NORTH);
         add(pnlData, BorderLayout.CENTER);
         add(pnlAction, BorderLayout.EAST);
+        updateThietBiFromList();
 
         btnAdd.addActionListener(e -> {
             new ThemThietBiForm();

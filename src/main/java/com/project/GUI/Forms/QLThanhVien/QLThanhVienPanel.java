@@ -129,7 +129,7 @@ public class QLThanhVienPanel extends FormPanel {
         JButton btnCheckIn = new ButtonNormal("Check in");
         JPanel pnlCheckIn = new FormPanel();
         pnlCheckIn.setLayout(new GridBagLayout());
-
+        updateMemberFromList();
         btnCheckIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
