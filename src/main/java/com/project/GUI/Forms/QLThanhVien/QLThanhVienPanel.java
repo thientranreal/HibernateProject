@@ -141,7 +141,6 @@ public class QLThanhVienPanel extends FormPanel {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
                     return;
                 } else if (currentMember != null) {
-                    int maTT = (int) (Math.random() * 1000000);
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
                     Calendar cal = Calendar.getInstance();
@@ -151,7 +150,7 @@ public class QLThanhVienPanel extends FormPanel {
                     Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
 
                     BigInteger curSV = new BigInteger(inputMaTV.getText());
-                    thongtinsd curInfo = new thongtinsd(maTT, curSV, null, newTimestamp, null, null);
+                    thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null);
 
                     int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
@@ -268,10 +267,10 @@ public class QLThanhVienPanel extends FormPanel {
                 BigInteger result = thanhvienBLL.getInstance().updateModel(updateMember);
 
                 if (result.compareTo(BigInteger.ZERO) > 0) {
-                    JOptionPane.showMessageDialog(null, "Save successful");
+                    JOptionPane.showMessageDialog(null, "Lưu thành công");
                     updateMemberFromList();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Save failed");
+                    JOptionPane.showMessageDialog(null, "Lưu thất bại");
                 }
             }
 
@@ -378,7 +377,7 @@ public class QLThanhVienPanel extends FormPanel {
 
         if (search.size() == 0) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
-            //Refresh table:
+            // Refresh table:
             updateMemberFromList();
         }
     }

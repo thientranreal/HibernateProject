@@ -156,7 +156,8 @@ public class TraThietBiForm extends JFrame {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String searchValue = searchInput.getText().trim();
-                    List<thongtinsd> searchResult = thongtinsdBLL.getInstance().searchThongTinSdByCriteria(searchValue, null);
+                    List<thongtinsd> searchResult = thongtinsdBLL.getInstance().searchThongTinSdByCriteria(searchValue,
+                            null);
                     showSearchResult(searchResult);
                 }
             }
@@ -171,24 +172,28 @@ public class TraThietBiForm extends JFrame {
         });
 
         btnSave.addActionListener(e -> {
-            int index = table.getSelectedRow();
-            // Get MãTB column from selected row:
-            int maTB = (int) table.getValueAt(index, 0);
+            int[] selectedRows = table.getSelectedRows();
 
-            if (index == -1) {
+            if (selectedRows.length == 0) {
                 JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn trả thiết bị", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
-            boolean result = traThietBi(currentSV, maTB);
-            if (result) {
-                JOptionPane.showMessageDialog(null, "Trả thiết bị thành công", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-                updateReturnFromList();
-            } else {
-                JOptionPane.showMessageDialog(null, "Trả thiết bị thất bại", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
+
+            for (int index : selectedRows) {
+                int maTB = (int) table.getValueAt(index, 0);
+                boolean result = traThietBi(currentSV, maTB);
+                if (result) {
+                    JOptionPane.showMessageDialog(null, "Trả thiết bị thành công", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Trả thiết bị thất bại", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             }
+
+            updateReturnFromList();
+            dispose();
         });
 
         updateReturnFromList();
@@ -196,8 +201,10 @@ public class TraThietBiForm extends JFrame {
     }
 
     private boolean traThietBi(BigInteger currentSV, int maTB) {
+        boolean updated = false;
         for (thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-            if (currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == maTB && info.getTGMuon() != null) {
+            if (currentSV.equals(info.getThanhvien()) && info.getThietbi() != null && info.getThietbi() == maTB
+                    && info.getTGMuon() != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
                 calendar.add(Calendar.HOUR_OF_DAY, 7);
@@ -205,11 +212,11 @@ public class TraThietBiForm extends JFrame {
                 info.setTGTra(newTimestamp);
                 int result = thongtinsdBLL.getInstance().updateModel(info);
                 if (result > 0) {
-                    return true;
+                    updated = true;
                 }
             }
         }
-        return false;
+        return updated;
     }
 
     public void updateReturnFromList() {
@@ -238,12 +245,6 @@ public class TraThietBiForm extends JFrame {
                         info.getTGMuon()
                 });
             }
-        }
-
-        if (model_table.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(null, "Không có thiết bị nào để trả", "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
         }
     }
 

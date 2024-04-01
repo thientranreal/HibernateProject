@@ -5,7 +5,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import com.project.models.thietbi;
-import com.project.models.thongtinsd;
 import com.project.utilities.HibernateUtil;
 import java.util.List;
 

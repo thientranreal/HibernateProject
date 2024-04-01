@@ -1,3 +1,4 @@
+-- Active: 1708420841815@@127.0.0.1@3306@qlthanhvien
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
@@ -7,15 +8,20 @@
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+
+CREATE DATABASE
+    qlthanhvien CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE qlthanhvien;
 
 --
 -- Cơ sở dữ liệu: `qlthanhvien`
@@ -28,11 +34,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `thanhvien` (
-  `MaTV` int(10) NOT NULL,
+  `MaTV` bigint NOT NULL,
   `HoTen` varchar(100) NOT NULL,
   `Khoa` varchar(100) DEFAULT NULL,
   `Nganh` varchar(100) DEFAULT NULL,
-  `SDT` int(10) DEFAULT NULL
+  `SDT` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -62,9 +68,9 @@ CREATE TABLE `thietbi` (
 --
 
 INSERT INTO `thietbi` (`MaTB`, `TenTB`, `MoTaTB`) VALUES
-(1000001, 'Micro', 'Micro không dây MS2023'),
-(1000002, 'Micro', 'Micro không dây MS2024'),
-(1000003, 'Bảng điện tử', 'Bản điện tử trình chiếu');
+(1, 'Micro', 'Micro không dây MS2023'),
+(2, 'Micro', 'Micro không dây MS2024'),
+(3, 'Bảng điện tử', 'Bản điện tử trình chiếu');
 
 -- --------------------------------------------------------
 
@@ -74,7 +80,7 @@ INSERT INTO `thietbi` (`MaTB`, `TenTB`, `MoTaTB`) VALUES
 
 CREATE TABLE `thongtinsd` (
   `MaTT` int(10) NOT NULL,
-  `MaTV` int(10) NOT NULL,
+  `MaTV` bigint NOT NULL,
   `MaTB` int(10) DEFAULT NULL,
   `TGVao` datetime DEFAULT NULL,
   `TGMuon` datetime DEFAULT NULL,
@@ -87,7 +93,7 @@ CREATE TABLE `thongtinsd` (
 
 INSERT INTO `thongtinsd` (`MaTT`, `MaTV`, `MaTB`, `TGVao`, `TGMuon`, `TGTra`) VALUES
 (1, 1120150184, NULL, '2024-01-05 09:00:00', NULL, NULL),
-(2, 1123330257, 1000001, NULL, '2024-02-12 10:00:32', '2024-02-12 14:00:00');
+(2, 1123330257, 1, NULL, '2024-02-12 10:00:32', '2024-02-12 14:00:00');
 
 -- --------------------------------------------------------
 
@@ -97,7 +103,7 @@ INSERT INTO `thongtinsd` (`MaTT`, `MaTV`, `MaTB`, `TGVao`, `TGMuon`, `TGTra`) VA
 
 CREATE TABLE `xuly` (
   `MaXL` int(10) NOT NULL,
-  `MaTV` int(10) NOT NULL,
+  `MaTV` bigint NOT NULL,
   `HinhThucXL` varchar(250) DEFAULT NULL,
   `SoTien` int(100) DEFAULT NULL,
   `NgayXL` datetime DEFAULT NULL,
@@ -144,6 +150,15 @@ ALTER TABLE `xuly`
   ADD PRIMARY KEY (`MaXL`),
   ADD KEY `MaTV` (`MaTV`),
   ADD KEY `MaTV_2` (`MaTV`);
+  
+ALTER TABLE `xuly`
+MODIFY COLUMN `MaXL` int(10) AUTO_INCREMENT;
+
+  ALTER TABLE `thietbi`
+MODIFY COLUMN `MaTB` int(10) AUTO_INCREMENT;
+
+  ALTER TABLE `thongtinsd`
+MODIFY COLUMN `MaTT` int(10) AUTO_INCREMENT;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

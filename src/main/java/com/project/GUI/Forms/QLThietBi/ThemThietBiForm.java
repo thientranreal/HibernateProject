@@ -142,11 +142,9 @@ public class ThemThietBiForm extends JFrame {
 
         btnSave.addActionListener(e -> {
             // Get data from input field
-            // random maTB and make sure it's unique:
-            int maTB = (int) (Math.random() * 1000000);
             String tenTB = inputTenTB.getText();
             String moTa = inputMoTa.getText();
-            thietbi device = new thietbi(maTB, tenTB, moTa);
+            thietbi device = new thietbi(tenTB, moTa);
             // Validate data
             // if (thietbiBLL.getInstance().getModelById(maTB) != null) {
             //     JOptionPane.showMessageDialog(null, "Mã thiết bị đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);

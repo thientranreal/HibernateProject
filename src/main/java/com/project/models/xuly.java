@@ -91,20 +91,7 @@ public class xuly {
         TrangThaiXL = trangThaiXL;
     }
 
-
-    @Override
-    public String toString() {
-        return "xuly{" +
-                "MaXL=" + MaXL +
-                ", MaTV=" + MaTV +
-                ", HinhThucXL='" + HinhThucXL + '\'' +
-                ", SoTien=" + SoTien +
-                ", NgayXL=" + NgayXL +
-                ", TrangThaiXL=" + TrangThaiXL +
-                '}';
-    }
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false,foreignKey = @ForeignKey(name = "fk_thanhvien_handle"))
+    @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_thanhvien_handle"))
     private thanhvien thanhvien;
 }

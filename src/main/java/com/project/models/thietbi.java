@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 public class thietbi {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MaTB")
     private int MaTB;
 
@@ -28,12 +29,6 @@ public class thietbi {
     }
 
     public thietbi(String TenTB, String MoTaTB) {
-        this.TenTB = TenTB;
-        this.MoTaTB = MoTaTB;
-    }
-
-    public thietbi(int MaTB, String TenTB, String MoTaTB) {
-        this.MaTB = MaTB;
         this.TenTB = TenTB;
         this.MoTaTB = MoTaTB;
     }
@@ -60,14 +55,5 @@ public class thietbi {
 
     public void setMoTaTB(String moTaTB) {
         MoTaTB = moTaTB;
-    }
-
-    @Override
-    public String toString() {
-        return "thietbi{" +
-                "MaTB=" + MaTB +
-                ", TenTB='" + TenTB + '\'' +
-                ", MoTaTB='" + MoTaTB + '\'' +
-                '}';
     }
 }

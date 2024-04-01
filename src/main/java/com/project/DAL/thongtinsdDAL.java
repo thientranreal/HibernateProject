@@ -5,8 +5,6 @@ import org.hibernate.Transaction;
 
 import com.project.models.thongtinsd;
 import com.project.utilities.HibernateUtil;
-import org.hibernate.query.Query;
-
 import java.util.List;
 
 public class thongtinsdDAL {

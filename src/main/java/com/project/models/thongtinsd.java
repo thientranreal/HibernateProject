@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 @Setter
 public class thongtinsd {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MaTT")
     private int MaTT;
 
@@ -32,19 +33,10 @@ public class thongtinsd {
     @Column(name = "TGTra")
     private Timestamp TGTra;
 
-    public thongtinsd(){}
-
-    public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
-        this.thanhvien = thanhvien;
-        this.thietbi = thietbi;
-        this.TGVao = TGVao;
-        this.TGMuon = TGMuon;
-        this.TGTra = TGTra;
+    public thongtinsd() {
     }
 
-
-    public thongtinsd(int MaTT, BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
-        this.MaTT = MaTT;
+    public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
         this.thanhvien = thanhvien;
         this.thietbi = thietbi;
         this.TGVao = TGVao;
@@ -100,23 +92,11 @@ public class thongtinsd {
         this.TGTra = TGTra;
     }
 
-    @Override
-    public String toString() {
-        return "thongtinsd{" +
-                "MaTT=" + MaTT +
-                ", thanhvien=" + thanhvien +
-                ", thietbi=" + thietbi +
-                ", TGVao=" + TGVao +
-                ", TGMuon=" + TGMuon +
-                ", TGTra=" + TGTra +
-                '}';
-    }
-
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "MaTB", insertable = false, updatable = false,foreignKey = @ForeignKey(name = "fk_thongtinsd_device"))
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "MaTB", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_thongtinsd_device"))
     private thietbi device;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false,foreignKey = @ForeignKey(name = "fk_thanhvien_thongtinsd"))
+    @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_thanhvien_thongtinsd"))
     private thanhvien member;
 }

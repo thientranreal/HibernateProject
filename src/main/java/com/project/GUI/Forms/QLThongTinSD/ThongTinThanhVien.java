@@ -138,7 +138,7 @@ public class ThongTinThanhVien extends JFrame {
 
         // Create button
         btnOk = new ButtonSave();
-        btnOk.setText("Confirm");
+        btnOk.setText("Đóng");
 
         // Create panel to contain button
         JPanel pnlBtn = new FormPanel();

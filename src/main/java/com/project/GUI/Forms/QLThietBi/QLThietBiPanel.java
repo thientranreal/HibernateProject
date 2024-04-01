@@ -47,7 +47,7 @@ import java.util.Map;
 public class QLThietBiPanel extends FormPanel {
 
     private final Table table;
-    public Map<Integer, Boolean> deviceAvailabilityMap = new HashMap<>();
+    public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     private final SearchField searchInput;
     public static int maTB;
 
@@ -87,7 +87,7 @@ public class QLThietBiPanel extends FormPanel {
                 new String[] { "Mã TB",
                         "Tên thiết bị",
                         "Mô tả",
-                        "Đang mượn",
+                        "Đang được mượn",
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -180,10 +180,10 @@ public class QLThietBiPanel extends FormPanel {
 
                 boolean result = thietbiBLL.getInstance().updateModel(updateThietBi);
                 if (result) {
-                    JOptionPane.showMessageDialog(null, "Save successful");
+                    JOptionPane.showMessageDialog(null, "Lưu thành công");
                     updateThietBiFromList();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Save failed");
+                    JOptionPane.showMessageDialog(null, "Lưu thất bại");
                 }
             }
 
@@ -238,24 +238,29 @@ public class QLThietBiPanel extends FormPanel {
         List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
         Date timestamp = new Date(); // Move timestamp variable outside the loop
 
-         // Use HashMap to store device availability
+        // Use HashMap to store device availability
 
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
                 if (timestamp.compareTo(info.getTGMuon()) >= 0 && info.getTGTra() == null) {
-                    deviceAvailabilityMap.put(info.getThietbi(), true); // Set device availability to true
+                    // Set string true = "Đang mượn":
+                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
                 }
             }
         }
 
         for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            boolean isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), false); // Get device availability from the map
+            // Set string false = "Không mượn":
+            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
+                                                                                                      // availability
+                                                                                                      // from the
+                                                                                                      // map
 
             model_table.addRow(new Object[] {
                     device.getMaTB(),
                     device.getTenTB(),
                     device.getMoTaTB(),
-                    isDeviceAvailable // Add device availability to the row
+                    isDeviceAvailable // Add device availability to the rowd
             });
         }
     }

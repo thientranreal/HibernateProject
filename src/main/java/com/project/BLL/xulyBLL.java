@@ -35,7 +35,6 @@ public class xulyBLL {
         return xulyDAL.getInstance().getHandleById(id);
     }
 
-
     public int addModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
         if (processing.getMaTV() <= 0 || processing.getHinhThucXL().isEmpty()
@@ -95,12 +94,6 @@ public class xulyBLL {
         return searchByCondition(processing -> processing.getHinhThucXL().contains(keyword));
     }
 
-    // Date search:
-    public List<xuly> searchByDate(String keyword) {
-        return searchByCondition(processing -> processing.getNgayXL().toString().contains(keyword));
-    }
-
-    // Filter by TrangThaiXL:
     public List<xuly> searchByTrangThaiXL(int keyword) {
         return searchByCondition(processing -> processing.getTrangThaiXL() == keyword);
     }
