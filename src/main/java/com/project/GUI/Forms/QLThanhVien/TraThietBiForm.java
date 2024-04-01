@@ -241,7 +241,6 @@ public class TraThietBiForm extends JFrame {
                         device.getMaTB(),
                         device.getTenTB(),
                         device.getMoTaTB(),
-                        // Get TGMuon from database:
                         info.getTGMuon()
                 });
             }

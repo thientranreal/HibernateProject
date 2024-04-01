@@ -101,7 +101,7 @@ public class QLThongTinSDPanel extends FormPanel {
         // Add all panel to this panel
         add(pnlHeader, BorderLayout.NORTH);
         add(pnlData, BorderLayout.CENTER);
-
+        updateThongtinsdFromList();
         btnRefresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
