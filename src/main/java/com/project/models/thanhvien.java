@@ -101,4 +101,16 @@ public class thanhvien {
         this.xuly = xuly;
     }
 
+    @Override
+    public String toString() {
+        return "thanhvien{" +
+                "maTV=" + maTV +
+                ", hoTen='" + hoTen + '\'' +
+                ", khoa='" + khoa + '\'' +
+                ", nganh='" + nganh + '\'' +
+                ", sdt='" + sdt + '\'' +
+                ", thongtinsd=" + thongtinsd +
+                ", xuly=" + xuly +
+                '}';
+    }
 }
