@@ -247,27 +247,26 @@ public class MuonThietBiForm extends JFrame {
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
-        Date timestamp = new Date(); // Move timestamp variable outside the loop
 
-        // Use HashMap to store device availability
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
-                if (timestamp.compareTo(info.getTGMuon()) >= 0 && info.getTGTra() == null) {
+                if (info.getTGTra() == null && info.getTGMuon() != null) {
+                    deviceAvailabilityMap.put(info.getThietbi(), false); // Set device availability to false
+                } else {
                     deviceAvailabilityMap.put(info.getThietbi(), true); // Set device availability to true
                 }
-            }
+            } else
+                continue;
         }
 
         for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            boolean isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), false); // Get device
-                                                                                                     // availability
-                                                                                                     // from the map
-            if (!isDeviceAvailable) {
+            System.out.println(device.getMaTB() + " " + device.getTenTB() + " " + device.getMoTaTB());
+            boolean isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), true);
+            if (isDeviceAvailable) {
                 model_table.addRow(new Object[] {
                         device.getMaTB(),
                         device.getTenTB(),
                         device.getMoTaTB(),
-                        isDeviceAvailable // Add device availability to the row
                 });
             }
         }
