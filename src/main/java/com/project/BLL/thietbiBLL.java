@@ -1,8 +1,6 @@
 package com.project.BLL;
 
-import com.project.DAL.thanhvienDAL;
 import com.project.DAL.thietbiDAL;
-import com.project.models.thanhvien;
 import com.project.models.thietbi;
 
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ public class thietbiBLL {
     }
 
     public int addModel(thietbi device) {
-        // Check for invalid input:
         if (device.getTenTB().isEmpty() || device.getTenTB().length() > 50) {
             return -1;
         }
@@ -84,5 +81,4 @@ public class thietbiBLL {
     public List<thietbi> searchListThietBi(String keyword) {
         return thietbiDAL.getInstance().search(keyword);
     }
-
 }

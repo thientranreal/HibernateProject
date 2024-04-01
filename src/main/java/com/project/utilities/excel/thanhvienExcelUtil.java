@@ -91,7 +91,7 @@ public class thanhvienExcelUtil extends ExcelUtil {
                 throw new IllegalArgumentException("Invalid integer value in input data", e);
             }
 
-            thanhvien model = new thanhvien(id,HoTen, Khoa, Nganh, Sdt);
+            thanhvien model = new thanhvien(id, HoTen, Khoa, Nganh, Sdt);
             thanhviens.add(model);
             thanhvienBLL.getInstance().addModel(model);
         }

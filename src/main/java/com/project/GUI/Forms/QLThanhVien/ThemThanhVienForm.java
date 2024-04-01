@@ -21,7 +21,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Objects;
 
 public class ThemThanhVienForm extends JFrame {
@@ -230,7 +229,6 @@ public class ThemThanhVienForm extends JFrame {
             clearForm();
         }else {
             JOptionPane.showMessageDialog(null,"Thêm thất bại");
-
         }
     }
 

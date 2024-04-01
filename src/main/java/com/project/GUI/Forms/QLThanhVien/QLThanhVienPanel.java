@@ -14,7 +14,7 @@ import com.project.GUI.GlobalVariables.Fonts;
 import com.project.models.thanhvien;
 import com.project.models.thongtinsd;
 import com.project.models.xuly;
-import org.apache.poi.ss.formula.functions.T;
+import com.project.utilities.excel.thanhvienExcelUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -34,73 +34,72 @@ import java.util.List;
 
 public class QLThanhVienPanel extends FormPanel {
 
-
     private final Table table;
     private final InputField inputMaTV;
     private final SearchField searchInput;
     public static int maSV;
 
     public QLThanhVienPanel() {
-//        Add constraints to make button align vertically
+        // Add constraints to make button align vertically
         GridBagConstraints constraints = new GridBagConstraints();
-//      Add padding bottom 10px
+        // Add padding bottom 10px
         constraints.insets = new Insets(0, 0, 10, 0);
 
-//        Set GridBagLayout layout
+        // Set GridBagLayout layout
         setLayout(new BorderLayout());
 
-//        Create Header
+        // Create Header
         JPanel pnlHeader = new FormPanel();
         JLabel lbHeader = new FormLabel("Quản lý thành viên");
         lbHeader.setFont(Fonts.headerFont);
         lbHeader.setForeground(Color.BLACK);
         pnlHeader.add(lbHeader);
 
-//        Create search input, button search, button refresh
+        // Create search input, button search, button refresh
         searchInput = new SearchField(20);
         JButton btnSearch = new ButtonSearch();
         JButton btnRefresh = new ButtonRefresh();
 
-//        Create panel to contain search input
+        // Create panel to contain search input
         JPanel pnlSearch = new FormPanel();
         pnlSearch.add(searchInput);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
 
-//        Create table for showing data
+        // Create table for showing data
         table = new Table();
-//        Create header for table
+        // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
                 },
-                new String[] {"Mã TV",
+                new String[] { "Mã TV",
                         "Họ Tên",
                         "Khoa",
                         "Ngành",
                         "Số ĐT",
                         "Xử Lý"
                 }) {
-                           @Override
-                           public boolean isCellEditable(int row, int column) {
-                               return column != getColumnCount() - 6 && column != getColumnCount() - 1;
-                           }
-                       }
-        );
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column != getColumnCount() - 6 && column != getColumnCount() - 1;
+            }
+        });
 
-
-//        Create panel to contain table
+        // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
 
-//        Create button add, button delete
+        // Create button add, button delete
         JButton btnAdd = new ButtonAdd();
         JButton btnDel = new ButtonDel();
         JButton btnBorrow = new ButtonNormal("Borrow");
         JButton btnReturn = new ButtonNormal("Return");
         JButton btnWarning = new ButtonWarning();
-//        Create panel to contain button
+        JButton btnExportExcel = new ButtonExcel();
+
+        // Create panel to contain button
         JPanel pnlAction = new FormPanel();
         pnlAction.setLayout(new GridBagLayout());
 
@@ -118,10 +117,13 @@ public class QLThanhVienPanel extends FormPanel {
         constraints.gridy = y++;
         pnlAction.add(btnReturn, constraints);
 
-        constraints.gridy = y;
+        constraints.gridy = y++;
         pnlAction.add(btnWarning, constraints);
 
-//        Panel check in
+        constraints.gridy = y;
+        pnlAction.add(btnExportExcel, constraints);
+
+        // Panel check in
         JLabel lbMaTV = new FormLabel("Mã TV");
         inputMaTV = new InputField(20);
         JButton btnCheckIn = new ButtonNormal("Check in");
@@ -135,29 +137,29 @@ public class QLThanhVienPanel extends FormPanel {
 
                 thanhvien currentMember = thanhvienBLL.getInstance().getModelById(maSV);
 
-                if(currentMember == null) {
-                    JOptionPane.showMessageDialog(null,"Không tìm thấy thành viên");
+                if (currentMember == null) {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
                     return;
-                }else {
+                } else if (currentMember != null) {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(timestamp.getTime());
-                    cal.add(Calendar.HOUR_OF_DAY,7);
+                    cal.add(Calendar.HOUR_OF_DAY, 7);
 
                     Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
 
                     BigInteger curSV = new BigInteger(inputMaTV.getText());
-                    thongtinsd curInfo = new thongtinsd(curSV,null,newTimestamp,null,null);
+                    thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null);
 
                     int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
-                    if(result > 0) {
-                        JOptionPane.showMessageDialog(null,"Mã số: "+curSV+"\n"
-                                +"Tên thành viên: "+currentMember.getHoTen()+"\n"
-                                +"Khoa: "+currentMember.getKhoa()+"\n"
-                                +"Ngành: "+currentMember.getNganh()+"\n"
-                                +"SĐT: "+currentMember.getSdt());
+                    if (result > 0) {
+                        JOptionPane.showMessageDialog(null, "Mã số: " + curSV + "\n"
+                                + "Tên thành viên: " + currentMember.getHoTen() + "\n"
+                                + "Khoa: " + currentMember.getKhoa() + "\n"
+                                + "Ngành: " + currentMember.getNganh() + "\n"
+                                + "SĐT: " + currentMember.getSdt());
                     }
                 }
             }
@@ -173,7 +175,7 @@ public class QLThanhVienPanel extends FormPanel {
         constraints.gridy = 1;
         pnlCheckIn.add(btnCheckIn, constraints);
 
-//        Create panel Show Table
+        // Create panel Show Table
         JPanel pnlData = new FormPanel();
         pnlData.setLayout(new GridBagLayout());
 
@@ -183,24 +185,24 @@ public class QLThanhVienPanel extends FormPanel {
         constraints.gridy = 1;
         pnlData.add(pnlTable, constraints);
 
-//        Add all panel to this panel
+        // Add all panel to this panel
         add(pnlHeader, BorderLayout.NORTH);
         add(pnlData, BorderLayout.CENTER);
         add(pnlAction, BorderLayout.EAST);
         add(pnlCheckIn, BorderLayout.WEST);
 
-//        Event listener
-//        Btn Add event listener
+        // Event listener
+        // Btn Add event listener
         btnAdd.addActionListener(e -> {
             new ThemThanhVienForm();
         });
 
-//        Btn Borrow event listener
+        // Btn Borrow event listener
         btnBorrow.addActionListener(e -> {
             int index = table.getSelectedRow();
 
             if (index == -1) {
-                JOptionPane.showMessageDialog(null,"Chọn thành viên để cho mượn thiết bị");
+                JOptionPane.showMessageDialog(null, "Chọn thành viên để cho mượn thiết bị");
                 return;
             } else {
                 BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
@@ -208,12 +210,12 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
-//        Btn Return event listener
+        // Btn Return event listener
         btnReturn.addActionListener(e -> {
             int index = table.getSelectedRow();
 
             if (index == -1) {
-                JOptionPane.showMessageDialog(null,"Chọn thành viên để xem thời gian trả thiết bị");
+                JOptionPane.showMessageDialog(null, "Chọn thành viên để xem thời gian trả thiết bị");
                 return;
             } else {
                 BigInteger maSV = (BigInteger) table.getModel().getValueAt(index, 0);
@@ -224,18 +226,19 @@ public class QLThanhVienPanel extends FormPanel {
         btnDel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
+                int[] selectedRows = table.getSelectedRows();
 
-                if(index == -1) {
+                if (selectedRows.length == 0) {
                     JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
                     return;
-                }else {
-                    int choice = JOptionPane.showConfirmDialog(null,"Bạn có chắc chắn muốn xóa thành viên này?");
-                    if(choice == JOptionPane.YES_OPTION) {
-                        BigInteger memberID = new BigInteger(String.valueOf(table.getModel().getValueAt(index,0)));
-
-                        deleteMember(memberID);
+                } else {
+                    int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thành viên này?");
+                    if (choice == JOptionPane.YES_OPTION) {
+                        for (int index : selectedRows) {
+                            BigInteger id = (BigInteger) table.getValueAt(index, 0);
+                            deleteMember(id);
+                        }
                         updateMemberFromList();
                     }
                 }
@@ -253,21 +256,22 @@ public class QLThanhVienPanel extends FormPanel {
         table.getDefaultEditor(String.class).addCellEditorListener(new CellEditorListener() {
             public void editingStopped(ChangeEvent e) {
                 int selectedRow = table.getSelectedRow();
-                Object maTV = table.getValueAt(selectedRow,0);
-                Object hoTen = table.getValueAt(selectedRow,1);
-                Object khoa = table.getValueAt(selectedRow,2);
-                Object nganh = table.getValueAt(selectedRow,3);
-                Object sdt = table.getValueAt(selectedRow,4);
+                Object maTV = table.getValueAt(selectedRow, 0);
+                Object hoTen = table.getValueAt(selectedRow, 1);
+                Object khoa = table.getValueAt(selectedRow, 2);
+                Object nganh = table.getValueAt(selectedRow, 3);
+                Object sdt = table.getValueAt(selectedRow, 4);
 
-                thanhvien updateMember = new thanhvien(new BigInteger(maTV.toString()),hoTen.toString(),khoa.toString(),nganh.toString(),sdt.toString());
+                thanhvien updateMember = new thanhvien(new BigInteger(maTV.toString()), hoTen.toString(),
+                        khoa.toString(), nganh.toString(), sdt.toString());
 
                 BigInteger result = thanhvienBLL.getInstance().updateModel(updateMember);
 
-                if(result.compareTo(BigInteger.ZERO) > 0) {
-                    JOptionPane.showMessageDialog(null, "Save successful");
+                if (result.compareTo(BigInteger.ZERO) > 0) {
+                    JOptionPane.showMessageDialog(null, "Lưu thành công");
                     updateMemberFromList();
-                }else {
-                    JOptionPane.showMessageDialog(null, "Save failed");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lưu thất bại");
                 }
             }
 
@@ -276,7 +280,7 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
-        searchInput.addKeyListener(new KeyAdapter() {
+        btnSearch.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -287,8 +291,25 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchValue = searchInput.getText().trim();
+                List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVien(searchValue);
+                showSearchResult(searchResult);
+            }
+        });
 
-        updateMemberFromList();
+        btnExportExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    thanhvienExcelUtil.writethanhviensToExcel(thanhvienBLL.getInstance().getAllModels());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     public void updateMemberFromList() {
@@ -301,13 +322,13 @@ public class QLThanhVienPanel extends FormPanel {
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
-            for(xuly handle : xulyBLL.getInstance().getAllModels()) {
-                if(member.getMaTV().equals(handle.getMaTV())) {
+            for (xuly handle : xulyBLL.getInstance().getAllModels()) {
+                if (member.getMaTV().equals(handle.getMaTV())) {
                     handleStatus = handle.getHinhThucXL();
                 }
             }
 
-            model_table.addRow(new Object[]{
+            model_table.addRow(new Object[] {
                     member.getMaTV(),
                     member.getHoTen(),
                     member.getKhoa(),
@@ -324,12 +345,12 @@ public class QLThanhVienPanel extends FormPanel {
     }
 
     public void deleteMember(BigInteger id) {
-        try{
-            if(thanhvienBLL.getInstance().deleteModel(id)) {
-                JOptionPane.showMessageDialog(null,"Xóa thành công");
+        try {
+            if (thanhvienBLL.getInstance().deleteModel(id)) {
+                JOptionPane.showMessageDialog(null, "Xóa thành công");
             }
-        }catch(Exception e) {
-            JOptionPane.showMessageDialog(null,"Xóa thất bại");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Xóa thất bại");
         }
     }
 
@@ -345,7 +366,7 @@ public class QLThanhVienPanel extends FormPanel {
                 }
             }
 
-            model.addRow(new Object[]{
+            model.addRow(new Object[] {
                     member.getMaTV(),
                     member.getHoTen(),
                     member.getKhoa(),
@@ -353,6 +374,12 @@ public class QLThanhVienPanel extends FormPanel {
                     member.getSdt(),
                     handleStatus == null ? "Không vi phạm" : handleStatus
             });
+        }
+
+        if (search.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
+            // Refresh table:
+            updateMemberFromList();
         }
     }
 

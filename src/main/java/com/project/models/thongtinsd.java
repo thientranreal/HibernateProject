@@ -6,7 +6,6 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import java.math.BigInteger;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -34,7 +33,8 @@ public class thongtinsd {
     @Column(name = "TGTra")
     private Timestamp TGTra;
 
-    public thongtinsd(){}
+    public thongtinsd() {
+    }
 
     public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
         this.thanhvien = thanhvien;
@@ -92,23 +92,11 @@ public class thongtinsd {
         this.TGTra = TGTra;
     }
 
-    @Override
-    public String toString() {
-        return "thongtinsd{" +
-                "MaTT=" + MaTT +
-                ", thanhvien=" + thanhvien +
-                ", thietbi=" + thietbi +
-                ", TGVao=" + TGVao +
-                ", TGMuon=" + TGMuon +
-                ", TGTra=" + TGTra +
-                '}';
-    }
-
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "MaTB", insertable = false, updatable = false,foreignKey = @ForeignKey(name = "fk_thongtinsd_device"))
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "MaTB", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_thongtinsd_device"))
     private thietbi device;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false,foreignKey = @ForeignKey(name = "fk_thanhvien_thongtinsd"))
+    @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_thanhvien_thongtinsd"))
     private thanhvien member;
 }

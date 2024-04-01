@@ -1,13 +1,11 @@
 package com.project.DAL;
 
-import com.project.models.thanhvien;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import com.project.models.thietbi;
 import com.project.utilities.HibernateUtil;
-import org.hibernate.query.Query;
-
 import java.util.List;
 
 public class thietbiDAL {
@@ -75,7 +73,7 @@ public class thietbiDAL {
 
     public List<thietbi> search(String keyword) {
         try (Session session = HibernateUtil.getInstance().openSession()) {
-            String queryString = "from thietbi where LOWER(CONCAT(MaTB, TenTB, MoTaTB)) like :keyword";
+            String queryString = "from thongtinsd where LOWER(CONCAT(MaTB, TenTB, MoTaTB)) like :keyword";
             Query<thietbi> query = session.createQuery(queryString, thietbi.class);
             query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
             return query.list();

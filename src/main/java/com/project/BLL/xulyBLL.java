@@ -1,10 +1,8 @@
 package com.project.BLL;
 
 import com.project.DAL.xulyDAL;
-import com.project.models.thanhvien;
 import com.project.models.xuly;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -36,7 +34,6 @@ public class xulyBLL {
     public xuly getModelById(int id) {
         return xulyDAL.getInstance().getHandleById(id);
     }
-
 
     public int addModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
@@ -97,12 +94,6 @@ public class xulyBLL {
         return searchByCondition(processing -> processing.getHinhThucXL().contains(keyword));
     }
 
-    // Date search:
-    public List<xuly> searchByDate(String keyword) {
-        return searchByCondition(processing -> processing.getNgayXL().toString().contains(keyword));
-    }
-
-    // Filter by TrangThaiXL:
     public List<xuly> searchByTrangThaiXL(int keyword) {
         return searchByCondition(processing -> processing.getTrangThaiXL() == keyword);
     }

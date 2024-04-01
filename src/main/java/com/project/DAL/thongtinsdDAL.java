@@ -1,13 +1,10 @@
 package com.project.DAL;
 
-import com.project.models.thietbi;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.project.models.thongtinsd;
 import com.project.utilities.HibernateUtil;
-import org.hibernate.query.Query;
-
 import java.util.List;
 
 public class thongtinsdDAL {
@@ -69,15 +66,6 @@ public class thongtinsdDAL {
     public List<thongtinsd> getUsageInformationList() {
         try (Session session = HibernateUtil.getInstance().openSession()) {
             return session.createQuery("from thongtinsd", thongtinsd.class).list();
-        }
-    }
-
-    public List<thongtinsd> search(String keyword) {
-        try (Session session = HibernateUtil.getInstance().openSession()) {
-            String queryString = "from thongtinsd where LOWER(CONCAT(MaTB, TenTB, MoTaTB)) like :keyword";
-            Query<thongtinsd> query = session.createQuery(queryString, thongtinsd.class);
-            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
-            return query.list();
         }
     }
 }

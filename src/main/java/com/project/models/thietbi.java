@@ -56,13 +56,4 @@ public class thietbi {
     public void setMoTaTB(String moTaTB) {
         MoTaTB = moTaTB;
     }
-
-    @Override
-    public String toString() {
-        return "thietbi{" +
-                "MaTB=" + MaTB +
-                ", TenTB='" + TenTB + '\'' +
-                ", MoTaTB='" + MoTaTB + '\'' +
-                '}';
-    }
 }

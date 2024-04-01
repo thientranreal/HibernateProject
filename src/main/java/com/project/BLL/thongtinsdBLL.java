@@ -3,10 +3,9 @@ package com.project.BLL;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.project.DAL.thietbiDAL;
 import com.project.DAL.thongtinsdDAL;
-import com.project.models.thietbi;
 import com.project.models.thongtinsd;
 
 public class thongtinsdBLL {
@@ -37,12 +36,12 @@ public class thongtinsdBLL {
         return thongtinsdDAL.getInstance().getById(id);
     }
 
-    public int addModel(thongtinsd usageInformation) { 
-        //MaTV can't be null:
+    public int addModel(thongtinsd usageInformation) {
+        // MaTV can't be null:
         if (usageInformation.getThanhvien().compareTo(BigInteger.ZERO) <= 0) {
             return -1;
         }
-        
+
         if (thongtinsdDAL.getInstance().create(usageInformation)) {
             usageInformations.add(usageInformation);
             return usageInformation.getMaTT();
@@ -51,7 +50,7 @@ public class thongtinsdBLL {
     }
 
     public int updateModel(thongtinsd usageInformation) {
-        //MaTV can't be null:
+        // MaTV can't be null:
         if (usageInformation.getThanhvien().compareTo(BigInteger.ZERO) <= 0) {
             return -1;
         }
@@ -73,7 +72,26 @@ public class thongtinsdBLL {
         return result;
     }
 
-    public List<thongtinsd> searchListThietBi(String keyword) {
-        return thongtinsdDAL.getInstance().search(keyword);
+    public List<thongtinsd> searchThongTinSdByCriteria(String keyword, String criteria) {
+        return usageInformations.stream()
+                .filter(usageInformation -> {
+                    if (criteria == null) {
+                        return String.valueOf(usageInformation.getMaTT()).contains(keyword) ||
+                                String.valueOf(usageInformation.getThanhvien()).contains(keyword) ||
+                                String.valueOf(usageInformation.getThietbi()).contains(keyword);
+                    } else {
+                        switch (criteria) {
+                            case "MaTT":
+                                return String.valueOf(usageInformation.getMaTT()).contains(keyword);
+                            case "MaThanhvien":
+                                return String.valueOf(usageInformation.getThanhvien()).contains(keyword);
+                            case "MaThietBi":
+                                return String.valueOf(usageInformation.getThietbi()).contains(keyword);
+                            default:
+                                return false;
+                        }
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }
