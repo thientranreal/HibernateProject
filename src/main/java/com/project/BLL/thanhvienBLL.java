@@ -54,12 +54,16 @@ public class thanhvienBLL {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
 
-        if (isIdTaken(member.getMaTV())) {
-            throw new IllegalArgumentException("Mã thành viên đã tồn tại");
+        for(thanhvien curMem : members) {
+            if(curMem.getSdt().equals(member.getSdt()) && !curMem.getMaTV().equals(member.getMaTV())) {
+                throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+            }
         }
 
-        if (isPhoneNumberTaken(member.getSdt())) {
-            throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+        for(thanhvien curMem1 : members) {
+            if(curMem1.getMaTV().equals(member.getMaTV())) {
+                throw new IllegalArgumentException("Mã thành viên đã tồn tại");
+            }
         }
 
         if (thanhvienDAL.getInstance().create(member)) {
@@ -87,8 +91,10 @@ public class thanhvienBLL {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
 
-        if (isPhoneNumberTaken(member.getSdt())) {
-            throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+        for(thanhvien curMem : members) {
+            if(curMem.getSdt().equals(member.getSdt()) && !curMem.getMaTV().equals(member.getMaTV())) {
+                throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+            }
         }
 
         if (thanhvienDAL.getInstance().update(member)) {
@@ -110,12 +116,5 @@ public class thanhvienBLL {
         return thanhvienDAL.getInstance().search(keyword);
     }
 
-    private boolean isPhoneNumberTaken(String phoneNumber) {
-        return members.stream().anyMatch(member -> member.getSdt().equals(phoneNumber));
-    }
-
-    private boolean isIdTaken(BigInteger id) {
-        return members.stream().anyMatch(member -> member.getMaTV().equals(id));
-    }
 
 }

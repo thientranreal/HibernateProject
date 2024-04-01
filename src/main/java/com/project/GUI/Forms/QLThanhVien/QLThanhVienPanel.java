@@ -280,7 +280,7 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
-        btnSearch.addKeyListener(new KeyAdapter() {
+        searchInput.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -310,6 +310,8 @@ public class QLThanhVienPanel extends FormPanel {
                 }
             }
         });
+
+        updateMemberFromList();
     }
 
     public void updateMemberFromList() {
