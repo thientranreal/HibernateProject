@@ -142,17 +142,19 @@ public class QLThietBiPanel extends FormPanel {
         });
 
         btnDel.addActionListener(e -> {
-            int index = table.getSelectedRow();
+            int[] selectedRows = table.getSelectedRows();
 
-            if (index == -1) {
+            if (selectedRows.length == 0) {
                 JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
             } else {
                 int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thiết bị này?");
                 if (choice == JOptionPane.YES_OPTION) {
-                    int thietbiId = (int) table.getModel().getValueAt(index, 0);
-                    deleteThietBi(thietbiId);
+                    for (int index : selectedRows) {
+                        int thietbiId = (int) table.getModel().getValueAt(index, 0);
+                        deleteThietBi(thietbiId);
+                    }
                     updateThietBiFromList();
                 }
             }

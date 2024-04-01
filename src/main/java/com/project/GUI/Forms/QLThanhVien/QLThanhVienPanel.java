@@ -226,18 +226,19 @@ public class QLThanhVienPanel extends FormPanel {
         btnDel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
+                int[] selectedRows = table.getSelectedRows();
 
-                if (index == -1) {
+                if (selectedRows.length == 0) {
                     JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
                     return;
                 } else {
                     int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thành viên này?");
                     if (choice == JOptionPane.YES_OPTION) {
-                        BigInteger memberID = new BigInteger(String.valueOf(table.getModel().getValueAt(index, 0)));
-
-                        deleteMember(memberID);
+                        for (int index : selectedRows) {
+                            BigInteger id = (BigInteger) table.getValueAt(index, 0);
+                            deleteMember(id);
+                        }
                         updateMemberFromList();
                     }
                 }
