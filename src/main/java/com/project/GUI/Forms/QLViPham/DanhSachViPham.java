@@ -11,18 +11,15 @@ import javax.swing.table.DefaultTableModel;
 
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Table;
 import com.project.GUI.Components.Buttons.ButtonAdd;
-import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.Buttons.ButtonDel;
 import com.project.GUI.Components.Buttons.ButtonDelAll;
 import com.project.GUI.Components.Buttons.ButtonEdit;
 import com.project.GUI.Components.Buttons.ButtonExcel;
 import com.project.GUI.Components.Buttons.ButtonRefresh;
-import com.project.GUI.Components.Buttons.ButtonSave;
 import com.project.GUI.Components.Buttons.ButtonSearch;
+import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.InputField;
-import com.project.GUI.Forms.QLViPham.ThaoTac;
 import com.project.GUI.GlobalVariables.Colors;
 
 public class DanhSachViPham extends JPanel {
@@ -179,7 +176,7 @@ public class DanhSachViPham extends JPanel {
 
         add(pnlMain, BorderLayout.NORTH);
 
-        JTable table = new Table();
+        JTable table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -211,6 +208,8 @@ public class DanhSachViPham extends JPanel {
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
+
+        TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         add(pnlTable, BorderLayout.CENTER);
     }

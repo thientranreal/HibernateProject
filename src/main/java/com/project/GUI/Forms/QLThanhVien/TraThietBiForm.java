@@ -3,10 +3,10 @@ package com.project.GUI.Forms.QLThanhVien;
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
 import com.project.GUI.Components.Buttons.*;
+import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Fonts;
 import com.project.models.thietbi;
@@ -25,7 +25,7 @@ import java.util.List;
 public class TraThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
     private static BigInteger currentSV;
-    private Table table;
+    private JTable table;
 
     public TraThietBiForm(BigInteger maSV) {
         currentSV = maSV;
@@ -78,7 +78,7 @@ public class TraThietBiForm extends JFrame {
         JLabel lbDSThietBi = new FormLabel("Danh sách thiết bị đang mượn");
 
         // Create table for showing data
-        table = new Table();
+        table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -99,6 +99,8 @@ public class TraThietBiForm extends JFrame {
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
+
+        TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         // Create panel to contain show data
         JPanel pnlDS = new FormPanel();

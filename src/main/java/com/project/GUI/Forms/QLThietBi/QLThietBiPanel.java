@@ -1,19 +1,10 @@
 package com.project.GUI.Forms.QLThietBi;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -24,12 +15,12 @@ import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Table;
 import com.project.GUI.Components.Buttons.ButtonAdd;
 import com.project.GUI.Components.Buttons.ButtonDel;
 import com.project.GUI.Components.Buttons.ButtonExcel;
 import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSearch;
+import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
@@ -46,7 +37,7 @@ import java.util.Map;
 
 public class QLThietBiPanel extends FormPanel {
 
-    private final Table table;
+    private final JTable table;
     public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     private final SearchField searchInput;
     public static int maTB;
@@ -79,7 +70,7 @@ public class QLThietBiPanel extends FormPanel {
         pnlSearch.add(btnRefresh);
 
         // Create table for showing data
-        table = new Table();
+        table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -97,9 +88,12 @@ public class QLThietBiPanel extends FormPanel {
 
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
+        pnlTable.setPreferredSize(new Dimension(500, 400));
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
+
+        TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         // Create button add, button delete
         JButton btnAdd = new ButtonAdd();

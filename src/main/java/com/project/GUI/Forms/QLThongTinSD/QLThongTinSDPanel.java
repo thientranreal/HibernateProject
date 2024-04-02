@@ -7,20 +7,16 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.project.BLL.thongtinsdBLL;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Table;
 import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSearch;
+import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
@@ -30,7 +26,7 @@ import java.awt.event.MouseAdapter;
 import java.math.BigInteger;
 
 public class QLThongTinSDPanel extends FormPanel {
-    private final Table table;
+    private final JTable table;
     private final SearchField searchInput;
 
     public QLThongTinSDPanel() {
@@ -64,7 +60,7 @@ public class QLThongTinSDPanel extends FormPanel {
         // pnlSearch.add(jCalendar);
 
         // Create table for showing data
-        table = new Table();
+        table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -87,6 +83,8 @@ public class QLThongTinSDPanel extends FormPanel {
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
+
+        TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         // Create panel Show Table
         JPanel pnlData = new FormPanel();

@@ -2,11 +2,11 @@ package com.project.GUI.Forms.QLThanhVien;
 
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
+import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.Forms.QLThietBi.QLThietBiPanel;
 import com.project.GUI.GlobalVariables.Fonts;
@@ -30,7 +30,7 @@ public class MuonThietBiForm extends JFrame {
     QLThietBiPanel qltbPanel = new QLThietBiPanel();
     private Map<Integer, Boolean> deviceAvailabilityMap = new HashMap<>();
     public static BigInteger currentSV;
-    private Table table;
+    private JTable table;
 
     public MuonThietBiForm(BigInteger maSV) {
         currentSV = maSV;
@@ -83,7 +83,7 @@ public class MuonThietBiForm extends JFrame {
         JLabel lbDSThietBi = new FormLabel("Danh sách thiết bị có thể mượn");
 
         // Create table for showing data
-        table = new Table();
+        table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -103,6 +103,8 @@ public class MuonThietBiForm extends JFrame {
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
+
+        TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         // Create panel to contain show data
         JPanel pnlDS = new FormPanel();

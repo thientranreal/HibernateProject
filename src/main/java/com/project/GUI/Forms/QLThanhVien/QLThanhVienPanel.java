@@ -3,11 +3,11 @@ package com.project.GUI.Forms.QLThanhVien;
 import com.project.BLL.thanhvienBLL;
 import com.project.BLL.thongtinsdBLL;
 import com.project.BLL.xulyBLL;
+import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Table;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Fonts;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class QLThanhVienPanel extends FormPanel {
 
-    private final Table table;
+    private final JTable table;
     private final InputField inputMaTV;
     private final SearchField searchInput;
     public static int maSV;
@@ -67,7 +67,7 @@ public class QLThanhVienPanel extends FormPanel {
         pnlSearch.add(btnRefresh);
 
         // Create table for showing data
-        table = new Table();
+        table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -85,11 +85,16 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
+
+
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
+        pnlTable.setPreferredSize(new Dimension(850, 500));
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
+
+        TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         // Create button add, button delete
         JButton btnAdd = new ButtonAdd();
