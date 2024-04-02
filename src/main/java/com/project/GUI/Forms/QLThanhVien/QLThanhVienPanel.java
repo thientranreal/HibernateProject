@@ -42,6 +42,7 @@ public class QLThanhVienPanel extends FormPanel {
     public QLThanhVienPanel() {
         // Add constraints to make button align vertically
         GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
         // Add padding bottom 10px
         constraints.insets = new Insets(0, 0, 10, 0);
 
@@ -66,6 +67,29 @@ public class QLThanhVienPanel extends FormPanel {
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
 
+//        Label khóa học và input
+        JLabel lbYear = new FormLabel("Khóa");
+        JTextField inputYear = new InputField(7);
+
+//        Panel khóa học
+        JPanel pnlYear = new FormPanel();
+        pnlYear.add(lbYear);
+        pnlYear.add(inputYear);
+
+//        Button xóa hết
+        JButton btnDelAll = new ButtonDelAll();
+        pnlYear.add(btnDelAll);
+
+//        Panel chứa panelYear và pnlSearch
+        JPanel pnlSearch_Year = new FormPanel();
+        pnlSearch_Year.setLayout(new GridBagLayout());
+
+        constraints.gridy = 0;
+        constraints.gridx = 0;
+        pnlSearch_Year.add(pnlSearch, constraints);
+        constraints.gridy = 1;
+        pnlSearch_Year.add(pnlYear, constraints);
+
         // Create table for showing data
         table = new JTable();
         // Create header for table
@@ -89,7 +113,7 @@ public class QLThanhVienPanel extends FormPanel {
 
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
-        pnlTable.setPreferredSize(new Dimension(850, 500));
+        pnlTable.setPreferredSize(new Dimension(850, 400));
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
@@ -135,37 +159,34 @@ public class QLThanhVienPanel extends FormPanel {
         JPanel pnlCheckIn = new FormPanel();
         pnlCheckIn.setLayout(new GridBagLayout());
         updateMemberFromList();
-        btnCheckIn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BigInteger maSV = new BigInteger(inputMaTV.getText());
+        btnCheckIn.addActionListener(e -> {
+            BigInteger maSV = new BigInteger(inputMaTV.getText());
 
-                thanhvien currentMember = thanhvienBLL.getInstance().getModelById(maSV);
+            thanhvien currentMember = thanhvienBLL.getInstance().getModelById(maSV);
 
-                if (currentMember == null) {
-                    JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
-                    return;
-                } else if (currentMember != null) {
-                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            if (currentMember == null) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
+                return;
+            } else if (currentMember != null) {
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(timestamp.getTime());
-                    cal.add(Calendar.HOUR_OF_DAY, 7);
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(timestamp.getTime());
+                cal.add(Calendar.HOUR_OF_DAY, 7);
 
-                    Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
+                Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
 
-                    BigInteger curSV = new BigInteger(inputMaTV.getText());
-                    thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null);
+                BigInteger curSV = new BigInteger(inputMaTV.getText());
+                thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null);
 
-                    int result = thongtinsdBLL.getInstance().addModel(curInfo);
+                int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
-                    if (result > 0) {
-                        JOptionPane.showMessageDialog(null, "Mã số: " + curSV + "\n"
-                                + "Tên thành viên: " + currentMember.getHoTen() + "\n"
-                                + "Khoa: " + currentMember.getKhoa() + "\n"
-                                + "Ngành: " + currentMember.getNganh() + "\n"
-                                + "SĐT: " + currentMember.getSdt());
-                    }
+                if (result > 0) {
+                    JOptionPane.showMessageDialog(null, "Mã số: " + curSV + "\n"
+                            + "Tên thành viên: " + currentMember.getHoTen() + "\n"
+                            + "Khoa: " + currentMember.getKhoa() + "\n"
+                            + "Ngành: " + currentMember.getNganh() + "\n"
+                            + "SĐT: " + currentMember.getSdt());
                 }
             }
         });
@@ -186,7 +207,7 @@ public class QLThanhVienPanel extends FormPanel {
 
         constraints.gridx = 0;
         constraints.gridy = 0;
-        pnlData.add(pnlSearch, constraints);
+        pnlData.add(pnlSearch_Year, constraints);
         constraints.gridy = 1;
         pnlData.add(pnlTable, constraints);
 
@@ -228,34 +249,28 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
-        btnDel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int[] selectedRows = table.getSelectedRows();
+        btnDel.addActionListener(e -> {
+            int[] selectedRows = table.getSelectedRows();
 
-                if (selectedRows.length == 0) {
-                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    return;
-                } else {
-                    int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thành viên này?");
-                    if (choice == JOptionPane.YES_OPTION) {
-                        for (int index : selectedRows) {
-                            BigInteger id = (BigInteger) table.getValueAt(index, 0);
-                            deleteMember(id);
-                        }
-                        updateMemberFromList();
+            if (selectedRows.length == 0) {
+                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            } else {
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thành viên này?");
+                if (choice == JOptionPane.YES_OPTION) {
+                    for (int index : selectedRows) {
+                        BigInteger id = (BigInteger) table.getValueAt(index, 0);
+                        deleteMember(id);
                     }
+                    updateMemberFromList();
                 }
             }
         });
 
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateMemberFromList();
-                clearForm();
-            }
+        btnRefresh.addActionListener(e -> {
+            updateMemberFromList();
+            clearForm();
         });
 
         table.getDefaultEditor(String.class).addCellEditorListener(new CellEditorListener() {
@@ -296,23 +311,17 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
-        btnSearch.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchValue = searchInput.getText().trim();
-                List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVien(searchValue);
-                showSearchResult(searchResult);
-            }
+        btnSearch.addActionListener(e -> {
+            String searchValue = searchInput.getText().trim();
+            List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVien(searchValue);
+            showSearchResult(searchResult);
         });
 
-        btnExportExcel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    thanhvienExcelUtil.writethanhviensToExcel(thanhvienBLL.getInstance().getAllModels());
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+        btnExportExcel.addActionListener(e -> {
+            try {
+                thanhvienExcelUtil.writethanhviensToExcel(thanhvienBLL.getInstance().getAllModels());
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
 
