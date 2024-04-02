@@ -1,5 +1,6 @@
 package com.project.GUI.Forms.QLThanhVien;
 
+import com.github.lgooddatepicker.components.DateTimePicker;
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
 import com.project.GUI.Components.Table.TableCustom;
@@ -8,7 +9,6 @@ import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.TextFields.SearchField;
-import com.project.GUI.Forms.QLThietBi.QLThietBiPanel;
 import com.project.GUI.GlobalVariables.Fonts;
 import com.project.models.thietbi;
 import com.project.models.thongtinsd;
@@ -27,7 +27,6 @@ import java.util.Map;
 
 public class MuonThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
-    QLThietBiPanel qltbPanel = new QLThietBiPanel();
     private Map<Integer, Boolean> deviceAvailabilityMap = new HashMap<>();
     public static BigInteger currentSV;
     private JTable table;
@@ -131,6 +130,12 @@ public class MuonThietBiForm extends JFrame {
         pnlSearch.add(searchInput);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
+
+        constraints.anchor = GridBagConstraints.WEST;
+        JLabel lbReturnDate = new FormLabel("Ngày trả");
+        DateTimePicker dpkReturnDate = new DateTimePicker();
+        pnlSearch.add(lbReturnDate);
+        pnlSearch.add(dpkReturnDate);
         // Add panel search into pnlDS
         pnlDS.add(pnlSearch, constraints);
 

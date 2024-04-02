@@ -49,6 +49,12 @@
             <artifactId>jcalendar</artifactId>
             <version>1.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.lgooddatepicker</groupId>
+            <artifactId>LGoodDatePicker</artifactId>
+            <version>8.3.0</version>
+        </dependency>
     </dependencies>
 
 </project>

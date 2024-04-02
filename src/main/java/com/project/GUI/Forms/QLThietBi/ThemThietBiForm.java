@@ -9,6 +9,7 @@ import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.TextFields.AreaField;
 import com.project.GUI.Components.TextFields.InputField;
+import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
 import com.project.models.thietbi;
 import com.project.utilities.excel.thietbiExcelUtil;
@@ -62,6 +63,7 @@ public class ThemThietBiForm extends JFrame {
     private JPanel initCompontent() {
         JPanel root = new FormPanel();
         root.setLayout(new BorderLayout());
+        root.setBorder(BorderFactory.createLineBorder(Colors.primaryColor, 5));
 
         // Create Header
         JPanel pnlHeader = new FormPanel();
