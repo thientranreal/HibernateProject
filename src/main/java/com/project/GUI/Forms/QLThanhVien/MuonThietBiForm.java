@@ -184,24 +184,7 @@ public class MuonThietBiForm extends JFrame {
                     calendar.add(Calendar.HOUR_OF_DAY, 7);
                     Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                    calendar.add(Calendar.HOUR_OF_DAY, 2);
-                    Timestamp paybackTimestamp = new Timestamp(calendar.getTimeInMillis());
-
-                    for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                        if(info.getTGMuon() != null && info.getTGTra() != null) {
-                            if((maTB == info.getThietbi())) {
-                                Timestamp muonTime = info.getTGMuon();
-                                Timestamp traTime = info.getTGTra();
-
-                                if (newTimestamp.after(muonTime) && newTimestamp.before(traTime)) {
-                                    JOptionPane.showMessageDialog(null, "Thiết bị này đang được mượn");
-                                    return;
-                                }
-                            }
-                        }
-                    }
-
-                    thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, paybackTimestamp);
+                    thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, null);
                     int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
                     if (result > 0) {
@@ -271,32 +254,25 @@ public class MuonThietBiForm extends JFrame {
 
         List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.HOUR_OF_DAY, 7);
-        Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
-
-        // Use HashMap to store device availability
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
-                if (info.getTGMuon() != null && info.getTGTra() != null) {
-                    if (newTimestamp.after(info.getTGMuon()) && newTimestamp.before(info.getTGTra())) {
-                        deviceAvailabilityMap.put(info.getThietbi(), true); // Set device availability to true
-                    }
+                if (info.getTGTra() == null && info.getTGMuon() != null) {
+                    deviceAvailabilityMap.put(info.getThietbi(), false); // Set device availability to false
+                } else {
+                    deviceAvailabilityMap.put(info.getThietbi(), true); // Set device availability to true
                 }
-            }
+            } else
+                continue;
         }
 
         for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            boolean isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), false); // Get device
-                                                                                                     // availability
-                                                                                                     // from the map
-            if (!isDeviceAvailable) {
+            System.out.println(device.getMaTB() + " " + device.getTenTB() + " " + device.getMoTaTB());
+            boolean isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), true);
+            if (isDeviceAvailable) {
                 model_table.addRow(new Object[] {
                         device.getMaTB(),
                         device.getTenTB(),
                         device.getMoTaTB(),
-                        isDeviceAvailable // Add device availability to the row
                 });
             }
         }
