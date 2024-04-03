@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import com.project.GUI.Components.Buttons.ButtonNormal;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Buttons.Button;
 
 public class ThongKe extends FormPanel {
     public ThongKe() {
@@ -19,9 +19,9 @@ public class ThongKe extends FormPanel {
     private void initCompontent() {
         pnlHeader = new FormPanel();
         pnlMain = new FormPanel();
-        btnTKUsers = new Button("Thành viên");
-        btnTKThietBi = new Button("Thiết bị");
-        btnTKViPham = new Button("Vi phạm");
+        btnTKUsers = new ButtonNormal("Thành viên");
+        btnTKThietBi = new ButtonNormal("Thiết bị");
+        btnTKViPham = new ButtonNormal("Vi phạm");
 
         setLayout(new BorderLayout());
 

@@ -6,9 +6,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.project.GUI.Components.Buttons.ButtonNormal;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Buttons.Button;
 import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.InputField;
@@ -23,7 +23,7 @@ public class TKThanhVien extends JPanel {
         lbThoiGian = new FormLabel("Thời gian");
         lbKhoa = new FormLabel("Khoa");
         lbNganh = new FormLabel("Ngành");
-        btnThoiGian = new Button("Date");
+        btnThoiGian = new ButtonNormal("Date");
         inputKhoa = new InputField(7);
         inputNganh = new InputField(7);
         btnSearch = new ButtonSearch();

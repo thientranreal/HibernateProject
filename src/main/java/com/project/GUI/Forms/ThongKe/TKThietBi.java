@@ -7,9 +7,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.project.GUI.Components.Buttons.ButtonNormal;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Buttons.Button;
 import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.InputField;
@@ -29,7 +29,7 @@ public class TKThietBi extends FormPanel {
         pnlDangMuon = new FormPanel();
         inputSearch = new InputField(11);
         btnSearch = new ButtonSearch();
-        btnDate = new Button("date");
+        btnDate = new ButtonNormal("date");
 
         Font myFont = new Font("Serif", Font.BOLD, 18);
 
