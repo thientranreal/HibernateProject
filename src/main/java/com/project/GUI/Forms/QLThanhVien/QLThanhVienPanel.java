@@ -23,8 +23,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
@@ -113,7 +111,7 @@ public class QLThanhVienPanel extends FormPanel {
 
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
-        pnlTable.setPreferredSize(new Dimension(850, 400));
+        pnlTable.setPreferredSize(new Dimension(700, 400));
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);

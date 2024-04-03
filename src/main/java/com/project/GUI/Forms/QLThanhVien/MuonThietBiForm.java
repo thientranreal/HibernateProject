@@ -162,47 +162,41 @@ public class MuonThietBiForm extends JFrame {
             dispose();
         });
 
-        btnSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int[] selectedRows;
+        btnSave.addActionListener(e -> {
+            int[] selectedRows;
 
-                if (table.getSelectedRow() == -1) {
-                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn mượn thiết bị", "Thông báo",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    return;
-                } else if (table.getSelectedRow() == 1) {
-                    selectedRows = new int[] { table.getSelectedRow() };
+            if (table.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn mượn thiết bị", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            } else if (table.getSelectedRow() == 1) {
+                selectedRows = new int[] { table.getSelectedRow() };
+            } else {
+                selectedRows = table.getSelectedRows();
+            }
+
+            for (int index : selectedRows) {
+                int maTB = (int) table.getModel().getValueAt(index, 0);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.add(Calendar.HOUR_OF_DAY, 7);
+                Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
+
+                thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, null);
+                int result = thongtinsdBLL.getInstance().addModel(curInfo);
+
+                if (result > 0) {
+                    JOptionPane.showMessageDialog(null, "Mượn thiết bị thành công");
+                    dispose();
                 } else {
-                    selectedRows = table.getSelectedRows();
-                }
-
-                for (int index : selectedRows) {
-                    int maTB = (int) table.getModel().getValueAt(index, 0);
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.add(Calendar.HOUR_OF_DAY, 7);
-                    Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
-
-                    thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, null);
-                    int result = thongtinsdBLL.getInstance().addModel(curInfo);
-
-                    if (result > 0) {
-                        JOptionPane.showMessageDialog(null, "Mượn thiết bị thành công");
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Mượn thiết bị thất bại");
-                    }
+                    JOptionPane.showMessageDialog(null, "Mượn thiết bị thất bại");
                 }
             }
         });
 
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchInput.setText("");
-                updateBorrowFromList();
-            }
+        btnRefresh.addActionListener(e -> {
+            searchInput.setText("");
+            updateBorrowFromList();
         });
 
         searchInput.addKeyListener(new KeyAdapter() {
@@ -224,12 +218,9 @@ public class MuonThietBiForm extends JFrame {
                 }
             }
         });
-        btnSearch.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchValue = searchInput.getText().trim();
-                showSearchResult(searchValue);
-            }
+        btnSearch.addActionListener(e -> {
+            String searchValue = searchInput.getText().trim();
+            showSearchResult(searchValue);
         });
 
         updateBorrowFromList();

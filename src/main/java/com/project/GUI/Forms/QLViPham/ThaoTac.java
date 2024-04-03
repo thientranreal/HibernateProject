@@ -1,20 +1,29 @@
 package com.project.GUI.Forms.QLViPham;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 
+import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Buttons.ButtonDel;
 import com.project.GUI.Components.Buttons.ButtonSave;
 import com.project.GUI.Components.TextFields.InputField;
+import com.project.GUI.GlobalVariables.Colors;
 
-public class ThaoTac extends JFrame{
-
+public class ThaoTac extends JFrame {
     public ThaoTac(){
         initCompontent();
+
+        setUndecorated(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
     public void initCompontent(){
+        root = new FormPanel();
         pnlInfor = new FormPanel();
         pnlButtons = new FormPanel();
         lbMaVP = new FormLabel("Mã VP");
@@ -31,15 +40,14 @@ public class ThaoTac extends JFrame{
         inputSoTien = new InputField(7);
         inputNgayXL = new InputField(7);
         inputTrangThai = new InputField(7);
-        btnDel = new ButtonDel();
+        btnCancel = new ButtonCancel();
         btnSave = new ButtonSave();
 
         GridBagConstraints gbc;
 
+        root.setLayout(new BorderLayout());
+        root.setBorder(BorderFactory.createLineBorder(Colors.primaryColor, 5));
 
-        setSize(new Dimension(500,300));
-        setLayout(new BorderLayout());
-        setLocationRelativeTo(null);
 
         pnlInfor.setPreferredSize(new Dimension(400, 200));
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -123,11 +131,41 @@ public class ThaoTac extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 1;
 
-        add(pnlInfor,BorderLayout.CENTER);
+        root.add(pnlInfor,BorderLayout.CENTER);
 
         pnlButtons.add(btnSave);
-        pnlButtons.add(btnDel);
-        add(pnlButtons, BorderLayout.SOUTH);
+        pnlButtons.add(btnCancel);
+        root.add(pnlButtons, BorderLayout.SOUTH);
+
+        // Add panel root to JFrame
+        add(root);
+
+        // Add mouse listener
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseDownCompCoords = e.getPoint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                mouseDownCompCoords = null;
+            }
+        });
+
+        // Add mouse motion listener
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point currCoords = e.getLocationOnScreen();
+                setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+            }
+        });
+
+//        Add Btn Cancel event handler
+        btnCancel.addActionListener(e -> {
+            this.dispose();
+        });
     }
     private JPanel pnlInfor;
     private JPanel pnlButtons;
@@ -145,8 +183,8 @@ public class ThaoTac extends JFrame{
     private InputField inputSoTien;
     private InputField inputNgayXL;
     private InputField inputTrangThai;
-    private FormLabel lbSearch;
-    private InputField inputSearch;
     private JButton btnSave;
-    private JButton btnDel;
+    private JButton btnCancel;
+    private Point mouseDownCompCoords;
+    private JPanel root;
 }
