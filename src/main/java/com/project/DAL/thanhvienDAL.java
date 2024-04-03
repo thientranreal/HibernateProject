@@ -81,4 +81,13 @@ public class thanhvienDAL {
         }
     }
 
+    public List<thanhvien> searchByYear(String keyword) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString = "FROM thanhvien WHERE SUBSTRING(maTV, 3, 2) = :keyword";
+            Query<thanhvien> query = session.createQuery(queryString, thanhvien.class);
+            query.setParameter("keyword", keyword.trim());
+            return query.list();
+        }
+    }
+
 }

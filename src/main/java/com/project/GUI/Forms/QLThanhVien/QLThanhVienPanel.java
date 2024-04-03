@@ -36,6 +36,7 @@ public class QLThanhVienPanel extends FormPanel {
     private final InputField inputMaTV;
     private final SearchField searchInput;
     public static int maSV;
+    private final InputField inputYear;
 
     public QLThanhVienPanel() {
         // Add constraints to make button align vertically
@@ -67,16 +68,12 @@ public class QLThanhVienPanel extends FormPanel {
 
 //        Label khóa học và input
         JLabel lbYear = new FormLabel("Khóa");
-        JTextField inputYear = new InputField(7);
+        inputYear = new InputField(7);
 
 //        Panel khóa học
         JPanel pnlYear = new FormPanel();
         pnlYear.add(lbYear);
         pnlYear.add(inputYear);
-
-//        Button xóa hết
-        JButton btnDelAll = new ButtonDelAll();
-        pnlYear.add(btnDelAll);
 
 //        Panel chứa panelYear và pnlSearch
         JPanel pnlSearch_Year = new FormPanel();
@@ -323,6 +320,21 @@ public class QLThanhVienPanel extends FormPanel {
             }
         });
 
+        inputYear.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if(inputYear.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null,"Vui lòng nhập khóa cần tìm");
+                        return;
+                    }
+                    String searchValue = inputYear.getText().trim();
+                    List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVienByYear(searchValue);
+                    showSearchResultByYear(searchResult);
+                }
+            }
+        });
+
         updateMemberFromList();
     }
 
@@ -356,6 +368,7 @@ public class QLThanhVienPanel extends FormPanel {
     public void clearForm() {
         searchInput.setText("");
         inputMaTV.setText("");
+        inputYear.setText("");
     }
 
     public void deleteMember(BigInteger id) {
@@ -369,6 +382,35 @@ public class QLThanhVienPanel extends FormPanel {
     }
 
     public void showSearchResult(List<thanhvien> search) {
+        String handleStatus = null;
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (thanhvien member : search) {
+            for (xuly handle : xulyBLL.getInstance().getAllModels()) {
+                if (member.getMaTV().equals(handle.getMaTV())) {
+                    handleStatus = handle.getHinhThucXL();
+                }
+            }
+
+            model.addRow(new Object[] {
+                    member.getMaTV(),
+                    member.getHoTen(),
+                    member.getKhoa(),
+                    member.getNganh(),
+                    member.getSdt(),
+                    handleStatus == null ? "Không vi phạm" : handleStatus
+            });
+        }
+
+        if (search.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
+            // Refresh table:
+            updateMemberFromList();
+        }
+    }
+
+    public void showSearchResultByYear(List<thanhvien> search) {
         String handleStatus = null;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
