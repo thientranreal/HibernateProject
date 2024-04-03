@@ -258,6 +258,7 @@ public class QLThanhVienPanel extends FormPanel {
                         BigInteger id = (BigInteger) table.getValueAt(index, 0);
                         deleteMember(id);
                     }
+                    clearForm();
                     updateMemberFromList();
                 }
             }
@@ -330,7 +331,7 @@ public class QLThanhVienPanel extends FormPanel {
                     }
                     String searchValue = inputYear.getText().trim();
                     List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVienByYear(searchValue);
-                    showSearchResultByYear(searchResult);
+                    showSearchResult(searchResult);
                 }
             }
         });
@@ -410,34 +411,6 @@ public class QLThanhVienPanel extends FormPanel {
         }
     }
 
-    public void showSearchResultByYear(List<thanhvien> search) {
-        String handleStatus = null;
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
-
-        for (thanhvien member : search) {
-            for (xuly handle : xulyBLL.getInstance().getAllModels()) {
-                if (member.getMaTV().equals(handle.getMaTV())) {
-                    handleStatus = handle.getHinhThucXL();
-                }
-            }
-
-            model.addRow(new Object[] {
-                    member.getMaTV(),
-                    member.getHoTen(),
-                    member.getKhoa(),
-                    member.getNganh(),
-                    member.getSdt(),
-                    handleStatus == null ? "Không vi phạm" : handleStatus
-            });
-        }
-
-        if (search.size() == 0) {
-            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
-            // Refresh table:
-            updateMemberFromList();
-        }
-    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
