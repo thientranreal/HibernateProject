@@ -16,8 +16,8 @@ import java.math.BigInteger;
 
 public class ThongTinThanhVien extends JFrame {
     private Point mouseDownCompCoords;
-    public static BigInteger currentSV;
 
+    private BigInteger currentSV;
     private InputField inputMaTV;
     private InputField inputHoTen;
     private InputField inputKhoa;
@@ -26,9 +26,13 @@ public class ThongTinThanhVien extends JFrame {
     private ButtonSave btnOk;
 
     public ThongTinThanhVien(BigInteger maSV) {
-        currentSV = maSV;
-        // Add Content into JFrame
-        add(initComponent());
+        if (maSV != null) {
+            currentSV = maSV;
+            add(initComponent());
+        } else {
+            JOptionPane.showMessageDialog(null, "Mã sinh viên không tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            dispose();
+        }
 
         setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
