@@ -22,6 +22,7 @@ import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.SearchField;
+import com.project.GUI.Forms.QLThongTinSD.ThongTinThanhVien;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
 import com.project.models.thietbi;
@@ -31,7 +32,7 @@ import com.project.utilities.excel.thietbiExcelUtil;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Date; // Add missing import
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class QLThietBiPanel extends FormPanel {
     private final JTable table;
     public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     private final SearchField searchInput;
-    public static int maTB;
+    public static BigInteger maTB;
 
     public QLThietBiPanel() {
         // Add constraints to make button align vertically
@@ -79,10 +80,14 @@ public class QLThietBiPanel extends FormPanel {
                         "Tên thiết bị",
                         "Mô tả",
                         "Đang được mượn",
+                        "Sinh viên đang mượn"
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != getColumnCount() - 6 && column != getColumnCount() - 1;
+                int lastColumnIndex = getColumnCount() - 1;
+                int secondLastColumnIndex = getColumnCount() - 2;
+                int fifthColumnIndex = getColumnCount() - 5;
+                return column != secondLastColumnIndex && column != lastColumnIndex & column != fifthColumnIndex;
             }
         });
 
@@ -220,6 +225,22 @@ public class QLThietBiPanel extends FormPanel {
             }
         });
 
+        // Add listener for table, only click on col: "Sinh viên đang mượn"
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = table.rowAtPoint(evt.getPoint());
+                int col = table.columnAtPoint(evt.getPoint());
+                if (col == 4 && row >= 0) {
+                    Object value = table.getValueAt(row, col);
+                    if (value instanceof String) {
+                        String stringValue = (String) value;
+                        BigInteger maTV = new BigInteger(stringValue);
+                        new ThongTinThanhVien(maTV); // Fix: Use the correct constructor
+                    }
+                }
+            }
+        });
     }
 
     public void updateThietBiFromList() {
@@ -233,13 +254,14 @@ public class QLThietBiPanel extends FormPanel {
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
-        Date timestamp = new Date(); // Move timestamp variable outside the loop
+
+        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
 
         // Use HashMap to store device availability
-
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
-                if (timestamp.compareTo(info.getTGMuon()) >= 0 && info.getTGTra() == null) {
+                if (info.getTGMuon() != null && info.getTGTra() == null) {
+                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
                     // Set string true = "Đang mượn":
                     deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
                 }
@@ -250,14 +272,19 @@ public class QLThietBiPanel extends FormPanel {
             // Set string false = "Không mượn":
             String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
                                                                                                       // availability
-                                                                                                      // from the
-                                                                                                      // map
+                                                                                                      // from the map
+
+            String studentId = "Không";
+            if (borrowedStudentId.containsKey(device.getMaTB())) {
+                studentId = borrowedStudentId.get(device.getMaTB()).toString();
+            }
 
             model_table.addRow(new Object[] {
                     device.getMaTB(),
                     device.getTenTB(),
                     device.getMoTaTB(),
-                    isDeviceAvailable // Add device availability to the rowd
+                    isDeviceAvailable, // Add device availability to the row
+                    studentId // Show student id based on borrowedStudentId if the device is borrowed
             });
         }
     }
