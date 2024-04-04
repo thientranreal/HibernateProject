@@ -20,16 +20,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class MuonThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
     private Map<Integer, Boolean> deviceAvailabilityMap = new HashMap<>();
     public static BigInteger currentSV;
     private JTable table;
+    private DateTimePicker dpkReturnDate;
 
     public MuonThietBiForm(BigInteger maSV) {
         currentSV = maSV;
@@ -133,7 +136,7 @@ public class MuonThietBiForm extends JFrame {
 
         constraints.anchor = GridBagConstraints.WEST;
         JLabel lbReturnDate = new FormLabel("Ngày trả");
-        DateTimePicker dpkReturnDate = new DateTimePicker();
+        dpkReturnDate = new DateTimePicker();
         pnlSearch.add(lbReturnDate);
         pnlSearch.add(dpkReturnDate);
         // Add panel search into pnlDS
@@ -164,9 +167,12 @@ public class MuonThietBiForm extends JFrame {
 
         btnSave.addActionListener(e -> {
             int[] selectedRows;
-
             if (table.getSelectedRow() == -1) {
                 JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn mượn thiết bị", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            } else if(dpkReturnDate.getDatePicker().getDate() == null || dpkReturnDate.getTimePicker().getTime() == null) {
+                JOptionPane.showMessageDialog(null, "Vui lòng ngày giờ trả thiết bị", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
             } else if (table.getSelectedRow() == 1) {
@@ -182,7 +188,17 @@ public class MuonThietBiForm extends JFrame {
                 calendar.add(Calendar.HOUR_OF_DAY, 7);
                 Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, null);
+                LocalDate selectedDate = dpkReturnDate.getDatePicker().getDate();
+                LocalTime selectedTime = dpkReturnDate.getTimePicker().getTime().plusHours(7);
+                LocalDateTime localDateTime = LocalDateTime.of(selectedDate, selectedTime.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
+                Timestamp paybackTimestamp = Timestamp.valueOf(localDateTime);
+
+                if (paybackTimestamp.compareTo(newTimestamp) <= 0) {
+                    JOptionPane.showMessageDialog(null,"Ngày trả phải lớn hơn ngày mượn");
+                    return;
+                }
+
+                thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, paybackTimestamp);
                 int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
                 if (result > 0) {

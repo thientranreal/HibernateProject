@@ -115,6 +115,9 @@ public class thanhvienBLL {
     public List<thanhvien> searchListThanhVien(String keyword) {
         return thanhvienDAL.getInstance().search(keyword);
     }
+    public List<thanhvien> searchListThanhVienByYear(String keyword) {
+        return thanhvienDAL.getInstance().searchByYear(keyword);
+    }
 
 
 }
