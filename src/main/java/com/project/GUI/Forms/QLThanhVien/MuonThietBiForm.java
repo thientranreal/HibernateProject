@@ -30,9 +30,10 @@ import java.util.List;
 public class MuonThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
     private Map<Integer, Boolean> deviceAvailabilityMap = new HashMap<>();
+
     public static BigInteger currentSV;
     private JTable table;
-    private DateTimePicker dpkReturnDate;
+//    private DateTimePicker dpkReturnDate;
 
     public MuonThietBiForm(BigInteger maSV) {
         currentSV = maSV;
@@ -134,13 +135,13 @@ public class MuonThietBiForm extends JFrame {
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
 
-        constraints.anchor = GridBagConstraints.WEST;
-        JLabel lbReturnDate = new FormLabel("Ngày trả");
-        dpkReturnDate = new DateTimePicker();
-        pnlSearch.add(lbReturnDate);
-        pnlSearch.add(dpkReturnDate);
-        // Add panel search into pnlDS
-        pnlDS.add(pnlSearch, constraints);
+//        constraints.anchor = GridBagConstraints.WEST;
+//        JLabel lbReturnDate = new FormLabel("Ngày trả");
+//        dpkReturnDate = new DateTimePicker();
+//        pnlSearch.add(lbReturnDate);
+//        pnlSearch.add(dpkReturnDate);
+//        // Add panel search into pnlDS
+//        pnlDS.add(pnlSearch, constraints);
 
         // Row 2
         constraints.gridy = 2;
@@ -171,11 +172,13 @@ public class MuonThietBiForm extends JFrame {
                 JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn mượn thiết bị", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
-            } else if(dpkReturnDate.getDatePicker().getDate() == null || dpkReturnDate.getTimePicker().getTime() == null) {
-                JOptionPane.showMessageDialog(null, "Vui lòng ngày giờ trả thiết bị", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-                return;
-            } else if (table.getSelectedRow() == 1) {
+            }
+//            else if(dpkReturnDate.getDatePicker().getDate() == null || dpkReturnDate.getTimePicker().getTime() == null) {
+//                JOptionPane.showMessageDialog(null, "Vui lòng ngày giờ trả thiết bị", "Thông báo",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//                return;
+//            }
+            else if (table.getSelectedRow() == 1) {
                 selectedRows = new int[] { table.getSelectedRow() };
             } else {
                 selectedRows = table.getSelectedRows();
@@ -188,17 +191,17 @@ public class MuonThietBiForm extends JFrame {
                 calendar.add(Calendar.HOUR_OF_DAY, 7);
                 Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                LocalDate selectedDate = dpkReturnDate.getDatePicker().getDate();
-                LocalTime selectedTime = dpkReturnDate.getTimePicker().getTime().plusHours(7);
-                LocalDateTime localDateTime = LocalDateTime.of(selectedDate, selectedTime.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
-                Timestamp paybackTimestamp = Timestamp.valueOf(localDateTime);
+//                LocalDate selectedDate = dpkReturnDate.getDatePicker().getDate();
+//                LocalTime selectedTime = dpkReturnDate.getTimePicker().getTime().plusHours(7);
+//                LocalDateTime localDateTime = LocalDateTime.of(selectedDate, selectedTime.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
+//                Timestamp paybackTimestamp = Timestamp.valueOf(localDateTime);
+//
+//                if (paybackTimestamp.compareTo(newTimestamp) <= 0) {
+//                    JOptionPane.showMessageDialog(null,"Ngày trả phải lớn hơn ngày mượn");
+//                    return;
+//                }
 
-                if (paybackTimestamp.compareTo(newTimestamp) <= 0) {
-                    JOptionPane.showMessageDialog(null,"Ngày trả phải lớn hơn ngày mượn");
-                    return;
-                }
-
-                thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, paybackTimestamp);
+                thongtinsd curInfo = new thongtinsd(currentSV, maTB, null, newTimestamp, null,null);
                 int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
                 if (result > 0) {
@@ -208,6 +211,7 @@ public class MuonThietBiForm extends JFrame {
                     JOptionPane.showMessageDialog(null, "Mượn thiết bị thất bại");
                 }
             }
+            updateBorrowFromList();
         });
 
         btnRefresh.addActionListener(e -> {
@@ -260,22 +264,31 @@ public class MuonThietBiForm extends JFrame {
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
+        Timestamp currentTimeStamp = new Timestamp(System.currentTimeMillis());
 
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
-                if (info.getTGTra() == null && info.getTGMuon() != null) {
+                if ((info.getTGTra() == null && info.getTGMuon() == null)) {
                     deviceAvailabilityMap.put(info.getThietbi(), false); // Set device availability to false
-                } else {
-                    deviceAvailabilityMap.put(info.getThietbi(), true); // Set device availability to true
+                }else {
+                    Timestamp TGMuon = new Timestamp(info.getTGMuon().getTime() - (7 * 60 * 60 * 1000));
+
+                    thietbi device1 = thietbiBLL.getInstance().getModelById(info.getThietbi());
+                    if(currentTimeStamp.before(TGMuon) && device1.getMaTB() == info.getThietbi()) {
+                        deviceAvailabilityMap.put(info.getThietbi(), false);
+                    } else {
+                        deviceAvailabilityMap.put(info.getThietbi(), true);
+                    }
+
                 }
             } else
                 continue;
         }
 
         for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            System.out.println(device.getMaTB() + " " + device.getTenTB() + " " + device.getMoTaTB());
             boolean isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), true);
             if (isDeviceAvailable) {
+                System.out.println(device);
                 model_table.addRow(new Object[] {
                         device.getMaTB(),
                         device.getTenTB(),

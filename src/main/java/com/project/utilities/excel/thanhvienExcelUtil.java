@@ -90,8 +90,10 @@ public class thanhvienExcelUtil extends ExcelUtil {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid integer value in input data", e);
             }
+            String password = row.get(5);
+            String email = row.get(6);
 
-            thanhvien model = new thanhvien(id, HoTen, Khoa, Nganh, Sdt);
+            thanhvien model = new thanhvien(id, HoTen, Khoa, Nganh, Sdt,password,email);
             thanhviens.add(model);
             thanhvienBLL.getInstance().addModel(model);
         }

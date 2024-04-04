@@ -28,6 +28,12 @@ public class thanhvien {
     @Column(name = "SDT")
     private String sdt;
 
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "email")
+    private String email;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "thanhvien")
     private List<thongtinsd> thongtinsd;
 
@@ -37,12 +43,14 @@ public class thanhvien {
     public thanhvien() {
     }
 
-    public thanhvien(BigInteger maSV,String hoTen, String khoa, String nganh, String sdt) {
+    public thanhvien(BigInteger maSV,String hoTen, String khoa, String nganh, String sdt,String password, String email) {
         this.maTV = maSV;
         this.hoTen = hoTen;
         this.khoa = khoa;
         this.nganh = nganh;
         this.sdt = sdt;
+        this.password = password;
+        this.email = email;
     }
 
     public BigInteger getMaTV() {
@@ -101,6 +109,22 @@ public class thanhvien {
         this.xuly = xuly;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "thanhvien{" +
@@ -109,8 +133,8 @@ public class thanhvien {
                 ", khoa='" + khoa + '\'' +
                 ", nganh='" + nganh + '\'' +
                 ", sdt='" + sdt + '\'' +
-                ", thongtinsd=" + thongtinsd +
-                ", xuly=" + xuly +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

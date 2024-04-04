@@ -34,6 +34,8 @@ public class ThemThanhVienForm extends JFrame {
     private InputField inputKhoa;
     private InputField inputNganh;
     private InputField inputSDT;
+    private InputField inputPassword;
+    private InputField inputEmail;
 
     public ThemThanhVienForm() {
 //        Add Content into JFrame
@@ -92,6 +94,10 @@ public class ThemThanhVienForm extends JFrame {
         inputNganh = new InputField(20);
         JLabel lbSDT = new FormLabel("SĐT: ");
         inputSDT = new InputField(20);
+        JLabel lbPassword = new FormLabel("Password: ");
+        inputPassword = new InputField(20);
+        JLabel lbEmail = new FormLabel("Email: ");
+        inputEmail = new InputField(20);
 
 //        Create panel to contain input field
         JPanel pnlInput = new FormPanel();
@@ -132,10 +138,22 @@ public class ThemThanhVienForm extends JFrame {
 
 //        Row 4
         constraints.gridx = 0;
-        constraints.gridy = y;
+        constraints.gridy = y++;
         pnlInput.add(lbSDT, constraints);
         constraints.gridx = 1;
         pnlInput.add(inputSDT, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = y++;
+        pnlInput.add(lbPassword, constraints);
+        constraints.gridx = 1;
+        pnlInput.add(inputPassword, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = y++;
+        pnlInput.add(lbEmail, constraints);
+        constraints.gridx = 1;
+        pnlInput.add(inputEmail, constraints);
 
 //        Create button
         btnSave = new ButtonSave();
@@ -217,8 +235,10 @@ public class ThemThanhVienForm extends JFrame {
         String khoa =inputKhoa.getText();
         String nganh =inputNganh.getText();
         String sdt =inputSDT.getText();
+        String password =inputPassword.getText();
+        String email =inputEmail.getText();
 
-        thanhvien newMember = new thanhvien(maSV,tenSV,khoa,nganh,sdt);
+        thanhvien newMember = new thanhvien(maSV,tenSV,khoa,nganh,sdt,password,email);
 
         BigInteger newMemberResult = thanhvienBLL.getInstance().addModel(newMember);
 

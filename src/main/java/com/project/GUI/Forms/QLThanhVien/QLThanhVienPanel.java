@@ -96,7 +96,8 @@ public class QLThanhVienPanel extends FormPanel {
                         "Khoa",
                         "Ngành",
                         "Số ĐT",
-                        "Xử Lý"
+                        "Xử Lý",
+                        "Email"
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -172,7 +173,7 @@ public class QLThanhVienPanel extends FormPanel {
                 Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
 
                 BigInteger curSV = new BigInteger(inputMaTV.getText());
-                thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null);
+                thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null,null);
 
                 int result = thongtinsdBLL.getInstance().addModel(curInfo);
 
@@ -277,9 +278,12 @@ public class QLThanhVienPanel extends FormPanel {
                 Object khoa = table.getValueAt(selectedRow, 2);
                 Object nganh = table.getValueAt(selectedRow, 3);
                 Object sdt = table.getValueAt(selectedRow, 4);
+                Object email = table.getValueAt(selectedRow, 6);
+
+                thanhvien curMemberInfo = thanhvienBLL.getInstance().getModelById(new BigInteger(maTV.toString()));
 
                 thanhvien updateMember = new thanhvien(new BigInteger(maTV.toString()), hoTen.toString(),
-                        khoa.toString(), nganh.toString(), sdt.toString());
+                        khoa.toString(), nganh.toString(), sdt.toString(),curMemberInfo.getPassword(),email.toString());
 
                 BigInteger result = thanhvienBLL.getInstance().updateModel(updateMember);
 
@@ -361,7 +365,8 @@ public class QLThanhVienPanel extends FormPanel {
                     member.getKhoa(),
                     member.getNganh(),
                     member.getSdt(),
-                    handleStatus == null ? "Không vi phạm" : handleStatus
+                    handleStatus == null ? "Không vi phạm" : handleStatus,
+                    member.getEmail()
             });
         }
     }
