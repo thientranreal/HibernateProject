@@ -94,6 +94,8 @@ public class thanhvienBLL {
         for(thanhvien curMem : members) {
             if(curMem.getSdt().equals(member.getSdt()) && !curMem.getMaTV().equals(member.getMaTV())) {
                 throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+            }else if(curMem.getEmail().equals(member.getEmail()) && !curMem.getMaTV().equals(member.getMaTV())) {
+                throw new IllegalArgumentException("Email đã tồn tại");
             }
         }
 

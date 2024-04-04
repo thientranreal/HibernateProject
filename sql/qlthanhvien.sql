@@ -31,24 +31,25 @@ USE qlthanhvien;
 --
 -- Cấu trúc bảng cho bảng `thanhvien`
 --
-
 CREATE TABLE `thanhvien` (
   `MaTV` bigint NOT NULL,
   `HoTen` varchar(100) NOT NULL,
   `Khoa` varchar(100) DEFAULT NULL,
   `Nganh` varchar(100) DEFAULT NULL,
-  `SDT` varchar(10) DEFAULT NULL
+  `SDT` varchar(10) DEFAULT NULL,
+  `password` varchar(1000) not null,
+  `email` varchar(1000) not null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `thanhvien`
 --
 
-INSERT INTO `thanhvien` (`MaTV`, `HoTen`, `Khoa`, `Nganh`, `SDT`) VALUES
-(1120150184, 'Trần Thị Nữ', 'GDTH', 'GDTH', 1111111111),
-(1121530087, 'Trần Thiếu Nam', 'TLH', 'QLGD', 1111111112),
-(1123330257, 'Ngô Tuyết Nhi', 'QTKD', 'QTKD', 1111111113),
-(2147483647, 'Nguyễn Văn Nam', 'CNTT', 'HTTT', 123456789);
+INSERT INTO `thanhvien` (`MaTV`, `HoTen`, `Khoa`, `Nganh`, `SDT`,`password`,`email`) VALUES
+(1120150184, 'Trần Thị Nữ', 'GDTH', 'GDTH', 1111111111,'123456789','test1@gmail.com'),
+(1121530087, 'Trần Thiếu Nam', 'TLH', 'QLGD', 1111111112,'123456789','test2@gmail.com'),
+(1123330257, 'Ngô Tuyết Nhi', 'QTKD', 'QTKD', 1111111113,'123456789','test3@gmail.com'),
+(2147483647, 'Nguyễn Văn Nam', 'CNTT', 'HTTT', 123456789,'123456789','test4@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -83,16 +84,17 @@ CREATE TABLE `thongtinsd` (
   `MaTB` int(10) DEFAULT NULL,
   `TGVao` datetime DEFAULT NULL,
   `TGMuon` datetime DEFAULT NULL,
-  `TGTra` datetime DEFAULT NULL
+  `TGTra` datetime DEFAULT NULL,
+  `TGDatCho` datetime null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `thongtinsd`
 --
 
-INSERT INTO `thongtinsd` (`MaTT`, `MaTV`, `MaTB`, `TGVao`, `TGMuon`, `TGTra`) VALUES
-(1, 1120150184, NULL, '2024-01-05 09:00:00', NULL, NULL),
-(2, 1123330257, 1, NULL, '2024-02-12 10:00:32', '2024-02-12 14:00:00');
+INSERT INTO `thongtinsd` (`MaTT`, `MaTV`, `MaTB`, `TGVao`, `TGMuon`, `TGTra`,`TGDatCho`) VALUES
+(1, 1120150184, NULL, '2024-01-05 09:00:00', NULL, NULL,NULL),
+(2, 1123330257, 1, NULL, '2024-02-12 10:00:32', '2024-02-12 14:00:00',NULL);
 
 -- --------------------------------------------------------
 

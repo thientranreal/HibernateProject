@@ -33,15 +33,19 @@ public class thongtinsd {
     @Column(name = "TGTra")
     private Timestamp TGTra;
 
+    @Column(name = "TGDatCho")
+    private Timestamp TGDatCho;
+
     public thongtinsd() {
     }
 
-    public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra) {
+    public thongtinsd(BigInteger thanhvien, Integer thietbi, Timestamp TGVao, Timestamp TGMuon, Timestamp TGTra,Timestamp TGDatCho) {
         this.thanhvien = thanhvien;
         this.thietbi = thietbi;
         this.TGVao = TGVao;
         this.TGMuon = TGMuon;
         this.TGTra = TGTra;
+        this.TGDatCho = TGDatCho;
     }
 
     public int getMaTT() {
@@ -90,6 +94,27 @@ public class thongtinsd {
 
     public void setTGTra(Timestamp TGTra) {
         this.TGTra = TGTra;
+    }
+
+    public Timestamp getTGDatCho() {
+        return TGDatCho;
+    }
+
+    public void setTGDatCho(Timestamp TGDatCho) {
+        this.TGDatCho = TGDatCho;
+    }
+
+    @Override
+    public String toString() {
+        return "thongtinsd{" +
+                "MaTT=" + MaTT +
+                ", thanhvien=" + thanhvien +
+                ", thietbi=" + thietbi +
+                ", TGVao=" + TGVao +
+                ", TGMuon=" + TGMuon +
+                ", TGTra=" + TGTra +
+                ", TGDatCho=" + TGDatCho +
+                '}';
     }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
