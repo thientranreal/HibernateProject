@@ -127,11 +127,11 @@ public class DanhSachViPham extends JPanel {
     private JButton btnDelAll;
     private JButton btnSearch;
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.add(new DanhSachViPham());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame();
+//        frame.add(new DanhSachViPham());
+//        frame.setVisible(true);
+//    }
 
     public ActionListener actionAdd = e -> {
         ThaoTac thaoTac = new ThaoTac();

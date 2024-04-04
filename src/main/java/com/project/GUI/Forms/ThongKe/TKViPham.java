@@ -11,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Table.TableCustom;
-import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
 
 public class TKViPham extends FormPanel {
@@ -28,6 +27,9 @@ public class TKViPham extends FormPanel {
         lbTotal = new FormLabel("");
 
         Font myFont = new Font("Serif", Font.BOLD, 18);
+
+        // Create cursor
+        Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
 
         setLayout(new BorderLayout());
 
@@ -50,11 +52,13 @@ public class TKViPham extends FormPanel {
         pnlChuaXuLy.add(lbTitleDaXuLy);
         pnlChuaXuLy.add(lbValueDaXuLy);
         pnlChuaXuLy.add(lbPercentDaXuLy);
+        pnlChuaXuLy.setCursor(cursor);
 
         // set to pnl đang mượn
         pnlCard.add(pnlDaXuLy);
         pnlDaXuLy.setBackground(Color.LIGHT_GRAY);
         pnlDaXuLy.addMouseListener(actionDaXuLy);
+        pnlDaXuLy.setCursor(cursor);
 
         JLabel lbTitleChuaXuLy = new FormLabel("Vi phạm đã xử lý");
         lbTitleChuaXuLy.setFont(myFont);
@@ -83,9 +87,9 @@ public class TKViPham extends FormPanel {
                 new Object[][] {
                 },
                 new String[] { "Mã XL",
-                        "Tên thiết bị",
-                        "Mã thành viên",
-                        "Tên thành viên",
+                        "Tên TB",
+                        "Mã TV",
+                        "Họ tên",
                         "Số tiền",
                         "Ngày xử lý",
                 }));
@@ -105,6 +109,7 @@ public class TKViPham extends FormPanel {
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
+        pnlTable.setPreferredSize(new Dimension(700, 400));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
         TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
@@ -136,9 +141,9 @@ public class TKViPham extends FormPanel {
                     new Object[][] {
                     },
                     new String[] { "Mã XL",
-                            "Tên thiết bị",
-                            "Mã thành viên",
-                            "Tên thành viên",
+                            "Tên TB",
+                            "Mã TV",
+                            "Họ tên",
                             "Số tiền",
                             "Ngày xử lý",
                     }));
@@ -167,9 +172,9 @@ public class TKViPham extends FormPanel {
                     new Object[][] {
                     },
                     new String[] { "Mã XL",
-                            "Tên thiết bị",
-                            "Mã thành viên",
-                            "Tên thành viên",
+                            "Tên TB",
+                            "Mã TV",
+                            "Họ tên",
                             "Số tiền",
                             "Ngày xử lý",
                     }));

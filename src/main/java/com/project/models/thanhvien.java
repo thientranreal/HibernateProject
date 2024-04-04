@@ -127,14 +127,6 @@ public class thanhvien {
 
     @Override
     public String toString() {
-        return "thanhvien{" +
-                "maTV=" + maTV +
-                ", hoTen='" + hoTen + '\'' +
-                ", khoa='" + khoa + '\'' +
-                ", nganh='" + nganh + '\'' +
-                ", sdt='" + sdt + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return this.hoTen;
     }
 }

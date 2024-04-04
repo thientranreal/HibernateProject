@@ -2,11 +2,10 @@ package com.project.GUI.Forms.ThongKe;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import com.project.GUI.Components.Buttons.ButtonNormal;
 import com.project.GUI.Components.FormPanel;
@@ -26,13 +25,13 @@ public class ThongKe extends FormPanel {
         setLayout(new BorderLayout());
 
         // add btn to pnlHeader
-        btnTKUsers.addMouseListener(actionUsers);
+        btnTKUsers.addActionListener(actionUsers);
         pnlHeader.add(btnTKUsers);
 
-        btnTKThietBi.addMouseListener(actionThietBi);
+        btnTKThietBi.addActionListener(actionThietBi);
         pnlHeader.add(btnTKThietBi);
 
-        btnTKViPham.addMouseListener(actionViPham);
+        btnTKViPham.addActionListener(actionViPham);
         pnlHeader.add(btnTKViPham);
         add(pnlHeader, BorderLayout.NORTH);
 
@@ -49,9 +48,9 @@ public class ThongKe extends FormPanel {
     private JButton btnTKThietBi;
     private JButton btnTKViPham;
 
-    private MouseAdapter actionUsers = new MouseAdapter() {
+    private ActionListener actionUsers = new ActionListener() {
         @Override
-        public void mouseClicked(MouseEvent e) {
+        public void actionPerformed(ActionEvent e) {
             pnlMain.removeAll(); 
             TKThanhVien tkThanhVien = new TKThanhVien();
             pnlMain.add(tkThanhVien);
@@ -59,9 +58,9 @@ public class ThongKe extends FormPanel {
             pnlMain.repaint();
         }
     };
-    private MouseAdapter actionThietBi = new MouseAdapter() {
+    private ActionListener actionThietBi = new ActionListener() {
         @Override
-        public void mouseClicked(MouseEvent e) {
+        public void actionPerformed(ActionEvent e) {
             pnlMain.removeAll(); 
             TKThietBi tkThietBi = new TKThietBi();
             pnlMain.add(tkThietBi);
@@ -69,9 +68,9 @@ public class ThongKe extends FormPanel {
             pnlMain.repaint();
         }
     };
-    private MouseAdapter actionViPham = new MouseAdapter() {
+    private ActionListener actionViPham = new ActionListener() {
         @Override
-        public void mouseClicked(MouseEvent e) {
+        public void actionPerformed(ActionEvent e) {
             pnlMain.removeAll(); 
             TKViPham tkViPham = new TKViPham();
             pnlMain.add(tkViPham);
@@ -80,9 +79,9 @@ public class ThongKe extends FormPanel {
         }
     };
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.add(new ThongKe());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame();
+//        frame.add(new ThongKe());
+//        frame.setVisible(true);
+//    }
 }

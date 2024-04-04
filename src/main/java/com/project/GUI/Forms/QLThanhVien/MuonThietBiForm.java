@@ -304,7 +304,7 @@ public class MuonThietBiForm extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        new MuonThietBiForm(currentSV);
-    }
+//    public static void main(String[] args) {
+//        new MuonThietBiForm(currentSV);
+//    }
 }

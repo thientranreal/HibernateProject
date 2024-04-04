@@ -278,7 +278,7 @@ public class TraThietBiForm extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        new TraThietBiForm(currentSV);
-    }
+//    public static void main(String[] args) {
+//        new TraThietBiForm(currentSV);
+//    }
 }

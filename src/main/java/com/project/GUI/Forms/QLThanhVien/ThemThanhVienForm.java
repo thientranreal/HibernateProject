@@ -252,7 +252,7 @@ public class ThemThanhVienForm extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        new ThemThanhVienForm();
-    }
+//    public static void main(String[] args) {
+//        new ThemThanhVienForm();
+//    }
 }

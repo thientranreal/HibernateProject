@@ -93,7 +93,7 @@ public class QLThietBiPanel extends FormPanel {
 
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
-        pnlTable.setPreferredSize(new Dimension(500, 400));
+        pnlTable.setPreferredSize(new Dimension(800, 400));
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
@@ -205,23 +205,17 @@ public class QLThietBiPanel extends FormPanel {
             }
         });
 
-        btnSearch.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchValue = searchInput.getText().trim();
-                List<thietbi> searchResult = thietbiBLL.getInstance().searchListThietBi(searchValue);
-                showSearchResult(searchResult);
-            }
+        btnSearch.addActionListener(e -> {
+            String searchValue = searchInput.getText().trim();
+            List<thietbi> searchResult = thietbiBLL.getInstance().searchListThietBi(searchValue);
+            showSearchResult(searchResult);
         });
 
-        btnExportExcel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    thietbiExcelUtil.writeThietbisToExcel(thietbiBLL.getInstance().getAllModels());
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+        btnExportExcel.addActionListener(e -> {
+            try {
+                thietbiExcelUtil.writeThietbisToExcel(thietbiBLL.getInstance().getAllModels());
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -317,14 +311,14 @@ public class QLThietBiPanel extends FormPanel {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-
-        frame.add(new QLThietBiPanel());
-
-        frame.setVisible(true);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame();
+//
+//        frame.add(new QLThietBiPanel());
+//
+//        frame.setVisible(true);
+//        frame.pack();
+//        frame.setLocationRelativeTo(null);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    }
 }

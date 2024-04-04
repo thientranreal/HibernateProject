@@ -6,6 +6,7 @@ import com.project.GUI.Components.MenuPanel;
 import com.project.GUI.Forms.QLThanhVien.QLThanhVienPanel;
 import com.project.GUI.Forms.QLThietBi.QLThietBiPanel;
 import com.project.GUI.Forms.QLViPham.DanhSachViPham;
+import com.project.GUI.Forms.ThongKe.ThongKe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +25,7 @@ public class MenuForm extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 //        Add event listener btn Quan ly thanh vien
         btnQLTV.addActionListener(e -> {
@@ -45,6 +47,14 @@ public class MenuForm extends JFrame {
         btnXLVP.addActionListener(e -> {
             pnlForm.removeAll();
             pnlForm.add(new DanhSachViPham());
+            pnlForm.revalidate();
+            pnlForm.repaint();
+        });
+
+//        Add event listener btn Thống kê
+        btnTK.addActionListener(e -> {
+            pnlForm.removeAll();
+            pnlForm.add(new ThongKe());
             pnlForm.revalidate();
             pnlForm.repaint();
         });
@@ -88,9 +98,5 @@ public class MenuForm extends JFrame {
         root.add(pnlBtn, BorderLayout.WEST);
         root.add(pnlForm, BorderLayout.CENTER);
         return root;
-    }
-
-    public static void main(String[] args) {
-        new MenuForm();
     }
 }

@@ -199,7 +199,7 @@ public class ThemThietBiForm extends JFrame {
         inputMoTa.setText("");
     }
 
-    public static void main(String[] args) {
-        new ThemThietBiForm();
-    }
+//    public static void main(String[] args) {
+//        new ThemThietBiForm();
+//    }
 }
