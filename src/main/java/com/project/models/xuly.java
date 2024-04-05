@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import java.math.BigInteger;
 import java.sql.Date;
 
 @Entity
@@ -18,7 +19,7 @@ public class xuly {
     private int MaXL;
 
     @Column(name = "MaTV")
-    private int MaTV;
+    private BigInteger MaTV;
 
     @Column(name = "HinhThucXL")
     private String HinhThucXL;
@@ -35,7 +36,7 @@ public class xuly {
     public xuly() {
     }
 
-    public xuly(int thanhvien, String HinhThucXL, Integer SoTien, Date NgayXL, int TrangThaiXL) {
+    public xuly(BigInteger thanhvien, String HinhThucXL, Integer SoTien, Date NgayXL, int TrangThaiXL) {
         this.MaTV = thanhvien;
         this.HinhThucXL = HinhThucXL;
         this.SoTien = SoTien;
@@ -51,11 +52,11 @@ public class xuly {
         MaXL = maXL;
     }
 
-    public int getMaTV() {
+    public BigInteger getMaTV() {
         return MaTV;
     }
 
-    public void setMaTV(int maTV) {
+    public void setMaTV(BigInteger maTV) {
         MaTV = maTV;
     }
 

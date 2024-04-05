@@ -3,6 +3,7 @@ package com.project.BLL;
 import com.project.DAL.xulyDAL;
 import com.project.models.xuly;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -37,7 +38,7 @@ public class xulyBLL {
 
     public int addModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
-        if (processing.getMaTV() <= 0 || processing.getHinhThucXL().isEmpty()
+        if (processing.getMaTV().compareTo(BigInteger.ZERO) <= 0 || processing.getHinhThucXL().isEmpty()
                 || processing.getHinhThucXL().length() > 200) {
             return -1;
         }
@@ -51,7 +52,7 @@ public class xulyBLL {
 
     public boolean updateModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
-        if (processing.getMaTV() <= 0 || processing.getHinhThucXL().isEmpty()
+        if (processing.getMaTV().compareTo(BigInteger.ZERO) <= 0 || processing.getHinhThucXL().isEmpty()
                 || processing.getHinhThucXL().length() > 200) {
             return false;
         }
@@ -87,7 +88,7 @@ public class xulyBLL {
     }
 
     public List<xuly> searchByMaTV(int id) {
-        return searchByCondition(processing -> processing.getMaTV() == id);
+        return searchByCondition(processing -> processing.getMaTV().equals(id));
     }
 
     public List<xuly> searchByHinhThucXL(String keyword) {
