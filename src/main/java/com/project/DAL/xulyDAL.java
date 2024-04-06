@@ -1,5 +1,6 @@
 package com.project.DAL;
 
+import com.project.models.thanhvien;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -7,6 +8,7 @@ import com.project.models.xuly;
 import com.project.utilities.HibernateUtil;
 
 import java.util.List;
+import org.hibernate.query.Query;
 
 public class xulyDAL {
     private static xulyDAL instance;
@@ -67,6 +69,14 @@ public class xulyDAL {
     public List<xuly> getHandleList() {
         try (Session session = HibernateUtil.getInstance().openSession()) {
             return session.createQuery("from xuly", xuly.class).list();
+        }
+    }
+     public List<xuly> search(String keyword) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString = "from xuly where LOWER(CONCAT(MaXL, MaTV, HinhThucXL, SoTien, NgayXL,TrangThaiXL)) like :keyword";
+            Query<xuly> query = session.createQuery(queryString, xuly.class);
+            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
+            return query.list();
         }
     }
 }

@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import javax.swing.*;
 
 import com.project.BLL.thanhvienBLL;
+import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
@@ -14,9 +15,16 @@ import com.project.GUI.Components.Buttons.ButtonSave;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.models.thanhvien;
+import com.project.models.xuly;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.sql.*;
 
 public class ThaoTac extends JFrame {
-    public ThaoTac(){
+
+    public ThaoTac() {
         initCompontent();
 
         setUndecorated(true);
@@ -25,7 +33,8 @@ public class ThaoTac extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    public void initCompontent(){
+
+    public void initCompontent() {
         root = new FormPanel();
         pnlInfor = new FormPanel();
         pnlButtons = new FormPanel();
@@ -43,15 +52,13 @@ public class ThaoTac extends JFrame {
         root.setLayout(new BorderLayout());
         root.setBorder(BorderFactory.createLineBorder(Colors.primaryColor, 5));
 
-
         pnlInfor.setPreferredSize(new Dimension(400, 200));
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 10, 10, 10, 10, 10, 10 };
-        gridBagLayout.rowHeights = new int[] { 10, 10, 10, 10, 10, 10 };
+        gridBagLayout.columnWidths = new int[]{10, 10, 10, 10, 10, 10};
+        gridBagLayout.rowHeights = new int[]{10, 10, 10, 10, 10, 10};
         pnlInfor.setLayout(gridBagLayout);
 
-         //add input + txt to pnlInfor
-
+        //add input + txt to pnlInfor
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 0, 20, 0);
         gbc.gridx = 0;
@@ -74,8 +81,7 @@ public class ThaoTac extends JFrame {
         gbc.gridx = 6;
         pnlInfor.add(inputSoTien, gbc);
 
-
-        root.add(pnlInfor,BorderLayout.CENTER);
+        root.add(pnlInfor, BorderLayout.CENTER);
 
         pnlButtons.add(btnSave);
         pnlButtons.add(btnCancel);
@@ -116,16 +122,34 @@ public class ThaoTac extends JFrame {
             this.dispose();
         });
 
-//        Add Btn Save event handler
         btnSave.addActionListener(e -> {
             if (cbThanhVien.getSelectedIndex() >= 0) {
- //          Lấy ID thành viên từ combo box
+                //          Lấy ID thành viên từ combo box
                 thanhvien tv = (thanhvien) cbThanhVien.getSelectedItem();
                 BigInteger maTV = tv.getMaTV();
+                int intValue = maTV.intValue();
+                Date date = new Date();
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                String hinhthuc = inputHinhThuc.getText();
+                Integer sotien = Integer.parseInt(inputSoTien.getText().trim());
+                int trangthai = 0;
+                xuly newXuly = new xuly(intValue, hinhthuc, sotien, sqlDate, trangthai);
 
-//                Xử lý tiếp theo, ngày xử lý lấy ngày giờ hiện tại, trạng thái là trạng thái xử lý
+                int newXulyResult = xulyBLL.getInstance().addModel(newXuly);
+                if (newXulyResult >= 0) {
+                    JOptionPane.showMessageDialog(null, "Thêm thành công");
+                    DanhSachViPham panel = new DanhSachViPham();
+                    panel.updateMemberFromList();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Thêm thất bại");
+                }
+                clearForm();
+                dispose();
             }
         });
+//                Xử lý tiếp theo, ngày xử lý lấy ngày giờ hiện tại, trạng thái là trạng thái xử lý
+
+//        Add Btn Save event handler
     }
     private JPanel pnlInfor;
     private JPanel pnlButtons;
@@ -139,4 +163,10 @@ public class ThaoTac extends JFrame {
     private Point mouseDownCompCoords;
     private JPanel root;
     private JComboBox<thanhvien> cbThanhVien;
+
+    public void clearForm() {
+        inputSoTien.setText("");
+        inputHinhThuc.setText("");
+    }
+
 }
