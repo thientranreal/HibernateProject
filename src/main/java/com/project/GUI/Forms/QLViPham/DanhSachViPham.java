@@ -234,5 +234,4 @@ public class DanhSachViPham extends JPanel {
             updateMemberFromList();
         }
     }
-    //huyhung
 }
