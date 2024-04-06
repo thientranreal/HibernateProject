@@ -163,7 +163,13 @@ public class QLThanhVienPanel extends FormPanel {
             if (currentMember == null) {
                 JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
                 return;
-            } else if (currentMember != null) {
+            } else {
+                for(xuly handle : xulyBLL.getInstance().getAllModels()) {
+                    if(handle.getMaTV().equals(currentMember.getMaTV()) && handle.getTrangThaiXL() == 0) {
+                        JOptionPane.showMessageDialog(null,"Bạn đang bị vị phạm, vui lòng giải quyết vi phạm");
+                        return;
+                    }
+                }
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
                 Calendar cal = Calendar.getInstance();
