@@ -97,5 +97,8 @@ public class xulyBLL {
     public List<xuly> searchByTrangThaiXL(int keyword) {
         return searchByCondition(processing -> processing.getTrangThaiXL() == keyword);
     }
+    public List<xuly> searchListThanhVien(String keyword) {
+        return xulyDAL.getInstance().search(keyword);
+    }
 
 }
