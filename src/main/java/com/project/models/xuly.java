@@ -1,11 +1,12 @@
 package com.project.models;
 
+import java.math.BigInteger;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "xuly")
@@ -94,4 +95,8 @@ public class xuly {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MaTV", referencedColumnName = "MaTV", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_thanhvien_handle"))
     private thanhvien thanhvien;
+
+    public Object getHoTen() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
