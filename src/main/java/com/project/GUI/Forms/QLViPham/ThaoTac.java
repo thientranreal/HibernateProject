@@ -127,13 +127,12 @@ public class ThaoTac extends JFrame {
                 //          Lấy ID thành viên từ combo box
                 thanhvien tv = (thanhvien) cbThanhVien.getSelectedItem();
                 BigInteger maTV = tv.getMaTV();
-                int intValue = maTV.intValue();
                 Date date = new Date();
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 String hinhthuc = inputHinhThuc.getText();
                 Integer sotien = Integer.parseInt(inputSoTien.getText().trim());
                 int trangthai = 0;
-                xuly newXuly = new xuly(intValue, hinhthuc, sotien, sqlDate, trangthai);
+                xuly newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
 
                 int newXulyResult = xulyBLL.getInstance().addModel(newXuly);
                 if (newXulyResult >= 0) {
