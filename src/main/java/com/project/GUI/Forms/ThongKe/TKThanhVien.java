@@ -6,15 +6,26 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import java.util.List;
+
+import com.project.models.thietbi;
+import com.project.models.thanhvien;
+
 import com.github.lgooddatepicker.components.DateTimePicker;
+import com.project.BLL.thanhvienBLL;
+import com.project.BLL.thietbiBLL;
+import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
+import com.project.models.xuly;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThanhVien extends JPanel {
+    private static JTable table;
     public TKThanhVien(){
         initCompontent();
     }
@@ -55,7 +66,7 @@ public class TKThanhVien extends JPanel {
         //add userQuantity to pnlMain
         pnlMain.add(soLieu, BorderLayout.NORTH);
 
-        JTable table = new JTable();
+        table = new JTable();
         // Create header for table
         table.setModel(new DefaultTableModel(
                 new Object[][] {
@@ -65,19 +76,14 @@ public class TKThanhVien extends JPanel {
                         "Khoa",
                         "Ngành",
                         "Số điện thoại",
-                }));
+                }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column != getColumnCount() - 5 && column != getColumnCount() - 1;
+            }}
+        );updateMemberFromList();
         // Add data for table
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < 20; i++) {
-            model_table.addRow(new Object[] {
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text"
-            });
-        }
-
+       
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -100,4 +106,23 @@ public class TKThanhVien extends JPanel {
     private JPanel pnlMain;
     private JLabel soLieu;
     private DateTimePicker dpkThoiGian;
+    
+    public void updateMemberFromList() {
+        thanhvienBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+            model_table.addRow(new Object[] {
+                    member.getMaTV(),
+                    member.getHoTen(),
+                    member.getKhoa(),
+                    member.getNganh(),
+                    member.getSdt()
+            });
+        }
+    }
 }
