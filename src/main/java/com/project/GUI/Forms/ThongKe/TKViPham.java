@@ -1,5 +1,8 @@
 package com.project.GUI.Forms.ThongKe;
 
+import com.project.BLL.thanhvienBLL;
+import com.project.BLL.thietbiBLL;
+import com.project.BLL.xulyBLL;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,10 +11,16 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import java.util.List;
+
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.GlobalVariables.Colors;
+import com.project.models.thanhvien;
+import com.project.models.thietbi;
+import com.project.models.xuly;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKViPham extends FormPanel {
     public TKViPham() {
@@ -92,20 +101,12 @@ public class TKViPham extends FormPanel {
                         "Họ tên",
                         "Số tiền",
                         "Ngày xử lý",
-                }));
-        // Add data for table
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < 20; i++) {
-            model_table.addRow(new Object[] {
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text"
-            });
-        }
-
+                }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }});
+        updateViPhamFromList();
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -146,22 +147,12 @@ public class TKViPham extends FormPanel {
                             "Họ tên",
                             "Số tiền",
                             "Ngày xử lý",
-                    }));
-            // Add data for table
-            DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-            for (int i = 0; i < 20; i++) {
-                model_table.addRow(new Object[] {
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text"
-                });
-            }
-            lbTitle.setText("Vi phạm đã xử lý");
-            lbTotal.setVisible(true);
+                    }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }});
+            updateViPhamDaXuLy();
         }
     };
 
@@ -177,21 +168,136 @@ public class TKViPham extends FormPanel {
                             "Họ tên",
                             "Số tiền",
                             "Ngày xử lý",
-                    }));
-            // Add data for table
-            DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-            for (int i = 0; i < 20; i++) {
-                model_table.addRow(new Object[] {
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text"
-                });
-            }
-            lbTitle.setText("Vi phạm chưa xử lý");
-            lbTotal.setVisible(false);
+                    }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }});
+            updateViPhamChuaXuLy();
         }
     };
+    
+    public void updateViPhamFromList() {
+    xulyBLL.getInstance().refresh();
+    thietbiBLL.getInstance().refresh();
+    thanhvienBLL.getInstance().refresh();
+    DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+    model_table.setRowCount(0);
+
+    DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+    renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+    List<thietbi> listThietBi = thietbiBLL.getInstance().getAllModels();
+    List<thanhvien> listThanhVien = thanhvienBLL.getInstance().getAllModels();
+
+    for (xuly member : xulyBLL.getInstance().getAllModels()) {
+        String tenTB = "";
+        String hoTen = "";
+
+        for (thietbi tb : listThietBi) {
+            if (tb.getTenTB().equals(member.getMaXL())) {
+                tenTB = tb.getTenTB();
+                break;
+            }
+        }
+
+        for (thanhvien tv : listThanhVien) {
+            if (tv.getMaTV().equals(member.getMaTV())) {
+                hoTen = tv.getHoTen();
+                break;
+            }
+        }
+
+        model_table.addRow(new Object[]{
+            member.getMaXL(),
+            tenTB,
+            member.getMaTV(),
+            hoTen,
+            member.getSoTien(),
+            member.getNgayXL()
+        });
+    }
+}
+    public void updateViPhamDaXuLy() {
+    xulyBLL.getInstance().refresh();
+    thietbiBLL.getInstance().refresh();
+    thanhvienBLL.getInstance().refresh();
+    DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+    model_table.setRowCount(0);
+
+    DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+    renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+    List<thietbi> listThietBi = thietbiBLL.getInstance().getAllModels();
+    List<thanhvien> listThanhVien = thanhvienBLL.getInstance().getAllModels();
+
+    for (xuly member : xulyBLL.getInstance().getAllModels()) {
+        String tenTB = "";
+        String hoTen = "";
+        if(member.getTrangThaiXL()==1){
+        for (thietbi tb : listThietBi) {
+            if (tb.getTenTB().equals(member.getMaXL())) {
+                tenTB = tb.getTenTB();
+                break;
+            }
+        }
+
+        for (thanhvien tv : listThanhVien) {
+            if (tv.getMaTV().equals(member.getMaTV())) {
+                hoTen = tv.getHoTen();
+                break;
+            }
+        }
+
+        model_table.addRow(new Object[]{
+            member.getMaXL(),
+            tenTB,
+            member.getMaTV(),
+            hoTen,
+            member.getSoTien(),
+            member.getNgayXL()
+        });
+    }}
+}
+    public void updateViPhamChuaXuLy() {
+    xulyBLL.getInstance().refresh();
+    thietbiBLL.getInstance().refresh();
+    thanhvienBLL.getInstance().refresh();
+    DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+    model_table.setRowCount(0);
+
+    DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+    renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+    List<thietbi> listThietBi = thietbiBLL.getInstance().getAllModels();
+    List<thanhvien> listThanhVien = thanhvienBLL.getInstance().getAllModels();
+
+    for (xuly member : xulyBLL.getInstance().getAllModels()) {
+        String tenTB = "";
+        String hoTen = "";
+        if(member.getTrangThaiXL()==0){
+        for (thietbi tb : listThietBi) {
+            if (tb.getTenTB().equals(member.getMaXL())) {
+                tenTB = tb.getTenTB();
+                break;
+            }
+        }
+
+        for (thanhvien tv : listThanhVien) {
+            if (tv.getMaTV().equals(member.getMaTV())) {
+                hoTen = tv.getHoTen();
+                break;
+            }
+        }
+
+        model_table.addRow(new Object[]{
+            member.getMaXL(),
+            tenTB,
+            member.getMaTV(),
+            hoTen,
+            member.getSoTien(),
+            member.getNgayXL()
+        });
+    }}
+}
 }

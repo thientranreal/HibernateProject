@@ -1,5 +1,9 @@
 package com.project.GUI.Forms.ThongKe;
 
+import com.project.BLL.thanhvienBLL;
+import com.project.BLL.thietbiBLL;
+import com.project.BLL.thongtinsdBLL;
+import com.project.BLL.xulyBLL;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +18,12 @@ import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Colors;
+import com.project.models.thanhvien;
+import com.project.models.thietbi;
+import com.project.models.thongtinsd;
+import com.project.models.xuly;
+import java.math.BigInteger;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThietBi extends FormPanel {
     public TKThietBi() {
@@ -106,21 +116,14 @@ public class TKThietBi extends FormPanel {
                         "Mô tả",
                         "Mã TV",
                         "Họ tên",
-                        "Thời gian mượn",
-                }));
+                        "Thời gian mượn"
+                }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }});
         // Add data for table
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < 20; i++) {
-            model_table.addRow(new Object[] {
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text",
-                    "Text"
-            });
-        }
-
+        updateThietbiFromList();
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -159,21 +162,13 @@ public class TKThietBi extends FormPanel {
                             "Họ tên",
                             "Thời gian mượn",
                             "Thời gian trả",
-                    }));
+                    }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }});
             // Add data for table
-            DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-            for (int i = 0; i < 20; i++) {
-                model_table.addRow(new Object[] {
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text"
-                });
-            }
-
+          
         }
     };
 
@@ -190,20 +185,55 @@ public class TKThietBi extends FormPanel {
                             "Mã TV",
                             "Họ tên",
                             "Thời gian mượn",
-                    }));
-            // Add data for table
-            DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-            for (int i = 0; i < 20; i++) {
-                model_table.addRow(new Object[] {
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text",
-                        "Text"
-                });
-            }
-
+                    }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }});
         }
     };
+    
+    public void updateThietbiFromList() {
+        thongtinsdBLL.getInstance().refresh();
+        thietbiBLL.getInstance().refresh();
+        thanhvienBLL.getInstance().refresh();
+    
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        java.util.List<thietbi> listThietbi = thietbiBLL.getInstance().getAllModels();
+        java.util.List<thanhvien> listThanhVien = thanhvienBLL.getInstance().getAllModels();
+
+        for (thongtinsd member : thongtinsdBLL.getInstance().getAllModels()) {
+            String tenTB = "";
+            String HoTen = "";
+            int maTB = 0;
+            String mota ="";
+            
+            for (thanhvien tv : listThanhVien) {
+                if (tv.getMaTV().equals(member.getThanhvien())) {
+                    HoTen = tv.getHoTen();
+                    break;
+                }
+            }
+            for (thietbi tb : listThietbi){
+                if (tb.getMaTB()== member.getThietbi()) {
+                maTB = tb.getMaTB();
+                tenTB = tb.getTenTB();
+                mota = tb.getMoTaTB();         
+                }
+            }
+            model_table.addRow(new Object[]{
+                maTB,
+                tenTB,
+                mota,
+                member.getThanhvien(),
+                HoTen,
+                member.getTGMuon()
+            });
+        }
+    }
 }

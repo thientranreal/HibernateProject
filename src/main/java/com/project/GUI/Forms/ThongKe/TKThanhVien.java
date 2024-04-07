@@ -79,7 +79,7 @@ public class TKThanhVien extends JPanel {
                 }){
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != getColumnCount() - 5 && column != getColumnCount() - 1;
+                return false;
             }}
         );updateMemberFromList();
         // Add data for table
@@ -93,6 +93,20 @@ public class TKThanhVien extends JPanel {
         TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
         //add pnlmain to pnl main
         add(pnlMain, BorderLayout.CENTER);
+        btnSearch.addActionListener(e -> {
+            String searchValue = inputKhoa.getText().trim();
+            String searchValue2 = inputNganh.getText().trim();
+            if(!"".equals(searchValue)){
+            java.util.List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVienByKhoa(searchValue);
+            showSearchResult(searchResult);}
+            else if (!"".equals(searchValue2)) {
+                java.util.List<thanhvien> searchResult = thanhvienBLL.getInstance().searchListThanhVienByNganh(searchValue2);
+            showSearchResult(searchResult);
+            }
+            else {
+                updateMemberFromList();
+            }
+        });
 
     }  
 
@@ -123,6 +137,26 @@ public class TKThanhVien extends JPanel {
                     member.getNganh(),
                     member.getSdt()
             });
+        }
+    }
+    public void showSearchResult(List<thanhvien> search) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (thanhvien member : search) {
+            model.addRow(new Object[] {
+                    member.getMaTV(),
+                    member.getHoTen(),
+                    member.getKhoa(),
+                    member.getNganh(),
+                    member.getSdt(),
+            });
+        }
+
+        if (search.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
+            // Refresh table:
+            updateMemberFromList();
         }
     }
 }

@@ -89,5 +89,21 @@ public class thanhvienDAL {
             return query.list();
         }
     }
-
+    public List<thanhvien> searchByKhoa(String keyword) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString = "from thanhvien where LOWER(Khoa) like :keyword";
+            Query<thanhvien> query = session.createQuery(queryString, thanhvien.class);
+            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
+            return query.list();
+        }
+    }
+    
+    public List<thanhvien> searchByNganh(String keyword) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString = "from thanhvien where LOWER(Nganh) like :keyword";
+            Query<thanhvien> query = session.createQuery(queryString, thanhvien.class);
+            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
+            return query.list();
+        }
+    }
 }
