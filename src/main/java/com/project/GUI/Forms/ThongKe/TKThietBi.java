@@ -23,9 +23,14 @@ import com.project.models.thietbi;
 import com.project.models.thongtinsd;
 import com.project.models.xuly;
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThietBi extends FormPanel {
+    
+    public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     public TKThietBi() {
         initComponent();
     }
@@ -147,6 +152,7 @@ public class TKThietBi extends FormPanel {
     private JComboBox<String> cbMonth;
     private JTable table;
     private JLabel lbTitle;
+    
 
     private MouseAdapter actionDaMuon = new MouseAdapter() {
         @Override
@@ -167,7 +173,7 @@ public class TKThietBi extends FormPanel {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }});
-            // Add data for table
+            updateThietbiDaMuon();
           
         }
     };
@@ -184,56 +190,187 @@ public class TKThietBi extends FormPanel {
                             "Mô tả",
                             "Mã TV",
                             "Họ tên",
-                            "Thời gian mượn",
+                            "Thời gian trả",
                     }){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }});
+            updateThietbiDangMuon();
         }
     };
     
     public void updateThietbiFromList() {
+        deviceAvailabilityMap.clear();
         thongtinsdBLL.getInstance().refresh();
         thietbiBLL.getInstance().refresh();
-        thanhvienBLL.getInstance().refresh();
-    
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         model_table.setRowCount(0);
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        java.util.List<thietbi> listThietbi = thietbiBLL.getInstance().getAllModels();
-        java.util.List<thanhvien> listThanhVien = thanhvienBLL.getInstance().getAllModels();
+        java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
 
-        for (thongtinsd member : thongtinsdBLL.getInstance().getAllModels()) {
-            String tenTB = "";
-            String HoTen = "";
-            int maTB = 0;
-            String mota ="";
+        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
+
+        String ngayMuon = "";
+        
+        // Use HashMap to store device availability
+        for (thongtinsd info : allInfo) {
+            if (info.getThietbi() != null) {
+                if (info.getTGMuon() != null && info.getTGTra() == null) {
+                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
+                    // Set string true = "Đang mượn":
+                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
+                }
+                ngayMuon = info.getTGMuon().toString();
+                
+            }
             
-            for (thanhvien tv : listThanhVien) {
-                if (tv.getMaTV().equals(member.getThanhvien())) {
-                    HoTen = tv.getHoTen();
-                    break;
-                }
+        }
+
+        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+            // Set string false = "Không mượn":
+            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
+                                                                                                      // availability
+                                                                                                      // from the map
+
+            String studentId = "Không";
+            if (borrowedStudentId.containsKey(device.getMaTB())) {
+                studentId = borrowedStudentId.get(device.getMaTB()).toString();
             }
-            for (thietbi tb : listThietbi){
-                if (tb.getMaTB()== member.getThietbi()) {
-                maTB = tb.getMaTB();
-                tenTB = tb.getTenTB();
-                mota = tb.getMoTaTB();         
-                }
-            }
-            model_table.addRow(new Object[]{
-                maTB,
-                tenTB,
-                mota,
-                member.getThanhvien(),
-                HoTen,
-                member.getTGMuon()
+
+            model_table.addRow(new Object[] {
+                    device.getMaTB(),
+                    device.getTenTB(),
+                    device.getMoTaTB(),
+                    isDeviceAvailable,
+                    studentId,
+                    ngayMuon
             });
+        }
+    }
+    public void updateThietbiDaMuon() {
+        deviceAvailabilityMap.clear();
+        thongtinsdBLL.getInstance().refresh();
+        thietbiBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
+
+        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
+
+        String ngayMuon = "";String ngayTra = "";
+        // Use HashMap to store device availability
+        for (thongtinsd info : allInfo) {
+            if (info.getThietbi() != null) {
+                if (info.getTGMuon() != null && info.getTGTra() == null) {
+                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
+                    // Set string true = "Đang mượn":
+                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
+                }
+                ngayMuon = info.getTGMuon().toString();
+                ngayTra = info.getTGTra().toString();
+            }
+            
+        }
+
+        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+            // Set string false = "Không mượn":
+            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
+                                                                                                      // availability
+                                                                                                      // from the map
+
+            String studentId = "Không";
+            if (borrowedStudentId.containsKey(device.getMaTB())) {
+                studentId = borrowedStudentId.get(device.getMaTB()).toString();
+            }
+
+            model_table.addRow(new Object[] {
+                    device.getMaTB(),
+                    device.getTenTB(),
+                    device.getMoTaTB(),
+                    isDeviceAvailable, // Add device availability to the row
+                    studentId,
+                    ngayMuon,
+                    ngayTra
+            });
+        }
+    }
+    
+    public void updateThietbiDangMuon() {
+        deviceAvailabilityMap.clear();
+        thongtinsdBLL.getInstance().refresh();
+        thietbiBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
+
+        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
+
+        String ngayMuon = "";String ngayTra = "";
+        // Use HashMap to store device availability
+        for (thongtinsd info : allInfo) {
+            if (info.getThietbi() != null) {
+                if (info.getTGMuon() != null && info.getTGTra() == null) {
+                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
+                    // Set string true = "Đang mượn":
+                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
+                }
+                ngayMuon = info.getTGMuon().toString();
+                ngayTra = info.getTGTra().toString();
+            }
+            
+        }
+
+        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+            // Set string false = "Không mượn":
+            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
+                                                                                                      // availability
+                                                                                                      // from the map
+
+            String studentId = "Không";
+            if (borrowedStudentId.containsKey(device.getMaTB())) {
+                studentId = borrowedStudentId.get(device.getMaTB()).toString();
+            }
+
+            model_table.addRow(new Object[] {
+                    device.getMaTB(),
+                    device.getTenTB(),
+                    device.getMoTaTB(),
+                    isDeviceAvailable, // Add device availability to the row
+                    studentId,
+                    ngayTra
+            });
+        }
+    }
+    
+    public void showSearchResult(java.util.List<thietbi> search) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (thietbi member : search) {
+            model.addRow(new Object[] {
+                    member.getMaTB(),
+                    member.getTenTB(),
+                    member.getMoTaTB(),
+                    
+            });
+        }
+
+        if (search.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
+            // Refresh table:
+            updateThietbiFromList();
         }
     }
 }
