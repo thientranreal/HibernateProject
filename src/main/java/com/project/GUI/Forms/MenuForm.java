@@ -5,6 +5,7 @@ import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.MenuPanel;
 import com.project.GUI.Forms.QLThanhVien.QLThanhVienPanel;
 import com.project.GUI.Forms.QLThietBi.QLThietBiPanel;
+import com.project.GUI.Forms.QLThongTinSD.QLThongTinSDPanel;
 import com.project.GUI.Forms.QLViPham.DanhSachViPham;
 import com.project.GUI.Forms.ThongKe.ThongKe;
 
@@ -16,6 +17,7 @@ public class MenuForm extends JFrame {
     private ButtonMenu btnQLTB;
     private  ButtonMenu btnXLVP;
     private ButtonMenu btnTK;
+    private ButtonMenu btnTTSD;
     private JPanel pnlBtn;
     private JPanel pnlForm;
 
@@ -39,6 +41,14 @@ public class MenuForm extends JFrame {
         btnQLTB.addActionListener(e -> {
             pnlForm.removeAll();
             pnlForm.add(new QLThietBiPanel());
+            pnlForm.revalidate();
+            pnlForm.repaint();
+        });
+
+//          Add event listener btn Thong tin su dung:
+        btnTTSD.addActionListener(e -> {
+            pnlForm.removeAll();
+            pnlForm.add(new QLThongTinSDPanel());
             pnlForm.revalidate();
             pnlForm.repaint();
         });
@@ -71,6 +81,8 @@ public class MenuForm extends JFrame {
 
         btnQLTB = new ButtonMenu("Quản lý thiết bị");
 
+        btnTTSD = new ButtonMenu("Quản lý thông tin sử dụng");
+
         btnXLVP = new ButtonMenu("Xử lý vi phạm");
 
         btnTK = new ButtonMenu("Thống kê");
@@ -91,6 +103,9 @@ public class MenuForm extends JFrame {
 
         constraints.gridy = 3;
         pnlBtn.add(btnTK, constraints);
+
+        constraints.gridy = 4;
+        pnlBtn.add(btnTTSD, constraints);
 
         pnlForm = new FormPanel();
         pnlForm.add(new QLThanhVienPanel());
