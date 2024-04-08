@@ -36,6 +36,15 @@ public class xulyBLL {
         return xulyDAL.getInstance().getHandleById(id);
     }
 
+    public xuly getModelByMaTV(BigInteger id) {
+        for (xuly processing : processings) {
+            if (processing.getMaTV().equals(id)) {
+                return processing;
+            }
+        }
+        return null;
+    }
+
     public int addModel(xuly processing) {
         // MaTV, HinhThucXL can't be null:
         if (processing.getMaTV().compareTo(BigInteger.ZERO) <= 0 || processing.getHinhThucXL().isEmpty()
