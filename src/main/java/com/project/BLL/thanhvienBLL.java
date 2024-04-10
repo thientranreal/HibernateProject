@@ -126,4 +126,7 @@ public class thanhvienBLL {
     public List<thanhvien> searchListThanhVienByNganh(String keyword) {
         return thanhvienDAL.getInstance().searchByNganh(keyword);
     }
+    public List<thanhvien> searchListThanhVienByKhoaAndNganh(String keywordNganh,String keywordKhoa) {
+        return thanhvienDAL.getInstance().searchByNganhAndKhoa(keywordNganh,keywordKhoa);
+    }
 }
