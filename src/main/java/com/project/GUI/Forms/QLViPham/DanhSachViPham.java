@@ -33,13 +33,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class DanhSachViPham extends JPanel {
 
-    private static JTable table;
+    public final JTable table;
 
     public DanhSachViPham() {
-        initCompontent();
-    }
-
-    public void initCompontent() {
         pnlMain = new FormPanel();
         lbTitle = new FormLabel("Danh sách vi phạm");
         pnlButtons = new FormPanel();
@@ -65,7 +61,11 @@ public class DanhSachViPham extends JPanel {
         gbc = new GridBagConstraints();
 
         // add button to pnlButtons
-        btnAdd.addActionListener(actionAdd);
+        //btnAdd.addActionListener(actionAdd);
+        btnAdd.addActionListener(e -> {
+            ThaoTac thaotac = new ThaoTac();
+            thaotac.setVisible(true);
+        });
         pnlButtons.add(btnAdd);
         pnlButtons.add(btnDel);
 
@@ -78,7 +78,6 @@ public class DanhSachViPham extends JPanel {
         pnlSearch.add(inputSearch);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
-
         // add pnlSearch to pnlMain
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -143,17 +142,19 @@ public class DanhSachViPham extends JPanel {
                 }
             }
         });
-        btnRefresh.addActionListener((var e) -> {
-                updateMemberFromList() ;
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 clearForm();
-                
-         });
-        updateMemberFromList();
+                updateMemberFromList();
+            }
+        });
         btnSearch.addActionListener(e -> {
             String searchValue = inputSearch.getText().trim();
             java.util.List<xuly> searchResult = xulyBLL.getInstance().searchListThanhVien(searchValue);
             showSearchResult(searchResult);
         });
+        updateMemberFromList();
     }
     private JPanel pnlMain;
     private FormLabel lbTitle;
@@ -167,25 +168,14 @@ public class DanhSachViPham extends JPanel {
     private JButton btnDelAll;
     private JButton btnSearch;
 
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame();
-//        frame.add(new DanhSachViPham());
-//        frame.setVisible(true);
-//    }
-    public ActionListener actionAdd = e -> {
-        ThaoTac thaoTac = new ThaoTac();
-        thaoTac.setVisible(true);
-    };
-
-    public void updateMemberFromList() {
+    public final void updateMemberFromList() {
         String handleStatus = null;
         xulyBLL.getInstance().refresh();
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         model_table.setRowCount(0);
-
+        
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
-
         for (xuly member : xulyBLL.getInstance().getAllModels()) {
             model_table.addRow(new Object[]{
                 member.getMaXL(),
@@ -195,9 +185,8 @@ public class DanhSachViPham extends JPanel {
                 member.getNgayXL(),
                 member.getTrangThaiXL()
             });
-        }
+        }  
     }
-
     public void deleteMember(int id) {
         try {
             if (xulyBLL.getInstance().deleteModel(id)) {
@@ -207,12 +196,9 @@ public class DanhSachViPham extends JPanel {
             JOptionPane.showMessageDialog(null, "Xóa thất bại");
         }
     }
-
     public void clearForm() {
         inputSearch.setText("");
-        updateMemberFromList() ;
     }
-
     public void showSearchResult(java.util.List<xuly> search) {
         String handleStatus = null;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
