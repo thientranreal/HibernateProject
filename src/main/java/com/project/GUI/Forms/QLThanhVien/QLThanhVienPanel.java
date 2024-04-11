@@ -4,6 +4,7 @@ import com.project.BLL.thanhvienBLL;
 import com.project.BLL.thongtinsdBLL;
 import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.Table.TableCustom;
+import com.project.GUI.Components.TextFields.IDField;
 import com.project.GUI.Forms.QLViPham.ThaoTac;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
@@ -24,8 +25,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
@@ -37,7 +36,7 @@ import java.util.List;
 public class QLThanhVienPanel extends FormPanel {
 
     private final JTable table;
-    private final InputField inputMaTV;
+    private final IDField inputMaTV;
     private final SearchField searchInput;
     public static int maSV;
     private final InputField inputYear;
@@ -153,7 +152,7 @@ public class QLThanhVienPanel extends FormPanel {
 
         // Panel check in
         JLabel lbMaTV = new FormLabel("Mã TV");
-        inputMaTV = new InputField(20);
+        inputMaTV = new IDField(20);
         JButton btnCheckIn = new ButtonNormal("Check in");
         JPanel pnlCheckIn = new FormPanel();
         pnlCheckIn.setLayout(new GridBagLayout());
