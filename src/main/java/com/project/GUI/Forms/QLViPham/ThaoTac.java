@@ -40,28 +40,6 @@ public class ThaoTac extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-
-        // Add mouse listener
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mouseDownCompCoords = e.getPoint();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                mouseDownCompCoords = null;
-            }
-        });
-
-        // Add mouse motion listener
-        addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                Point currCoords = e.getLocationOnScreen();
-                setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
-            }
-        });
     }
 
     public void initCompontent() {
@@ -77,7 +55,7 @@ public class ThaoTac extends JFrame {
             "Khóa thẻ vĩnh viễn",
             "Bồi thường",
             "Khóa thẻ 1 tháng và bồi thường",});
-        inputSoTien = new InputField(10);
+        inputSoTien = new InputField(7);
         btnCancel = new ButtonCancel();
         btnSave = new ButtonSave();
         cbThanhVien = new JComboBox<>();
@@ -138,6 +116,27 @@ public class ThaoTac extends JFrame {
         } else {
             cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
         }
+         // Add mouse listener
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseDownCompCoords = e.getPoint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                mouseDownCompCoords = null;
+            }
+        });
+
+        // Add mouse motion listener
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point currCoords = e.getLocationOnScreen();
+                setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+            }
+        });
 //        Combo box xu ly change event
         cbHinhThuc.addActionListener(e -> {
             if (cbHinhThuc.getSelectedIndex() == 3 || cbHinhThuc.getSelectedIndex() == 4) {
@@ -153,15 +152,32 @@ public class ThaoTac extends JFrame {
             this.dispose();
         });
 
-        btnSave.addActionListener(e -> {
-                DanhSachViPham panel = new DanhSachViPham();
-                addXuly(panel);
+        btnSave.addActionListener(e -> {         
+            if (cbThanhVien.getSelectedIndex() >= 0) {
+                //          Lấy ID thành viên từ combo box
+                thanhvien tv = (thanhvien) cbThanhVien.getSelectedItem();
+                BigInteger maTV = tv.getMaTV();
+                Date date = new Date();
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                String hinhthuc = cbHinhThuc.getSelectedItem().toString();
+                Integer sotien = Integer.parseInt(inputSoTien.getText().trim());
+                int trangthai = 0;
+                xuly newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
+
+                int newXulyResult = xulyBLL.getInstance().addModel(newXuly);
+                if (newXulyResult >= 0) {
+                    JOptionPane.showMessageDialog(null, "Thêm thành công");
+                    DanhSachViPham panel = new DanhSachViPham();
+                    panel.updateMemberFromList();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Thêm thất bại");
+                }
                 clearForm();
                 dispose();
-            
+            }
         });
 //                Xử lý tiếp theo, ngày xử lý lấy ngày giờ hiện tại, trạng thái là trạng thái xử lý
-//        Add Btn Save event handler
+//     Add Btn Save event handler
     }
     private JPanel pnlInfor;
     private JPanel pnlButtons;
