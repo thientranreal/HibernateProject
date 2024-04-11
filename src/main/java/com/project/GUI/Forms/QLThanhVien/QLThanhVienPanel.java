@@ -168,7 +168,7 @@ public class QLThanhVienPanel extends FormPanel {
             } else {
 //                Thành viên đang bị vi phạm
                 for (xuly xl : currentMember.getXuly()) {
-                    if (xl.getTrangThaiXL() == 1) {
+                    if (xl.getTrangThaiXL() == 0) {
                         JOptionPane.showMessageDialog(null, "Thành viên vi phạm");
                         return;
                     }
