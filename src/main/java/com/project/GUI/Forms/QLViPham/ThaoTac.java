@@ -50,11 +50,11 @@ public class ThaoTac extends JFrame {
         lbHinhThuc = new FormLabel("Hình thức");
         lbSoTien = new FormLabel("Số tiền");
         cbHinhThuc = new JComboBox<>(new String[]{
-            "Khóa thẻ 1 tháng",
-            "Khóa thẻ 2 tháng",
-            "Khóa thẻ vĩnh viễn",
-            "Bồi thường",
-            "Khóa thẻ 1 tháng và bồi thường",
+                "Khóa thẻ 1 tháng",
+                "Khóa thẻ 2 tháng",
+                "Khóa thẻ vĩnh viễn",
+                "Bồi thường",
+                "Khóa thẻ 1 tháng và bồi thường",
         });
         inputSoTien = new InputField(7);
         btnCancel = new ButtonCancel();
@@ -114,7 +114,7 @@ public class ThaoTac extends JFrame {
             for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
                 cbThanhVien.addItem(tv);
             }
-        } 
+        }
         else {
             cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
         }
