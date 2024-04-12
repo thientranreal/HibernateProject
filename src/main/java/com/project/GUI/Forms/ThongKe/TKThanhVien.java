@@ -147,7 +147,7 @@ public class TKThanhVien extends JPanel {
             }else if((searchValue == null || searchValue.trim().isEmpty()) && (searchValue2 == null || searchValue2.trim().isEmpty())){
                 List<thanhvien> memberByTimestamp = checkValidTimestamp(enterTimestamp, enterTimestamp2);
                 showSearchResult(memberByTimestamp);
-            } 
+            } // chưa sửa được
         });
 
     }  
