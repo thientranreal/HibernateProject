@@ -13,13 +13,9 @@ import javax.swing.table.DefaultTableModel;
 
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
+import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
-import com.project.GUI.Components.Buttons.ButtonAdd;
-import com.project.GUI.Components.Buttons.ButtonDel;
-import com.project.GUI.Components.Buttons.ButtonExcel;
-import com.project.GUI.Components.Buttons.ButtonRefresh;
-import com.project.GUI.Components.Buttons.ButtonSearch;
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.Forms.QLThongTinSD.ThongTinThanhVien;
@@ -41,13 +37,12 @@ public class QLThietBiPanel extends FormPanel {
     private final JTable table;
     public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     private final SearchField searchInput;
-    public static BigInteger maTB;
 
     public QLThietBiPanel() {
         // Add constraints to make button align vertically
         GridBagConstraints constraints = new GridBagConstraints();
         // Add padding bottom 10px
-        constraints.insets = new Insets(0, 0, 10, 0);
+        constraints.insets = new Insets(0, 10, 10, 10);
 
         // Set GridBagLayout layout
         setLayout(new BorderLayout());
@@ -64,11 +59,34 @@ public class QLThietBiPanel extends FormPanel {
         JButton btnSearch = new ButtonSearch();
         JButton btnRefresh = new ButtonRefresh();
 
+        JLabel lbDelAll = new FormLabel("Chọn loại thiết bị để xóa hết");
+        JComboBox<String> cbLoaiTB = new JComboBox<>(new String[] {
+            "Micro",
+            "Máy chiếu",
+            "Máy ảnh",
+            "Cassette",
+            "Tivi",
+            "Quạt đứng"
+        });
+        JButton btnDelAll = new ButtonDelAll();
+
+        JPanel pnlDelAll = new FormPanel();
+        pnlDelAll.setLayout(new GridBagLayout());
+
+        pnlDelAll.add(lbDelAll);
+
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridy = 1;
+        pnlDelAll.add(cbLoaiTB, constraints);
+        constraints.gridx = 1;
+        pnlDelAll.add(btnDelAll, constraints);
+
         // Create panel to contain search input
         JPanel pnlSearch = new FormPanel();
         pnlSearch.add(searchInput);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
+        pnlSearch.add(pnlDelAll);
 
         // Create table for showing data
         table = new JTable();

@@ -1,6 +1,7 @@
 package com.project.GUI.Forms.QLThanhVien;
 
 import com.project.BLL.thanhvienBLL;
+import com.project.GUI.Components.TextFields.IDField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.Buttons.ButtonExcel;
@@ -29,7 +30,7 @@ public class ThemThanhVienForm extends JFrame {
     private ButtonCancel btnCancel;
     private ButtonRefresh btnRefresh;
     private ButtonExcel btnExcel;
-    private InputField inputMaTV;
+    private IDField inputMaTV;
     private InputField inputHoTen;
     private InputField inputKhoa;
     private InputField inputNganh;
@@ -85,7 +86,7 @@ public class ThemThanhVienForm extends JFrame {
 
 //        Create input field
         JLabel lbMaTV = new FormLabel("Mã TV: ");
-        inputMaTV = new InputField(20);
+        inputMaTV = new IDField(20);
         JLabel lbHoTen = new FormLabel("Họ tên: ");
         inputHoTen = new InputField(20);
         JLabel lbKhoa = new FormLabel("Khoa: ");

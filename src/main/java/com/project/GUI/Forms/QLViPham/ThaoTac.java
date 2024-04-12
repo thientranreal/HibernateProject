@@ -42,6 +42,7 @@ public class ThaoTac extends JFrame {
         setVisible(true);
     }
 
+
     public void initCompontent() {
         root = new FormPanel();
         pnlInfor = new FormPanel();
@@ -61,6 +62,8 @@ public class ThaoTac extends JFrame {
         btnSave = new ButtonSave();
         cbThanhVien = new JComboBox<>();
         inputSoTien.setText("0");
+        inputSoTien.setEditable(false);
+
         inputSoTien.setEditable(false);
 
         GridBagConstraints gbc;
@@ -99,6 +102,7 @@ public class ThaoTac extends JFrame {
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST; // Căn trái cho gridx = 1
         pnlInfor.add(inputSoTien, gbc);
+
 
         root.add(pnlInfor, BorderLayout.CENTER);
 
@@ -146,6 +150,16 @@ public class ThaoTac extends JFrame {
                 return;
             }
             inputSoTien.setText("0");
+            inputSoTien.setEditable(false);
+        });
+
+//        Combo box xu ly change event
+        cbHinhThuc.addActionListener(e -> {
+            if (cbHinhThuc.getSelectedIndex() == 3 || cbHinhThuc.getSelectedIndex() == 4) {
+                inputSoTien.setEditable(true);
+                return;
+            }
+            inputSoTien.setText("");
             inputSoTien.setEditable(false);
         });
 

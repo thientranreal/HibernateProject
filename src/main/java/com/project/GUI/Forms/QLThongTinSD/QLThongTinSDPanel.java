@@ -1,6 +1,7 @@
 package com.project.GUI.Forms.QLThongTinSD;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -83,7 +84,7 @@ public class QLThongTinSDPanel extends FormPanel {
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
         pnlTable.setViewportView(table);
         pnlTable.setBackground(Colors.bgColor);
-
+        pnlTable.setPreferredSize(new Dimension(800, 800));
         TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
 
         // Create panel Show Table
