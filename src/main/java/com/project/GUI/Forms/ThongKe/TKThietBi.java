@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThietBi extends FormPanel {
@@ -121,7 +122,8 @@ public class TKThietBi extends FormPanel {
                         "Mô tả",
                         "Mã TV",
                         "Họ tên",
-                        "Thời gian mượn"
+                        "Thời gian mượn",
+                        "Thời gian Trả"
                 }){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -139,6 +141,19 @@ public class TKThietBi extends FormPanel {
         // add pnlmain to pnl main
         pnlContent.add(pnlTable, BorderLayout.CENTER);
         add(pnlContent, BorderLayout.CENTER);
+        
+        btnSearch.addActionListener((e) -> {
+            String searchValue = inputSearch.getText().trim();
+            String Month = cbMonth.getSelectedItem().toString();
+            if (searchValue != null && cbMonth == null) {
+                List<thietbi> Tbbyname = thietbiBLL.getInstance().searchListThietBi(searchValue);
+                showSearchResult(Tbbyname);
+            }else if (searchValue == null && cbMonth !=null) {
+                List<thietbi> Tbbymonth = thietbiBLL.getInstance().searchListThietBibyMonth(Month);
+                showSearchResult(Tbbymonth);
+            }
+        });
+        
     }
 
     private JPanel pnlContent;
@@ -214,7 +229,7 @@ public class TKThietBi extends FormPanel {
 
         Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
 
-        String ngayMuon = "";
+        String ngayMuon = "";String ngayTra = "";
         
         // Use HashMap to store device availability
         for (thongtinsd info : allInfo) {
@@ -225,7 +240,7 @@ public class TKThietBi extends FormPanel {
                     deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
                 }
                 ngayMuon = info.getTGMuon().toString();
-                
+                ngayTra = info.getTGTra().toString();
             }
             
         }
@@ -247,7 +262,8 @@ public class TKThietBi extends FormPanel {
                     device.getMoTaTB(),
                     isDeviceAvailable,
                     studentId,
-                    ngayMuon
+                    ngayMuon,
+                    ngayTra
             });
         }
     }
@@ -269,7 +285,7 @@ public class TKThietBi extends FormPanel {
         // Use HashMap to store device availability
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
-                if (info.getTGMuon() != null && info.getTGTra() == null) {
+                if (info.getTGMuon() != null) {
                     borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
                     // Set string true = "Đang mượn":
                     deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
@@ -316,18 +332,18 @@ public class TKThietBi extends FormPanel {
         java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
 
         Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
+        List<thongtinsd> listTTSD = thongtinsdBLL.getInstance().getAllModels();
 
-        String ngayMuon = "";String ngayTra = "";
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis()); 
         // Use HashMap to store device availability
+        
         for (thongtinsd info : allInfo) {
             if (info.getThietbi() != null) {
-                if (info.getTGMuon() != null && info.getTGTra() == null) {
+                if (info.getTGTra().compareTo(currentTimestamp) > 0) {
                     borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
                     // Set string true = "Đang mượn":
                     deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
                 }
-                ngayMuon = info.getTGMuon().toString();
-                ngayTra = info.getTGTra().toString();
             }
             
         }
@@ -335,12 +351,18 @@ public class TKThietBi extends FormPanel {
         for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
             // Set string false = "Không mượn":
             String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
-                                                                                                      // availability
+            String ngayTra ="";                                                                       // availability
                                                                                                       // from the map
 
             String studentId = "Không";
             if (borrowedStudentId.containsKey(device.getMaTB())) {
                 studentId = borrowedStudentId.get(device.getMaTB()).toString();
+            }
+            for(thongtinsd ttsd : listTTSD){
+                if (ttsd.getThietbi().equals(device.getMaTB())) {
+                    ngayTra = ttsd.getTGTra().toString();
+                }
+                
             }
 
             model_table.addRow(new Object[] {
@@ -352,19 +374,35 @@ public class TKThietBi extends FormPanel {
                     ngayTra
             });
         }
-    }
+    }// không hiểu vì sao không thể get value trong get thiết bị
     
     public void showSearchResult(java.util.List<thietbi> search) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-
-        for (thietbi member : search) {
-            model.addRow(new Object[] {
-                    member.getMaTB(),
-                    member.getTenTB(),
-                    member.getMoTaTB(),
+        
+        for (thietbi tb : search) {
+            for(thongtinsd ttsd : thongtinsdBLL.getInstance().getAllModels()){
+                for(thanhvien tv : thanhvienBLL.getInstance().getAllModels()){
+                    if (tb.getMaTB() == ttsd.getThietbi() && ttsd.getThanhvien() == tv.getMaTV()) {
+                        String maTV = ttsd.getThanhvien().toString();
+                        String HoTen = tv.getHoTen();
+                        String NgayMuon = ttsd.getTGMuon().toString();
+                        String NgayTra = ttsd.getTGTra().toString();
+                        model.addRow(new Object[] {
+                        tb.getMaTB(),
+                        tb.getTenTB(),
+                        tb.getMoTaTB(),
+                        maTV,
+                        HoTen,
+                        NgayMuon,
+                        NgayTra
                     
             });
+                    }
+                }
+                
+            }
+            
         }
 
         if (search.size() == 0) {
