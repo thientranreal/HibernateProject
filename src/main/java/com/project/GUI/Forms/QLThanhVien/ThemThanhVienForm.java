@@ -37,8 +37,11 @@ public class ThemThanhVienForm extends JFrame {
     private InputField inputSDT;
     private InputField inputPassword;
     private InputField inputEmail;
+    private JButton refresh;
+    private JPanel pnlInput;
 
-    public ThemThanhVienForm() {
+    public ThemThanhVienForm(JButton refresh) {
+        this.refresh = refresh;
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -101,7 +104,7 @@ public class ThemThanhVienForm extends JFrame {
         inputEmail = new InputField(20);
 
 //        Create panel to contain input field
-        JPanel pnlInput = new FormPanel();
+        pnlInput = new FormPanel();
         pnlInput.setLayout(new GridBagLayout());
 //        Add constraints
         GridBagConstraints constraints = new GridBagConstraints();
@@ -186,48 +189,37 @@ public class ThemThanhVienForm extends JFrame {
             dispose();
         });
 
-        btnSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMember();
-                clearForm();
-                dispose();
-            }
+        btnSave.addActionListener(e -> {
+            addMember();
+            refresh.doClick();
+            clearForm();
         });
 
-        btnExcel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if(!Objects.requireNonNull(thanhvienExcelUtil.readthanhviensFromExcel()).isEmpty()) {
-                        JOptionPane.showMessageDialog(null,"Thêm thành công");
+        btnExcel.addActionListener(e -> {
+            try {
+                if(!Objects.requireNonNull(thanhvienExcelUtil.readthanhviensFromExcel()).isEmpty()) {
+                    JOptionPane.showMessageDialog(null,"Thêm thành công");
 
-                    }else {
-                        JOptionPane.showMessageDialog(null,"Thêm thất bại");
-                    }
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                }else {
+                    JOptionPane.showMessageDialog(null,"Thêm thất bại");
                 }
+
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearForm();
-            }
-        });
+        btnRefresh.addActionListener(e -> clearForm());
 
         return root;
     }
 
     public void clearForm() {
-        inputMaTV.setText("");
-        inputHoTen.setText("");
-        inputKhoa.setText("");
-        inputNganh.setText("");
-        inputSDT.setText("");
+        for (Component comp : pnlInput.getComponents()) {
+            if (comp instanceof JTextField input) {
+                input.setText("");
+            }
+        }
     }
 
     public void addMember() {

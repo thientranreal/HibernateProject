@@ -1,12 +1,10 @@
 package com.project.GUI.Forms.QLViPham;
 
-import com.project.BLL.thanhvienBLL;
 import com.project.BLL.xulyBLL;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -23,12 +21,9 @@ import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
-import com.project.models.thanhvien;
 import com.project.models.xuly;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.math.BigInteger;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class DanhSachViPham extends JPanel {
@@ -63,7 +58,7 @@ public class DanhSachViPham extends JPanel {
         // add button to pnlButtons
         //btnAdd.addActionListener(actionAdd);
         btnAdd.addActionListener(e -> {
-            ThaoTac thaotac = new ThaoTac();
+            ThaoTac thaotac = new ThaoTac(btnRefresh);
             thaotac.setVisible(true);
         });
         pnlButtons.add(btnAdd);
@@ -142,12 +137,9 @@ public class DanhSachViPham extends JPanel {
                 }
             }
         });
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearForm();
-                updateMemberFromList();
-            }
+        btnRefresh.addActionListener(e -> {
+            clearForm();
+            updateMemberFromList();
         });
         btnSearch.addActionListener(e -> {
             String searchValue = inputSearch.getText().trim();
