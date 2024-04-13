@@ -14,25 +14,16 @@ import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Buttons.ButtonSave;
+import com.project.GUI.Components.TextFields.IDField;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.models.thanhvien;
 import com.project.models.xuly;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.sql.*;
-import java.util.function.Consumer;
 
 public class ThaoTac extends JFrame {
 
     public ThaoTac() {
-        this(null);
-    }
-
-    public ThaoTac(BigInteger memberID) {
-        this.memberID = memberID;
         initCompontent();
 
         setUndecorated(true);
@@ -40,6 +31,25 @@ public class ThaoTac extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+    public ThaoTac(JButton refresh) {
+        this();
+        this.refresh = refresh;
+    }
+
+    public ThaoTac(BigInteger memberID) {
+        this();
+        this.memberID = memberID;
+
+        if (this.memberID == null) {
+            //        Load thanh vien into JCombo Box
+            for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
+                cbThanhVien.addItem(tv);
+            }
+        }
+        else {
+            cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
+        }
     }
 
 
@@ -57,14 +67,12 @@ public class ThaoTac extends JFrame {
                 "Bồi thường",
                 "Khóa thẻ 1 tháng và bồi thường",
         });
-        inputSoTien = new InputField(7);
+        inputSoTien = new IDField(7);
         btnCancel = new ButtonCancel();
         btnSave = new ButtonSave();
         cbThanhVien = new JComboBox<>();
-        inputSoTien.setText("0");
         inputSoTien.setEditable(false);
 
-        inputSoTien.setEditable(false);
 
         GridBagConstraints gbc;
 
@@ -113,15 +121,6 @@ public class ThaoTac extends JFrame {
         // Add panel root to JFrame
         add(root);
 
-        if (this.memberID == null) {
-            //        Load thanh vien into JCombo Box
-            for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
-                cbThanhVien.addItem(tv);
-            }
-        }
-        else {
-            cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
-        }
          // Add mouse listener
         addMouseListener(new MouseAdapter() {
             @Override
@@ -149,19 +148,10 @@ public class ThaoTac extends JFrame {
                 inputSoTien.setEditable(true);
                 return;
             }
-            inputSoTien.setText("0");
-            inputSoTien.setEditable(false);
-        });
-
-//        Combo box xu ly change event
-        cbHinhThuc.addActionListener(e -> {
-            if (cbHinhThuc.getSelectedIndex() == 3 || cbHinhThuc.getSelectedIndex() == 4) {
-                inputSoTien.setEditable(true);
-                return;
-            }
             inputSoTien.setText("");
             inputSoTien.setEditable(false);
         });
+
 
 //        Add Btn Cancel event handler
         btnCancel.addActionListener(e -> {
@@ -176,19 +166,27 @@ public class ThaoTac extends JFrame {
                 Date date = new Date();
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 String hinhthuc = cbHinhThuc.getSelectedItem().toString();
-                Integer sotien = Integer.parseInt(inputSoTien.getText().trim());
                 int trangthai = 0;
-                xuly newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
+                xuly newXuly;
+                if (inputSoTien.getText().equals("")) {
+                    newXuly = new xuly(maTV, hinhthuc, sqlDate, trangthai);
+                }
+                else {
+                    Integer sotien = Integer.parseInt(inputSoTien.getText());
+                    newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
+                }
 
                 int newXulyResult = xulyBLL.getInstance().addModel(newXuly);
                 if (newXulyResult >= 0) {
                     JOptionPane.showMessageDialog(null, "Thêm thành công");
-                    DanhSachViPham panel = new DanhSachViPham();
-                    panel.updateMemberFromList();
+
+                    inputSoTien.setText("");
+                    if (this.refresh != null) {
+                        this.refresh.doClick();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Thêm thất bại");
                 }
-                clearForm();
                 dispose();
             }
         });
@@ -208,31 +206,5 @@ public class ThaoTac extends JFrame {
     private JPanel root;
     private JComboBox<thanhvien> cbThanhVien;
     private BigInteger memberID;
-
-    public void clearForm() {
-        inputSoTien.setText("");
-    }
-
-    public void addXuly(DanhSachViPham danhSachViPhamPanel) {
-        if (cbThanhVien.getSelectedIndex() >= 0) {
-            //          Lấy ID thành viên từ combo box
-            thanhvien tv = (thanhvien) cbThanhVien.getSelectedItem();
-            BigInteger maTV = tv.getMaTV();
-            Date date = new Date();
-            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-            String hinhthuc = cbHinhThuc.getSelectedItem().toString();
-            Integer sotien = Integer.parseInt(inputSoTien.getText().trim());
-            int trangthai = 0;
-            xuly newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
-            int newXulyResult = xulyBLL.getInstance().addModel(newXuly);
-            if (newXulyResult >= 0) {
-                JOptionPane.showMessageDialog(null, "Thêm thành công");
-                
-                danhSachViPhamPanel.updateMemberFromList();
-            } else {
-                JOptionPane.showMessageDialog(null, "Thêm thất bại");
-            }
-        }
-
-    }
+    private JButton refresh;
 }

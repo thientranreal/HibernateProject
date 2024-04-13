@@ -27,9 +27,11 @@ public class ThemThietBiForm extends JFrame {
     private InputField inputTenTB;
     private AreaField inputMoTa;
     private IDField inputMaTB;
-    //private InputField inputMaTB;
+    private JButton refresh;
+    private JPanel pnlInput;
 
-    public ThemThietBiForm() {
+    public ThemThietBiForm(JButton refresh) {
+        this.refresh = refresh;
         // Add Content into JFrame
         add(initCompontent());
 
@@ -84,7 +86,7 @@ public class ThemThietBiForm extends JFrame {
         JScrollPane scrollMota = new JScrollPane(inputMoTa);
 
         // Create panel to contain input field
-        JPanel pnlInput = new FormPanel();
+        pnlInput = new FormPanel();
         pnlInput.setLayout(new GridBagLayout());
         // Add constraints
         GridBagConstraints constraints = new GridBagConstraints();
@@ -166,8 +168,7 @@ public class ThemThietBiForm extends JFrame {
                 // If success
                 JOptionPane.showMessageDialog(null, "Thêm mới thiết bị thành công", "Thành công",
                         JOptionPane.INFORMATION_MESSAGE);
-                QLThietBiPanel panel = new QLThietBiPanel();
-                panel.updateThietBiFromList();
+                refresh.doClick();
                 clearForm();
             } else {
                 JOptionPane.showMessageDialog(null, "Thêm mới thiết bị thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -197,7 +198,11 @@ public class ThemThietBiForm extends JFrame {
     }
 
     public void clearForm() {
-        inputTenTB.setText("");
+        for (Component comp : pnlInput.getComponents()) {
+            if (comp instanceof JTextField input) {
+                input.setText("");
+            }
+        }
         inputMoTa.setText("");
     }
 

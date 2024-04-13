@@ -45,6 +45,13 @@ public class xuly {
         this.TrangThaiXL = TrangThaiXL;
     }
 
+    public xuly(BigInteger maTV, String hinhThucXL, Date ngayXL, int trangThaiXL) {
+        this.MaTV = maTV;
+        this.HinhThucXL = hinhThucXL;
+        this.NgayXL = ngayXL;
+        this.TrangThaiXL = trangThaiXL;
+    }
+
     public int getMaXL() {
         return MaXL;
     }

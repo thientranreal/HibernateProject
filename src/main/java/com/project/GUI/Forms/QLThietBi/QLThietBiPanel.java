@@ -156,7 +156,7 @@ public class QLThietBiPanel extends FormPanel {
         updateThietBiFromList();
 
         btnAdd.addActionListener(e -> {
-            new ThemThietBiForm();
+            new ThemThietBiForm(btnRefresh);
         });
 
         btnDel.addActionListener(e -> {

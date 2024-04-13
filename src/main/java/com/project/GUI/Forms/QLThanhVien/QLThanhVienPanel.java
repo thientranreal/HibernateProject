@@ -226,7 +226,7 @@ public class QLThanhVienPanel extends FormPanel {
         // Event listener
         // Btn Add event listener
         btnAdd.addActionListener(e -> {
-            new ThemThanhVienForm();
+            new ThemThanhVienForm(btnRefresh);
         });
 
         // Btn Borrow event listener
