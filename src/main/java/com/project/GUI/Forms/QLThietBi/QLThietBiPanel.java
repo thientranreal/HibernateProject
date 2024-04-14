@@ -13,14 +13,17 @@ import javax.swing.table.DefaultTableModel;
 
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
+import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
+
 import com.project.GUI.Components.Buttons.ButtonAdd;
 import com.project.GUI.Components.Buttons.ButtonDel;
 import com.project.GUI.Components.Buttons.ButtonDelAll;
 import com.project.GUI.Components.Buttons.ButtonExcel;
 import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSearch;
+
 import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.Forms.QLThongTinSD.ThongTinThanhVien;
@@ -42,13 +45,12 @@ public class QLThietBiPanel extends FormPanel {
     private final JTable table;
     public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     private final SearchField searchInput;
-    public static BigInteger maTB;
 
     public QLThietBiPanel() {
         // Add constraints to make button align vertically
         GridBagConstraints constraints = new GridBagConstraints();
         // Add padding bottom 10px
-        constraints.insets = new Insets(0, 0, 10, 0);
+        constraints.insets = new Insets(0, 10, 10, 10);
 
         // Set GridBagLayout layout
         setLayout(new BorderLayout());
@@ -92,6 +94,7 @@ public class QLThietBiPanel extends FormPanel {
         pnlSearch.add(searchInput);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnRefresh);
+        pnlSearch.add(pnlDelAll);
 
         // Create table for showing data
         table = new JTable();
@@ -161,7 +164,7 @@ public class QLThietBiPanel extends FormPanel {
         updateThietBiFromList();
 
         btnAdd.addActionListener(e -> {
-            new ThemThietBiForm();
+            new ThemThietBiForm(btnRefresh);
         });
 
         btnDel.addActionListener(e -> {

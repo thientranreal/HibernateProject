@@ -8,6 +8,7 @@ import com.project.BLL.thietbiBLL;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.TextFields.AreaField;
+import com.project.GUI.Components.TextFields.IDField;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
@@ -25,9 +26,12 @@ public class ThemThietBiForm extends JFrame {
     private Point mouseDownCompCoords;
     private InputField inputTenTB;
     private AreaField inputMoTa;
-    //private InputField inputMaTB;
+    private IDField inputMaTB;
+    private JButton refresh;
+    private JPanel pnlInput;
 
-    public ThemThietBiForm() {
+    public ThemThietBiForm(JButton refresh) {
+        this.refresh = refresh;
         // Add Content into JFrame
         add(initCompontent());
 
@@ -73,8 +77,8 @@ public class ThemThietBiForm extends JFrame {
         pnlHeader.add(lbHeader);
 
         // Create input field
-        //JLabel lbMaTB = new FormLabel("Mã thiết bị: ");
-        //inputMaTB = new InputField(20);
+        JLabel lbMaTB = new FormLabel("Mã thiết bị: ");
+        inputMaTB = new IDField(20);
         JLabel lbTenTB = new FormLabel("Tên thiết bị: ");
         inputTenTB = new InputField(20);
         JLabel lbMoTa = new FormLabel("Mô tả: ");
@@ -82,30 +86,28 @@ public class ThemThietBiForm extends JFrame {
         JScrollPane scrollMota = new JScrollPane(inputMoTa);
 
         // Create panel to contain input field
-        JPanel pnlInput = new FormPanel();
+        pnlInput = new FormPanel();
         pnlInput.setLayout(new GridBagLayout());
         // Add constraints
         GridBagConstraints constraints = new GridBagConstraints();
         // Add padding bottom 10px
         constraints.insets = new Insets(0, 0, 10, 0);
 
-        int y = 0;
         // Row 0
-        constraints.gridx = 0;
-        constraints.gridy = y++;
-        //pnlInput.add(lbMaTB, constraints);
+        pnlInput.add(lbMaTB, constraints);
         constraints.gridx = 1;
-        //pnlInput.add(inputMaTB, constraints);
+        pnlInput.add(inputMaTB, constraints);
 
+        // Row 1
         constraints.gridx = 0;
-        constraints.gridy = y++;
+        constraints.gridy = 1;
         pnlInput.add(lbTenTB, constraints);
         constraints.gridx = 1;
         pnlInput.add(inputTenTB, constraints);
 
-        // Row 1
+        // Row 2
         constraints.gridx = 0;
-        constraints.gridy = y;
+        constraints.gridy = 2;
         pnlInput.add(lbMoTa, constraints);
         constraints.gridx = 1;
         pnlInput.add(scrollMota, constraints);
@@ -144,19 +146,21 @@ public class ThemThietBiForm extends JFrame {
 
         btnSave.addActionListener(e -> {
             // Get data from input field
+            String maTB = inputMaTB.getText().trim();
             String tenTB = inputTenTB.getText();
             String moTa = inputMoTa.getText();
-            thietbi device = new thietbi(tenTB, moTa);
             // Validate data
             // if (thietbiBLL.getInstance().getModelById(maTB) != null) {
             //     JOptionPane.showMessageDialog(null, "Mã thiết bị đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
             //     return;
             // }
 
-            if (tenTB.isEmpty() || moTa.isEmpty() || tenTB.isBlank() || moTa.isBlank()) {
+            if (maTB.isEmpty() || tenTB.isEmpty() || moTa.isEmpty() || tenTB.isBlank() || moTa.isBlank()) {
                 JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            thietbi device = new thietbi(Integer.parseInt(maTB), tenTB, moTa);
 
             // Save data to database
             int result = thietbiBLL.getInstance().addModel(device);
@@ -164,8 +168,7 @@ public class ThemThietBiForm extends JFrame {
                 // If success
                 JOptionPane.showMessageDialog(null, "Thêm mới thiết bị thành công", "Thành công",
                         JOptionPane.INFORMATION_MESSAGE);
-                QLThietBiPanel panel = new QLThietBiPanel();
-                panel.updateThietBiFromList();
+                refresh.doClick();
                 clearForm();
             } else {
                 JOptionPane.showMessageDialog(null, "Thêm mới thiết bị thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -195,7 +198,11 @@ public class ThemThietBiForm extends JFrame {
     }
 
     public void clearForm() {
-        inputTenTB.setText("");
+        for (Component comp : pnlInput.getComponents()) {
+            if (comp instanceof JTextField input) {
+                input.setText("");
+            }
+        }
         inputMoTa.setText("");
     }
 

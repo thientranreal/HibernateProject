@@ -1,6 +1,7 @@
 package com.project.GUI.Forms.QLThanhVien;
 
 import com.project.BLL.thanhvienBLL;
+import com.project.GUI.Components.TextFields.IDField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.Buttons.ButtonExcel;
@@ -29,15 +30,18 @@ public class ThemThanhVienForm extends JFrame {
     private ButtonCancel btnCancel;
     private ButtonRefresh btnRefresh;
     private ButtonExcel btnExcel;
-    private InputField inputMaTV;
+    private IDField inputMaTV;
     private InputField inputHoTen;
     private InputField inputKhoa;
     private InputField inputNganh;
     private InputField inputSDT;
     private InputField inputPassword;
     private InputField inputEmail;
+    private JButton refresh;
+    private JPanel pnlInput;
 
-    public ThemThanhVienForm() {
+    public ThemThanhVienForm(JButton refresh) {
+        this.refresh = refresh;
 //        Add Content into JFrame
         add(initCompontent());
 
@@ -85,7 +89,7 @@ public class ThemThanhVienForm extends JFrame {
 
 //        Create input field
         JLabel lbMaTV = new FormLabel("Mã TV: ");
-        inputMaTV = new InputField(20);
+        inputMaTV = new IDField(20);
         JLabel lbHoTen = new FormLabel("Họ tên: ");
         inputHoTen = new InputField(20);
         JLabel lbKhoa = new FormLabel("Khoa: ");
@@ -100,7 +104,7 @@ public class ThemThanhVienForm extends JFrame {
         inputEmail = new InputField(20);
 
 //        Create panel to contain input field
-        JPanel pnlInput = new FormPanel();
+        pnlInput = new FormPanel();
         pnlInput.setLayout(new GridBagLayout());
 //        Add constraints
         GridBagConstraints constraints = new GridBagConstraints();
@@ -185,48 +189,37 @@ public class ThemThanhVienForm extends JFrame {
             dispose();
         });
 
-        btnSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMember();
-                clearForm();
-                dispose();
-            }
+        btnSave.addActionListener(e -> {
+            addMember();
+            refresh.doClick();
+            clearForm();
         });
 
-        btnExcel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if(!Objects.requireNonNull(thanhvienExcelUtil.readthanhviensFromExcel()).isEmpty()) {
-                        JOptionPane.showMessageDialog(null,"Thêm thành công");
+        btnExcel.addActionListener(e -> {
+            try {
+                if(!Objects.requireNonNull(thanhvienExcelUtil.readthanhviensFromExcel()).isEmpty()) {
+                    JOptionPane.showMessageDialog(null,"Thêm thành công");
 
-                    }else {
-                        JOptionPane.showMessageDialog(null,"Thêm thất bại");
-                    }
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                }else {
+                    JOptionPane.showMessageDialog(null,"Thêm thất bại");
                 }
+
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearForm();
-            }
-        });
+        btnRefresh.addActionListener(e -> clearForm());
 
         return root;
     }
 
     public void clearForm() {
-        inputMaTV.setText("");
-        inputHoTen.setText("");
-        inputKhoa.setText("");
-        inputNganh.setText("");
-        inputSDT.setText("");
+        for (Component comp : pnlInput.getComponents()) {
+            if (comp instanceof JTextField input) {
+                input.setText("");
+            }
+        }
     }
 
     public void addMember() {

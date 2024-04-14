@@ -4,6 +4,8 @@ import com.project.BLL.thanhvienBLL;
 import com.project.BLL.thongtinsdBLL;
 import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.Table.TableCustom;
+import com.project.GUI.Components.TextFields.IDField;
+import com.project.GUI.Forms.QLViPham.ThaoTac;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.Components.Buttons.*;
 import com.project.GUI.Components.FormLabel;
@@ -27,13 +29,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 public class QLThanhVienPanel extends FormPanel {
 
     private final JTable table;
-    private final InputField inputMaTV;
+    private final IDField inputMaTV;
     private final SearchField searchInput;
     public static int maSV;
     private final InputField inputYear;
@@ -149,20 +152,27 @@ public class QLThanhVienPanel extends FormPanel {
 
         // Panel check in
         JLabel lbMaTV = new FormLabel("Mã TV");
-        inputMaTV = new InputField(20);
+        inputMaTV = new IDField(20);
         JButton btnCheckIn = new ButtonNormal("Check in");
         JPanel pnlCheckIn = new FormPanel();
         pnlCheckIn.setLayout(new GridBagLayout());
         updateMemberFromList();
         btnCheckIn.addActionListener(e -> {
-            BigInteger maSV = new BigInteger(inputMaTV.getText());
+            BigInteger maSV = new BigInteger(inputMaTV.getText().trim());
 
             thanhvien currentMember = thanhvienBLL.getInstance().getModelById(maSV);
 
             if (currentMember == null) {
-                JOptionPane.showMessageDialog(null, "Không tìm thấy thành viên");
-                return;
-            } else if (currentMember != null) {
+                JOptionPane.showMessageDialog(null, "Không phải thành viên");
+            } else {
+//                Thành viên đang bị vi phạm
+                for (xuly xl : currentMember.getXuly()) {
+                    if (xl.getTrangThaiXL() == 0) {
+                        JOptionPane.showMessageDialog(null, "Thành viên vi phạm");
+                        return;
+                    }
+                }
+
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
                 Calendar cal = Calendar.getInstance();
@@ -171,7 +181,7 @@ public class QLThanhVienPanel extends FormPanel {
 
                 Timestamp newTimestamp = new Timestamp(cal.getTimeInMillis());
 
-                BigInteger curSV = new BigInteger(inputMaTV.getText());
+                BigInteger curSV = new BigInteger(inputMaTV.getText().trim());
                 thongtinsd curInfo = new thongtinsd(curSV, null, newTimestamp, null, null, null);
 
                 int result = thongtinsdBLL.getInstance().addModel(curInfo);
@@ -181,7 +191,8 @@ public class QLThanhVienPanel extends FormPanel {
                             + "Tên thành viên: " + currentMember.getHoTen() + "\n"
                             + "Khoa: " + currentMember.getKhoa() + "\n"
                             + "Ngành: " + currentMember.getNganh() + "\n"
-                            + "SĐT: " + currentMember.getSdt());
+                            + "SĐT: " + currentMember.getSdt() + "\n"
+                            + "Thời gian vào: " +  new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(newTimestamp));
                 }
             }
         });
@@ -215,7 +226,7 @@ public class QLThanhVienPanel extends FormPanel {
         // Event listener
         // Btn Add event listener
         btnAdd.addActionListener(e -> {
-            new ThemThanhVienForm();
+            new ThemThanhVienForm(btnRefresh);
         });
 
         // Btn Borrow event listener
@@ -258,17 +269,26 @@ public class QLThanhVienPanel extends FormPanel {
                 JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng muốn xóa", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
-            } else {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thành viên này?");
-                if (choice == JOptionPane.YES_OPTION) {
-                    for (int index : selectedRows) {
-                        BigInteger id = (BigInteger) table.getValueAt(index, 0);
-                        deleteMember(id);
-                    }
-                    clearForm();
-                    updateMemberFromList();
-                }
             }
+            int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thành viên này?");
+            if (choice == JOptionPane.YES_OPTION) {
+                for (int index : selectedRows) {
+                    BigInteger id = (BigInteger) table.getValueAt(index, 0);
+                    deleteMember(id);
+                }
+                clearForm();
+                updateMemberFromList();
+            }
+        });
+
+        btnWarning.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                new ThaoTac((BigInteger) table.getValueAt(selectedRow, 0));
+                return;
+            }
+            JOptionPane.showMessageDialog(null, "Bạn chưa chọn thành viên", "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
 
         btnRefresh.addActionListener(e -> {

@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 public class thietbi {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MaTB")
     private int MaTB;
 
@@ -26,6 +25,12 @@ public class thietbi {
     private List<thongtinsd> thongtinsd;
 
     public thietbi() {
+    }
+
+    public thietbi(int maTB, String TenTB, String MoTaTB) {
+        this.MaTB = maTB;
+        this.TenTB = TenTB;
+        this.MoTaTB = MoTaTB;
     }
 
     public thietbi(String TenTB, String MoTaTB) {

@@ -1,6 +1,7 @@
 package com.project.GUI.Forms.QLViPham;
 // XIN CHAO
 // TAMBIET
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,15 +14,12 @@ import com.project.GUI.Components.Buttons.ButtonCancel;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Buttons.ButtonSave;
+import com.project.GUI.Components.TextFields.IDField;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.models.thanhvien;
 import com.project.models.xuly;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.sql.*;
 
 public class ThaoTac extends JFrame {
 
@@ -34,6 +32,26 @@ public class ThaoTac extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    public ThaoTac(JButton refresh) {
+        this();
+        this.refresh = refresh;
+    }
+
+    public ThaoTac(BigInteger memberID) {
+        this();
+        this.memberID = memberID;
+
+        if (this.memberID == null) {
+            //        Load thanh vien into JCombo Box
+            for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
+                cbThanhVien.addItem(tv);
+            }
+        }
+        else {
+            cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
+        }
+    }
+
 
     public void initCompontent() {
         root = new FormPanel();
@@ -42,11 +60,19 @@ public class ThaoTac extends JFrame {
         lbTV = new FormLabel("Thành viên");
         lbHinhThuc = new FormLabel("Hình thức");
         lbSoTien = new FormLabel("Số tiền");
-        inputHinhThuc = new InputField(7);
-        inputSoTien = new InputField(7);
+        cbHinhThuc = new JComboBox<>(new String[]{
+                "Khóa thẻ 1 tháng",
+                "Khóa thẻ 2 tháng",
+                "Khóa thẻ vĩnh viễn",
+                "Bồi thường",
+                "Khóa thẻ 1 tháng và bồi thường",
+        });
+        inputSoTien = new IDField(7);
         btnCancel = new ButtonCancel();
         btnSave = new ButtonSave();
         cbThanhVien = new JComboBox<>();
+        inputSoTien.setEditable(false);
+
 
         GridBagConstraints gbc;
 
@@ -55,32 +81,36 @@ public class ThaoTac extends JFrame {
 
         pnlInfor.setPreferredSize(new Dimension(400, 200));
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[]{10, 10, 10, 10, 10, 10};
-        gridBagLayout.rowHeights = new int[]{10, 10, 10, 10, 10, 10};
         pnlInfor.setLayout(gridBagLayout);
 
         //add input + txt to pnlInfor
         gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 20, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 20, 20);
+        gbc.anchor = GridBagConstraints.EAST; // Căn phải cho gridx = 0
         pnlInfor.add(lbTV, gbc);
 
-        gbc.gridx = 2;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST; // Căn trái cho gridx = 1
         pnlInfor.add(cbThanhVien, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST; // Căn phải cho gridx = 0
         pnlInfor.add(lbHinhThuc, gbc);
 
-        gbc.gridx = 2;
-        pnlInfor.add(inputHinhThuc, gbc);
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST; // Căn trái cho gridx = 1
+        pnlInfor.add(cbHinhThuc, gbc);
 
-        gbc.gridx = 4;
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST; // Căn phải cho gridx = 0
         pnlInfor.add(lbSoTien, gbc);
 
-        gbc.gridx = 6;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST; // Căn trái cho gridx = 1
         pnlInfor.add(inputSoTien, gbc);
+
 
         root.add(pnlInfor, BorderLayout.CENTER);
 
@@ -91,12 +121,7 @@ public class ThaoTac extends JFrame {
         // Add panel root to JFrame
         add(root);
 
-//        Load thanh vien into JCombo Box
-        for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
-            cbThanhVien.addItem(tv);
-        }
-
-        // Add mouse listener
+         // Add mouse listener
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -117,56 +142,69 @@ public class ThaoTac extends JFrame {
                 setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
+//        Combo box xu ly change event
+        cbHinhThuc.addActionListener(e -> {
+            if (cbHinhThuc.getSelectedIndex() == 3 || cbHinhThuc.getSelectedIndex() == 4) {
+                inputSoTien.setEditable(true);
+                return;
+            }
+            inputSoTien.setText("");
+            inputSoTien.setEditable(false);
+        });
+
 
 //        Add Btn Cancel event handler
         btnCancel.addActionListener(e -> {
             this.dispose();
         });
 
-        btnSave.addActionListener(e -> {
+        btnSave.addActionListener(e -> {         
             if (cbThanhVien.getSelectedIndex() >= 0) {
                 //          Lấy ID thành viên từ combo box
                 thanhvien tv = (thanhvien) cbThanhVien.getSelectedItem();
                 BigInteger maTV = tv.getMaTV();
                 Date date = new Date();
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                String hinhthuc = inputHinhThuc.getText();
-                Integer sotien = Integer.parseInt(inputSoTien.getText().trim());
+                String hinhthuc = cbHinhThuc.getSelectedItem().toString();
                 int trangthai = 0;
-                xuly newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
+                xuly newXuly;
+                if (inputSoTien.getText().equals("")) {
+                    newXuly = new xuly(maTV, hinhthuc, sqlDate, trangthai);
+                }
+                else {
+                    Integer sotien = Integer.parseInt(inputSoTien.getText());
+                    newXuly = new xuly(maTV, hinhthuc, sotien, sqlDate, trangthai);
+                }
 
                 int newXulyResult = xulyBLL.getInstance().addModel(newXuly);
                 if (newXulyResult >= 0) {
                     JOptionPane.showMessageDialog(null, "Thêm thành công");
-                    DanhSachViPham panel = new DanhSachViPham();
-                    panel.updateMemberFromList();
+
+                    inputSoTien.setText("");
+                    if (this.refresh != null) {
+                        this.refresh.doClick();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Thêm thất bại");
                 }
-                clearForm();
                 dispose();
             }
         });
 //                Xử lý tiếp theo, ngày xử lý lấy ngày giờ hiện tại, trạng thái là trạng thái xử lý
-
-//        Add Btn Save event handler
+//     Add Btn Save event handler
     }
     private JPanel pnlInfor;
     private JPanel pnlButtons;
     private FormLabel lbTV;
     private FormLabel lbHinhThuc;
     private FormLabel lbSoTien;
-    private InputField inputHinhThuc;
+    private JComboBox<String> cbHinhThuc;
     private InputField inputSoTien;
     private JButton btnSave;
     private JButton btnCancel;
     private Point mouseDownCompCoords;
     private JPanel root;
     private JComboBox<thanhvien> cbThanhVien;
-
-    public void clearForm() {
-        inputSoTien.setText("");
-        inputHinhThuc.setText("");
-    }
-
+    private BigInteger memberID;
+    private JButton refresh;
 }
