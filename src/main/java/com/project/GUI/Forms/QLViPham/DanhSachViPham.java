@@ -27,11 +27,12 @@ import com.project.models.xuly;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
-import static org.apache.poi.hssf.usermodel.HeaderFooter.date;
 
 public class DanhSachViPham extends JPanel {
 
@@ -94,7 +95,7 @@ public class DanhSachViPham extends JPanel {
                 new Object[][]{},
                 new String[]{"Mã VP",
                     "Mã TV",
-                    "Họ và Tên",
+                    "Họ tên",
                     "Hình thức Xử lý",
                     "Số tiền",
                     "Ngày XL",
@@ -123,17 +124,31 @@ public class DanhSachViPham extends JPanel {
                 Object maTV = table.getValueAt(selectedRow, 1);
                 Object HinhThucXL = table.getValueAt(selectedRow, 3);
                 Object SoTien = table.getValueAt(selectedRow, 4);
+                Object ngayXL = table.getValueAt(selectedRow, 5);
                 Object TrangThaiXL = table.getValueAt(selectedRow, 6);
                 
                 xuly updateXuly = new xuly();
                 updateXuly.setMaXL((int) maXL);
                 updateXuly.setMaTV((BigInteger) maTV);
-                Date date = new Date();
+                Date date;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(ngayXL.toString());
+                } catch (ParseException ex) {
+                    throw new RuntimeException(ex);
+                }
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 updateXuly.setNgayXL(sqlDate);
                 updateXuly.setHinhThucXL(HinhThucXL.toString());
-                updateXuly.setSoTien(Integer.parseInt(SoTien.toString()));
-                 // Kiểm tra nếu TrangThaiXL là 0 hoặc 1 trước khi gán giá trị
+
+                int soTien;
+                try {
+                    soTien = Integer.parseInt(SoTien.toString());
+                    updateXuly.setSoTien(soTien);
+                } catch (NumberFormatException | NullPointerException ex) {
+                    updateXuly.setSoTien(null);
+                }
+
+                // Kiểm tra nếu TrangThaiXL là 0 hoặc 1 trước khi gán giá trị
                 String strTrangThaiXL = TrangThaiXL.toString();
                 int intTrangThaiXL = -1; // Giá trị khởi tạo không hợp lệ
                 try {

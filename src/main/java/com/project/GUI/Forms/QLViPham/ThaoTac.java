@@ -35,21 +35,17 @@ public class ThaoTac extends JFrame {
     public ThaoTac(JButton refresh) {
         this();
         this.refresh = refresh;
+//        Load thanh vien into JCombo Box
+        for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
+            cbThanhVien.addItem(tv);
+        }
     }
 
     public ThaoTac(BigInteger memberID) {
         this();
         this.memberID = memberID;
 
-        if (this.memberID == null) {
-            //        Load thanh vien into JCombo Box
-            for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
-                cbThanhVien.addItem(tv);
-            }
-        }
-        else {
-            cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
-        }
+        cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
     }
 
 
@@ -71,15 +67,6 @@ public class ThaoTac extends JFrame {
         btnCancel = new ButtonCancel();
         btnSave = new ButtonSave();
         cbThanhVien = new JComboBox<>();
-        if (this.memberID == null) {
-            //        Load thanh vien into JCombo Box
-            for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
-                cbThanhVien.addItem(tv);
-            }
-        }
-        else {
-            cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
-        }
         inputSoTien.setEditable(false);
 
 
