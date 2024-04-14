@@ -79,4 +79,15 @@ public class thietbiDAL {
             return query.list();
         }
     }
+    public List<thietbi> searchbyMonth(String monthName) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString =  "SELECT thietbi.MaTB, thietbi.TenTB, thietbi.MoTaTB, thongtinsd.MaTV, thanhvien.HoTen, thongtinsd.TGMuon, thongtinsd.TGTra " +
+             "FROM thietbi " +
+             "INNER JOIN thongtinsd ON thietbi.MaTB = thongtinsd.MaTB " +
+             "WHERE MONTHNAME(thongtinsd.TGMuon) = :keyword";
+            Query<thietbi> query = session.createQuery(queryString, thietbi.class);
+            query.setParameter("keyword", monthName);
+            return query.list();
+        }
+    }
 }

@@ -81,4 +81,7 @@ public class thietbiBLL {
     public List<thietbi> searchListThietBi(String keyword) {
         return thietbiDAL.getInstance().search(keyword);
     }
+    public List<thietbi> searchListThietBibyMonth(String keyword) {
+        return thietbiDAL.getInstance().searchbyMonth(keyword);
+    }
 }

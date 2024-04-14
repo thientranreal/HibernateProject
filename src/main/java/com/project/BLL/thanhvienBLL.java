@@ -120,6 +120,13 @@ public class thanhvienBLL {
     public List<thanhvien> searchListThanhVienByYear(String keyword) {
         return thanhvienDAL.getInstance().searchByYear(keyword);
     }
-
-
+    public List<thanhvien> searchListThanhVienByKhoa(String keyword) {
+        return thanhvienDAL.getInstance().searchByKhoa(keyword);
+    }
+    public List<thanhvien> searchListThanhVienByNganh(String keyword) {
+        return thanhvienDAL.getInstance().searchByNganh(keyword);
+    }
+    public List<thanhvien> searchListThanhVienByKhoaAndNganh(String keywordNganh,String keywordKhoa) {
+        return thanhvienDAL.getInstance().searchByNganhAndKhoa(keywordNganh,keywordKhoa);
+    }
 }
