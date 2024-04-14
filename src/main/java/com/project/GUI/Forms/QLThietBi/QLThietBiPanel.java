@@ -17,6 +17,7 @@ import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Buttons.ButtonAdd;
 import com.project.GUI.Components.Buttons.ButtonDel;
+import com.project.GUI.Components.Buttons.ButtonDelAll;
 import com.project.GUI.Components.Buttons.ButtonExcel;
 import com.project.GUI.Components.Buttons.ButtonRefresh;
 import com.project.GUI.Components.Buttons.ButtonSearch;
