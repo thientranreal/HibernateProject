@@ -34,6 +34,16 @@ public class thietbiBLL {
         return thietbiDAL.getInstance().getById(id);
     }
 
+    public List<thietbi> getModelsByType(String type) {
+        List<thietbi> result = new ArrayList<>();
+        for (thietbi thietbi : devices) {
+            if (thietbi.getTenTB().equals(type)) {
+                result.add(thietbi);
+            }
+        }
+        return result;
+    }
+
     public int addModel(thietbi device) {
         if (device.getTenTB().isEmpty() || device.getTenTB().length() > 50) {
             return -1;

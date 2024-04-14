@@ -64,6 +64,28 @@ public class QLThietBiPanel extends FormPanel {
         JButton btnSearch = new ButtonSearch();
         JButton btnRefresh = new ButtonRefresh();
 
+        JLabel lbDelAll = new FormLabel("Chọn loại thiết bị để xóa hết");
+        JComboBox<String> cbLoaiTB = new JComboBox<>(new String[] {
+                "Micro",
+                "Máy chiếu",
+                "Máy ảnh",
+                "Cassette",
+                "Tivi",
+                "Quạt đứng"
+        });
+        JButton btnDelAll = new ButtonDelAll();
+
+        JPanel pnlDelAll = new FormPanel();
+        pnlDelAll.setLayout(new GridBagLayout());
+
+        pnlDelAll.add(lbDelAll);
+
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridy = 1;
+        pnlDelAll.add(cbLoaiTB, constraints);
+        constraints.gridx = 1;
+        pnlDelAll.add(btnDelAll, constraints);
+
         // Create panel to contain search input
         JPanel pnlSearch = new FormPanel();
         pnlSearch.add(searchInput);
@@ -219,6 +241,28 @@ public class QLThietBiPanel extends FormPanel {
             }
         });
 
+        // Button delete all
+        btnDelAll.addActionListener(e -> {
+            String loaiTB = cbLoaiTB.getSelectedItem().toString();
+            int choice = JOptionPane.showConfirmDialog(null,
+                    "Bạn có chắc chắn muốn xóa tất cả thiết bị " + loaiTB + "?");
+
+            if (choice == JOptionPane.YES_OPTION) {
+                List<thietbi> deleteList = thietbiBLL.getInstance()
+                        .getModelsByType(cbLoaiTB.getSelectedItem().toString());
+                if(deleteList.size() == 0) {
+                    JOptionPane.showMessageDialog(null, "Không có thiết bị " + loaiTB + " nào để xóa");
+                    return;
+                }
+
+                for (int i = 0; i < deleteList.size(); i++) {
+                    thietbiBLL.getInstance().deleteModel(deleteList.get(i).getMaTB());
+                }
+                updateThietBiFromList();
+            } else {
+                return;
+            }
+        });
         // Add listener for table, only click on col: "Sinh viên đang mượn"
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -311,14 +355,14 @@ public class QLThietBiPanel extends FormPanel {
         }
     }
 
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame();
-//
-//        frame.add(new QLThietBiPanel());
-//
-//        frame.setVisible(true);
-//        frame.pack();
-//        frame.setLocationRelativeTo(null);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//    }
+    // public static void main(String[] args) {
+    // JFrame frame = new JFrame();
+    //
+    // frame.add(new QLThietBiPanel());
+    //
+    // frame.setVisible(true);
+    // frame.pack();
+    // frame.setLocationRelativeTo(null);
+    // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // }
 }
