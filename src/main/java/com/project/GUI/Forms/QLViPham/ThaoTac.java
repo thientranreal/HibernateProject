@@ -71,6 +71,15 @@ public class ThaoTac extends JFrame {
         btnCancel = new ButtonCancel();
         btnSave = new ButtonSave();
         cbThanhVien = new JComboBox<>();
+        if (this.memberID == null) {
+            //        Load thanh vien into JCombo Box
+            for (thanhvien tv : thanhvienBLL.getInstance().getAllModels()) {
+                cbThanhVien.addItem(tv);
+            }
+        }
+        else {
+            cbThanhVien.addItem(thanhvienBLL.getInstance().getModelById(this.memberID));
+        }
         inputSoTien.setEditable(false);
 
 

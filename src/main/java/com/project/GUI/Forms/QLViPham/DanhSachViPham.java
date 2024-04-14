@@ -1,5 +1,6 @@
 package com.project.GUI.Forms.QLViPham;
 
+import com.project.BLL.thanhvienBLL;
 import com.project.BLL.xulyBLL;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -21,10 +22,16 @@ import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.Components.TextFields.SearchField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.GUI.GlobalVariables.Fonts;
+import com.project.models.thanhvien;
 import com.project.models.xuly;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.math.BigInteger;
+import java.util.Date;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
+import static org.apache.poi.hssf.usermodel.HeaderFooter.date;
 
 public class DanhSachViPham extends JPanel {
 
@@ -87,13 +94,14 @@ public class DanhSachViPham extends JPanel {
                 new Object[][]{},
                 new String[]{"Mã VP",
                     "Mã TV",
+                    "Họ và Tên",
                     "Hình thức Xử lý",
                     "Số tiền",
                     "Ngày XL",
                     "Trạng thái XL",}) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != getColumnCount() - 5 && column != getColumnCount() - 1;
+                return column == 3 || column == 4 || column == 6;
             }
         });
         // Add data for table
@@ -108,6 +116,54 @@ public class DanhSachViPham extends JPanel {
         TableCustom.apply(pnlTable, TableCustom.TableType.MULTI_LINE);
         add(pnlTable, BorderLayout.CENTER);
         updateMemberFromList();
+        table.getDefaultEditor(String.class).addCellEditorListener(new CellEditorListener() {
+            public void editingStopped(ChangeEvent e) {
+                int selectedRow = table.getSelectedRow();
+                Object maXL = table.getValueAt(selectedRow, 0);
+                Object maTV = table.getValueAt(selectedRow, 1);
+                Object HinhThucXL = table.getValueAt(selectedRow, 3);
+                Object SoTien = table.getValueAt(selectedRow, 4);
+                Object TrangThaiXL = table.getValueAt(selectedRow, 6);
+                
+                xuly updateXuly = new xuly();
+                updateXuly.setMaXL((int) maXL);
+                updateXuly.setMaTV((BigInteger) maTV);
+                Date date = new Date();
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                updateXuly.setNgayXL(sqlDate);
+                updateXuly.setHinhThucXL(HinhThucXL.toString());
+                updateXuly.setSoTien(Integer.parseInt(SoTien.toString()));
+                 // Kiểm tra nếu TrangThaiXL là 0 hoặc 1 trước khi gán giá trị
+                String strTrangThaiXL = TrangThaiXL.toString();
+                int intTrangThaiXL = -1; // Giá trị khởi tạo không hợp lệ
+                try {
+                    intTrangThaiXL = Integer.parseInt(strTrangThaiXL);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Trạng thái chỉ được nhập 0 hoặc 1");
+                    updateMemberFromList();
+                    return; // Dừng việc thực hiện khi có lỗi
+                }
+
+                if (intTrangThaiXL != 0 && intTrangThaiXL != 1) {
+                    JOptionPane.showMessageDialog(null, "Trạng thái chỉ được nhập 0 hoặc 1");
+                    updateMemberFromList();
+                    return; // Dừng việc thực hiện khi có lỗi
+                }
+                updateXuly.setTrangThaiXL(intTrangThaiXL);
+                boolean result1 = xulyBLL.getInstance().updateModel(updateXuly);
+
+                if (result1) {
+                    JOptionPane.showMessageDialog(null, "Lưu thành công");
+                    updateMemberFromList();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lưu thất bại");
+                }
+            }
+
+            public void editingCanceled(ChangeEvent e) {
+                System.out.println("Editing canceled");
+            }
+        });
         btnDel.addActionListener(e -> {
             int[] selectedRows = table.getSelectedRows();
 
@@ -169,9 +225,16 @@ public class DanhSachViPham extends JPanel {
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         for (xuly member : xulyBLL.getInstance().getAllModels()) {
+            thanhvien tvmodel = thanhvienBLL.getInstance().getModelById(member.getMaTV());
+            if (tvmodel != null) {
+                handleStatus = tvmodel.getHoTen();
+            } else {
+                handleStatus = "Không vi phạm";
+            }
             model_table.addRow(new Object[]{
                 member.getMaXL(),
                 member.getMaTV(),
+                handleStatus,
                 member.getHinhThucXL(),
                 member.getSoTien(),
                 member.getNgayXL(),
