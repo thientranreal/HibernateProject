@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Objects;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThanhVien extends JPanel {
@@ -85,12 +86,14 @@ public class TKThanhVien extends JPanel {
                         "Khoa",
                         "Ngành",
                         "Số điện thoại",
+                        "Thời gian vào"
                 }){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }}
-        );updateMemberFromList();
+        );
+        updateMemberFromList();
         // Add data for table
        
         // Create panel to contain table
@@ -132,22 +135,25 @@ public class TKThanhVien extends JPanel {
             
             String searchValue = inputKhoa.getText().trim();
             String searchValue2 = inputNganh.getText().trim();
-            
 
-            List<thanhvien> memberList = checkValidTimestamp(enterTimestamp, enterTimestamp2);
-            if((searchValue2 == null || searchValue2.trim().isEmpty()) && searchValue != null) {
-                List<thanhvien> memberByKhoa = thanhvienBLL.getInstance().searchListThanhVienByKhoa(searchValue);
-                showSearchResult(memberByKhoa);
-            } else if(searchValue == null || searchValue.trim().isEmpty() && searchValue2 != null) {
-                List<thanhvien> memberByNganh = thanhvienBLL.getInstance().searchListThanhVienByNganh(searchValue);
-                showSearchResult(memberByNganh);
-            } else if(!searchValue.isEmpty() && !searchValue2.isEmpty()) {
-                List<thanhvien> memberByKhoaAndNganh = thanhvienBLL.getInstance().searchListThanhVienByKhoaAndNganh(searchValue,searchValue2);
-                showSearchResult(memberByKhoaAndNganh);
-            }else if((searchValue == null || searchValue.trim().isEmpty()) && (searchValue2 == null || searchValue2.trim().isEmpty())){
-                List<thanhvien> memberByTimestamp = checkValidTimestamp(enterTimestamp, enterTimestamp2);
+            if (searchValue.isEmpty() && searchValue2.isEmpty()) {
+                List<thongtinsd> memberByTimestamp = checkValidTimestamp(enterTimestamp, enterTimestamp2);
                 showSearchResult(memberByTimestamp);
-            } // chưa sửa được
+            }
+
+//            if((searchValue2 == null || searchValue2.trim().isEmpty()) && searchValue != null) {
+//                List<thanhvien> memberByKhoa = thanhvienBLL.getInstance().searchListThanhVienByKhoa(searchValue);
+//                showSearchResult(memberByKhoa);
+//            } else if(searchValue == null || searchValue.trim().isEmpty() && searchValue2 != null) {
+//                List<thanhvien> memberByNganh = thanhvienBLL.getInstance().searchListThanhVienByNganh(searchValue);
+//                showSearchResult(memberByNganh);
+//            } else if(!searchValue.isEmpty() && !searchValue2.isEmpty()) {
+//                List<thanhvien> memberByKhoaAndNganh = thanhvienBLL.getInstance().searchListThanhVienByKhoaAndNganh(searchValue,searchValue2);
+//                showSearchResult(memberByKhoaAndNganh);
+//            }else if((searchValue == null || searchValue.isEmpty()) && (searchValue2 == null || searchValue2.isEmpty())){
+//                List<thanhvien> memberByTimestamp = checkValidTimestamp(enterTimestamp, enterTimestamp2);
+//                showSearchResult(memberByTimestamp);
+//            } // chưa sửa được
         });
 
     }  
@@ -182,7 +188,8 @@ public class TKThanhVien extends JPanel {
                     member.getHoTen(),
                     member.getKhoa(),
                     member.getNganh(),
-                    member.getSdt()
+                    member.getSdt(),
+                    info.getTGVao(),
             });
                 }
             }
@@ -191,21 +198,22 @@ public class TKThanhVien extends JPanel {
     }
     
     
-    public void showSearchResult(List<thanhvien> search) {
+    public void showSearchResult(List<thongtinsd> search) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         int userQuantity = 0;
         System.out.println(search);
-        for (thanhvien member : search) {
-            for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+        for (thongtinsd info : search) {
+            for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
                 if(member.getMaTV().equals(info.getThanhvien()) && info.getTGVao() != null) {
-                    userQuantity++;
-                    model.addRow(new Object[] {
-                    member.getMaTV(),
-                    member.getHoTen(),
-                    member.getKhoa(),
-                    member.getNganh(),
-                    member.getSdt()
+                                userQuantity++;
+                                model.addRow(new Object[] {
+                                member.getMaTV(),
+                                member.getHoTen(),
+                                member.getKhoa(),
+                                member.getNganh(),
+                                member.getSdt(),
+                                info.getTGVao(),
             });
                 }
         }
@@ -218,15 +226,19 @@ public class TKThanhVien extends JPanel {
     }
     }
     
-    public List<thanhvien> checkValidTimestamp(Timestamp from,Timestamp to) {
-        List<thanhvien> memberList = new ArrayList<>();
+    public List<thongtinsd> checkValidTimestamp(Timestamp from,Timestamp to) {
+        List<thongtinsd> infoList = new ArrayList<>();
         for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
             for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                if(info.getTGVao().after(from) && info.getTGVao().before(to)) {
-                    memberList.add(member);
+                try {
+                    if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && info.getTGVao().after(from) && info.getTGVao().before(to)) {
+                        infoList.add(info);
+                    }
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
                 }
             }
         }
-        return memberList;
+        return infoList;
     }
 }
