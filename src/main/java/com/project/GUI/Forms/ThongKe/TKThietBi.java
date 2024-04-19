@@ -145,13 +145,14 @@ public class TKThietBi extends FormPanel {
         btnSearch.addActionListener((e) -> {
             String searchValue = inputSearch.getText().trim();
             String Month = cbMonth.getSelectedItem().toString();
-            if (searchValue != null && cbMonth == null) {
-                List<thietbi> Tbbyname = thietbiBLL.getInstance().searchListThietBi(searchValue);
+            if (searchValue != null && "".equals(Month)) {
+                List<thietbi> Tbbyname = thietbiBLL.getInstance().searchListThietBibyName(searchValue);
                 showSearchResult(Tbbyname);
-            }else if (searchValue == null && cbMonth !=null) {
+            }else if (searchValue == null && !"".equals(Month)) {
                 List<thietbi> Tbbymonth = thietbiBLL.getInstance().searchListThietBibyMonth(Month);
                 showSearchResult(Tbbymonth);
-            }
+            }// nó k hiện search
+            
         });
         
     }
