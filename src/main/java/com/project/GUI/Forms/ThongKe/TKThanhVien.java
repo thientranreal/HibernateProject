@@ -8,14 +8,11 @@ import javax.swing.table.DefaultTableModel;
 
 import java.util.List;
 
-import com.project.models.thietbi;
 import com.project.models.thanhvien;
 
 import com.github.lgooddatepicker.components.DateTimePicker;
 import com.project.BLL.thanhvienBLL;
-import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
-import com.project.BLL.xulyBLL;
 import com.project.GUI.Components.FormLabel;
 import com.project.GUI.Components.FormPanel;
 import com.project.GUI.Components.Buttons.ButtonSearch;
@@ -23,7 +20,6 @@ import com.project.GUI.Components.Table.TableCustom;
 import com.project.GUI.Components.TextFields.InputField;
 import com.project.GUI.GlobalVariables.Colors;
 import com.project.models.thongtinsd;
-import com.project.models.xuly;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -109,53 +105,93 @@ public class TKThanhVien extends JPanel {
         btnSearch.addActionListener(e -> {
             LocalDate date = dpkThoiGianTu.getDatePicker().getDate();
             LocalTime time = dpkThoiGianTu.getTimePicker().getTime();
-            LocalDateTime localDateTime = LocalDateTime.of(date, time.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
-            Timestamp enterTimestamp = Timestamp.valueOf(localDateTime); // lay ra ngay gio/ thoi gian sinh vien vao
+            if (time == null) {
+                time = LocalTime.MIDNIGHT;
+            }
+            LocalDateTime localDateTime, localDateTime2;
+            Timestamp enterTimestamp, enterTimestamp2;
+            try {
+                localDateTime = LocalDateTime.of(date, time.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
+                enterTimestamp = Timestamp.valueOf(localDateTime); // lay ra ngay gio/ thoi gian sinh vien vao
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+                enterTimestamp = null;
+            }
             
             LocalDate dateden = dpkThoiGianDen.getDatePicker().getDate();
             LocalTime timeden = dpkThoiGianDen.getTimePicker().getTime();
-            LocalDateTime localDateTime2 = LocalDateTime.of(dateden, timeden.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
-            Timestamp enterTimestamp2 = Timestamp.valueOf(localDateTime2);
+            if (timeden == null) {
+                timeden = LocalTime.MIDNIGHT;
+            }
+            try {
+                localDateTime2 = LocalDateTime.of(dateden, timeden.atDate(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))).toLocalTime());
+                enterTimestamp2 = Timestamp.valueOf(localDateTime2);
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+                enterTimestamp2 = null;
+            }
             
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-            
-            if(enterTimestamp2 == null && enterTimestamp != null) {
+            String searchValueKhoa = inputKhoa.getText().trim();
+            String searchValueNganh = inputNganh.getText().trim();
+
+            if (enterTimestamp2 == null && enterTimestamp == null) {
+                if (searchValueKhoa.isEmpty() && searchValueNganh.isEmpty()) {
+                    updateMemberFromList();
+                    return;
+                }
+                if (searchValueKhoa.isEmpty()) {
+                    List<thongtinsd> infoList = new ArrayList<>();
+                    for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+                        for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                            if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && member.getNganh().equalsIgnoreCase(searchValueNganh)) {
+                                infoList.add(info);
+                            }
+                        }
+                    }
+                    showSearchResult(infoList);
+                    return;
+                }
+                if (searchValueNganh.isEmpty()) {
+                    List<thongtinsd> infoList = new ArrayList<>();
+                    for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+                        for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                            if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && member.getKhoa().equalsIgnoreCase(searchValueKhoa)) {
+                                infoList.add(info);
+                            }
+                        }
+                    }
+                    showSearchResult(infoList);
+                    return;
+                }
+            }
+
+            if (enterTimestamp2 == null && enterTimestamp != null) {
                 enterTimestamp2 = currentTimestamp;
-            }else if(enterTimestamp2 != null && enterTimestamp == null){
+            } else if(enterTimestamp2 != null && enterTimestamp == null){
                 enterTimestamp = currentTimestamp;
                 if(enterTimestamp.compareTo(enterTimestamp2) > 0){
                     JOptionPane.showMessageDialog(null, "Thoi gian hien tai khong the lon hon thoi gian den, vui long chon thoi gian tu");
                     return;
                 } 
             }
-            
-        
-            
-            
-            
-            String searchValue = inputKhoa.getText().trim();
-            String searchValue2 = inputNganh.getText().trim();
 
-            if (searchValue.isEmpty() && searchValue2.isEmpty()) {
+            if (searchValueKhoa.isEmpty() && searchValueNganh.isEmpty()) {
                 List<thongtinsd> memberByTimestamp = checkValidTimestamp(enterTimestamp, enterTimestamp2);
                 showSearchResult(memberByTimestamp);
+                return;
             }
-
-//            if((searchValue2 == null || searchValue2.trim().isEmpty()) && searchValue != null) {
-//                List<thanhvien> memberByKhoa = thanhvienBLL.getInstance().searchListThanhVienByKhoa(searchValue);
-//                showSearchResult(memberByKhoa);
-//            } else if(searchValue == null || searchValue.trim().isEmpty() && searchValue2 != null) {
-//                List<thanhvien> memberByNganh = thanhvienBLL.getInstance().searchListThanhVienByNganh(searchValue);
-//                showSearchResult(memberByNganh);
-//            } else if(!searchValue.isEmpty() && !searchValue2.isEmpty()) {
-//                List<thanhvien> memberByKhoaAndNganh = thanhvienBLL.getInstance().searchListThanhVienByKhoaAndNganh(searchValue,searchValue2);
-//                showSearchResult(memberByKhoaAndNganh);
-//            }else if((searchValue == null || searchValue.isEmpty()) && (searchValue2 == null || searchValue2.isEmpty())){
-//                List<thanhvien> memberByTimestamp = checkValidTimestamp(enterTimestamp, enterTimestamp2);
-//                showSearchResult(memberByTimestamp);
-//            } // chưa sửa được
+            if (searchValueKhoa.isEmpty()) {
+                List<thanhvien> memberByNganh = thanhvienBLL.getInstance().searchListThanhVienByNganh(searchValueNganh);
+                showSearchResult(checkValidTimestampWithList(memberByNganh, enterTimestamp, enterTimestamp2));
+                return;
+            }
+            if (searchValueNganh.isEmpty()) {
+                List<thanhvien> memberByKhoa = thanhvienBLL.getInstance().searchListThanhVienByKhoa(searchValueKhoa);
+                showSearchResult(checkValidTimestampWithList(memberByKhoa, enterTimestamp, enterTimestamp2));
+                return;
+            }
         });
-
     }  
 
     private JPanel pnlHeader;
@@ -214,21 +250,32 @@ public class TKThanhVien extends JPanel {
                                 member.getNganh(),
                                 member.getSdt(),
                                 info.getTGVao(),
-            });
+                        });
                 }
+            }
         }
         soLieu.setText("Có " + userQuantity +" thành viên");
-        if (search.size() == 0) {
-            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
-            // Refresh table:
-            updateMemberFromList();
-        }
-    }
     }
     
     public List<thongtinsd> checkValidTimestamp(Timestamp from,Timestamp to) {
         List<thongtinsd> infoList = new ArrayList<>();
         for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+            for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
+                try {
+                    if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && info.getTGVao().after(from) && info.getTGVao().before(to)) {
+                        infoList.add(info);
+                    }
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return infoList;
+    }
+
+    public List<thongtinsd> checkValidTimestampWithList(List<thanhvien> list, Timestamp from,Timestamp to) {
+        List<thongtinsd> infoList = new ArrayList<>();
+        for(thanhvien member : list) {
             for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
                 try {
                     if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && info.getTGVao().after(from) && info.getTGVao().before(to)) {
