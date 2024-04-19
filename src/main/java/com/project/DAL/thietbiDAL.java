@@ -90,4 +90,14 @@ public class thietbiDAL {
             return query.list();
         }
     }
+    public List<thietbi> searchbyName(String keyword) {
+        try (Session session = HibernateUtil.getInstance().openSession()) {
+            String queryString = "SELECT thietbi.MaTB, thietbi.TenTB, thietbi.MoTaTB, thongtinsd.MaTV, thanhvien.HoTen, thongtinsd.TGMuon, thongtinsd.TGTra " +
+             "FROM thietbi " +
+             "WHERE thongtinsd.TenTB like :keyword";
+            Query<thietbi> query = session.createQuery(queryString, thietbi.class);
+            query.setParameter("keyword", "%" + keyword.toLowerCase() + "%");
+            return query.list();
+        }
+    }
 }
