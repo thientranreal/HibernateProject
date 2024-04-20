@@ -192,7 +192,15 @@ public class TKThanhVien extends JPanel {
                 return;
             }
         });
-    }  
+
+        inputKhoa.addActionListener(e -> {
+            btnSearch.doClick();
+        });
+
+        inputNganh.addActionListener(e -> {
+            btnSearch.doClick();
+        });
+    }
 
     private JPanel pnlHeader;
     private JLabel lbThoiGian;

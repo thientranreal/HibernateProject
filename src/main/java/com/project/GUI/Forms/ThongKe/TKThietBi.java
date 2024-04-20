@@ -5,6 +5,8 @@ import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormatSymbols;
@@ -29,6 +31,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThietBi extends FormPanel {
     public TKThietBi() {
+        thongtinsdBLL.getInstance().refresh();
+        thietbiBLL.getInstance().refresh();
         initComponent();
     }
 
@@ -128,11 +132,10 @@ public class TKThietBi extends FormPanel {
         // Add data for table
         showDevicesBorrowed("", "");
 
-        List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels()
+        int devicesBorrowing = (int) thongtinsdBLL.getInstance().getAllModels()
                 .stream()
                 .filter(info -> info.getTGMuon() != null && info.getTGTra() == null)
-                .toList();
-        int devicesBorrowing = allInfo.size();
+                .count();
         lbValueDangMuon.setText(String.valueOf(devicesBorrowing));
         lbPercentDangMuon.setText(String.format(
                 "%d/%d thiết bị đang được mượn",
@@ -165,6 +168,9 @@ public class TKThietBi extends FormPanel {
             }
         });
 
+        inputSearch.addActionListener(e -> {
+            btnSearch.doClick();
+        });
     }
 
     private JPanel pnlContent;
@@ -233,8 +239,6 @@ public class TKThietBi extends FormPanel {
     public void showDevicesBorrowed(String search, String month) {
         int monthIndex;
         String monthName = null;
-        thongtinsdBLL.getInstance().refresh();
-        thietbiBLL.getInstance().refresh();
         thanhvienBLL.getInstance().refresh();
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         model_table.setRowCount(0);
@@ -286,8 +290,6 @@ public class TKThietBi extends FormPanel {
     public void showDevicesBorrowing(String search, String month) {
         int monthIndex;
         String monthName = null;
-        thongtinsdBLL.getInstance().refresh();
-        thietbiBLL.getInstance().refresh();
         thanhvienBLL.getInstance().refresh();
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         model_table.setRowCount(0);
