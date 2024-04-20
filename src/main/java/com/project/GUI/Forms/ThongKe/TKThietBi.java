@@ -274,7 +274,7 @@ public class TKThietBi extends FormPanel {
                 }
             }
         }
-        int devicesBorrowed = allInfo.size();
+        int devicesBorrowed = table.getRowCount();
         lbValueDaMuon.setText(String.valueOf(devicesBorrowed));
         lbPercentDaMuon.setText(String.format(
                 "%d/%d thiết bị đã được mượn",
@@ -326,7 +326,7 @@ public class TKThietBi extends FormPanel {
                 }
             }
         }
-        int devicesBorrowing = allInfo.size();
+        int devicesBorrowing = table.getRowCount();
         lbValueDangMuon.setText(String.valueOf(devicesBorrowing));
         lbPercentDangMuon.setText(String.format(
                 "%d/%d thiết bị đang được mượn",
