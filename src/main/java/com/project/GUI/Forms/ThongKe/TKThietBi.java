@@ -3,7 +3,7 @@ package com.project.GUI.Forms.ThongKe;
 import com.project.BLL.thanhvienBLL;
 import com.project.BLL.thietbiBLL;
 import com.project.BLL.thongtinsdBLL;
-import com.project.BLL.xulyBLL;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,17 +21,13 @@ import com.project.GUI.GlobalVariables.Colors;
 import com.project.models.thanhvien;
 import com.project.models.thietbi;
 import com.project.models.thongtinsd;
-import com.project.models.xuly;
-import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class TKThietBi extends FormPanel {
-    
-    public Map<Integer, String> deviceAvailabilityMap = new HashMap<>();
     public TKThietBi() {
         initComponent();
     }
@@ -66,8 +62,8 @@ public class TKThietBi extends FormPanel {
 
         JLabel lbTitleDaMuon = new FormLabel("Thiết bị đã mượn");
         lbTitleDaMuon.setFont(myFont);
-        JLabel lbValueDaMuon = new FormLabel("5");
-        JLabel lbPercentDaMuon = new FormLabel("40/100 thiết bị đã được cho mượn");
+        lbValueDaMuon = new FormLabel("");
+        lbPercentDaMuon = new FormLabel("");
         pnlDaMuon.setLayout(new GridLayout(3, 1));
 
         // Create cursor
@@ -87,8 +83,8 @@ public class TKThietBi extends FormPanel {
 
         JLabel lbTitleDangMuon = new FormLabel("Thiết bị đang mượn");
         lbTitleDangMuon.setFont(myFont);
-        JLabel lbValueDangMuon = new FormLabel("5");
-        JLabel lbPercentDangMuon = new FormLabel("40/100 thiết bị đã được cho mượn hôm qua");
+        lbValueDangMuon = new FormLabel("");
+        lbPercentDangMuon = new FormLabel("");
         pnlDangMuon.setLayout(new GridLayout(3, 1));
 
         pnlDangMuon.add(lbTitleDangMuon);
@@ -108,7 +104,7 @@ public class TKThietBi extends FormPanel {
         // content
         pnlContent.setLayout(new BorderLayout());
 
-        lbTitle = new FormLabel("Thiết bị đang mượn");
+        lbTitle = new FormLabel("Thiết bị đã mượn");
         lbTitle.setFont(new Font("Serif", Font.BOLD, 18));
         pnlContent.add(lbTitle, BorderLayout.NORTH);
 
@@ -130,7 +126,20 @@ public class TKThietBi extends FormPanel {
                 return false;
             }});
         // Add data for table
-        updateThietbiFromList();
+        showDevicesBorrowed("", "");
+
+        List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels()
+                .stream()
+                .filter(info -> info.getTGMuon() != null && info.getTGTra() == null)
+                .toList();
+        int devicesBorrowing = allInfo.size();
+        lbValueDangMuon.setText(String.valueOf(devicesBorrowing));
+        lbPercentDangMuon.setText(String.format(
+                "%d/%d thiết bị đang được mượn",
+                devicesBorrowing,
+                thietbiBLL.getInstance().getAllModels().size())
+        );
+
         // Create panel to contain table
         JScrollPane pnlTable = new JScrollPane();
         pnlTable.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -141,20 +150,21 @@ public class TKThietBi extends FormPanel {
         // add pnlmain to pnl main
         pnlContent.add(pnlTable, BorderLayout.CENTER);
         add(pnlContent, BorderLayout.CENTER);
-        
-        btnSearch.addActionListener((e) -> {
+
+        btnSearch.addActionListener(e -> {
             String searchValue = inputSearch.getText().trim();
-            String Month = cbMonth.getSelectedItem().toString();
-            if (searchValue != null && "".equals(Month)) {
-                List<thietbi> Tbbyname = thietbiBLL.getInstance().searchListThietBibyName(searchValue);
-                showSearchResult(Tbbyname);
-            }else if (searchValue == null && !"".equals(Month)) {
-                List<thietbi> Tbbymonth = thietbiBLL.getInstance().searchListThietBibyMonth(Month);
-                showSearchResult(Tbbymonth);
-            }// nó k hiện search
-            
+            String Month = Objects.requireNonNull(cbMonth.getSelectedItem()).toString();
+            if (searchValue.equals("search")) {
+                searchValue = "";
+            }
+            if (lbTitle.getText().equals("Thiết bị đã mượn")) {
+                showDevicesBorrowed(searchValue, Month);
+            }
+            else if (lbTitle.getText().equals("Thiết bị đang mượn")) {
+                showDevicesBorrowing(searchValue, Month);
+            }
         });
-        
+
     }
 
     private JPanel pnlContent;
@@ -168,7 +178,12 @@ public class TKThietBi extends FormPanel {
     private JComboBox<String> cbMonth;
     private JTable table;
     private JLabel lbTitle;
-    
+    private  JLabel lbValueDaMuon;
+    private JLabel lbPercentDaMuon;
+    private  JLabel lbValueDangMuon;
+    private JLabel lbPercentDangMuon;
+    private final Calendar calendar = Calendar.getInstance();
+
 
     private MouseAdapter actionDaMuon = new MouseAdapter() {
         @Override
@@ -189,8 +204,7 @@ public class TKThietBi extends FormPanel {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }});
-            updateThietbiDaMuon();
-          
+          showDevicesBorrowed("", "");
         }
     };
 
@@ -206,210 +220,118 @@ public class TKThietBi extends FormPanel {
                             "Mô tả",
                             "Mã TV",
                             "Họ tên",
-                            "Thời gian trả",
+                            "Thời gian mượn",
                     }){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }});
-            updateThietbiDangMuon();
+            showDevicesBorrowing("", "");
         }
     };
-    
-    public void updateThietbiFromList() {
-        deviceAvailabilityMap.clear();
+
+    public void showDevicesBorrowed(String search, String month) {
+        int monthIndex;
+        String monthName = null;
         thongtinsdBLL.getInstance().refresh();
         thietbiBLL.getInstance().refresh();
+        thanhvienBLL.getInstance().refresh();
         DefaultTableModel model_table = (DefaultTableModel) table.getModel();
         model_table.setRowCount(0);
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
+        List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels()
+                .stream()
+                .filter(info -> info.getTGMuon() != null && info.getTGTra() != null)
+                .toList();
 
-        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
-
-        String ngayMuon = "";String ngayTra = "";
-        
-        // Use HashMap to store device availability
         for (thongtinsd info : allInfo) {
-            if (info.getThietbi() != null) {
-                if (info.getTGMuon() != null && info.getTGTra() == null) {
-                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
-                    // Set string true = "Đang mượn":
-                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
-                }
-                ngayMuon = info.getTGMuon().toString();
-                ngayTra = info.getTGTra().toString();
+            if ( !month.equals("") ) {
+                calendar.setTimeInMillis(info.getTGMuon().getTime());
+                monthIndex = calendar.get(Calendar.MONTH);
+                monthName = cbMonth.getItemAt(monthIndex);
             }
-            
-        }
-
-        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            // Set string false = "Không mượn":
-            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
-                                                                                                      // availability
-                                                                                                      // from the map
-
-            String studentId = "Không";
-            if (borrowedStudentId.containsKey(device.getMaTB())) {
-                studentId = borrowedStudentId.get(device.getMaTB()).toString();
-            }
-
-            model_table.addRow(new Object[] {
-                    device.getMaTB(),
-                    device.getTenTB(),
-                    device.getMoTaTB(),
-                    isDeviceAvailable,
-                    studentId,
-                    ngayMuon,
-                    ngayTra
-            });
-        }
-    }
-    public void updateThietbiDaMuon() {
-        deviceAvailabilityMap.clear();
-        thongtinsdBLL.getInstance().refresh();
-        thietbiBLL.getInstance().refresh();
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        model_table.setRowCount(0);
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
-
-        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
-
-        String ngayMuon = "";String ngayTra = "";
-        // Use HashMap to store device availability
-        for (thongtinsd info : allInfo) {
-            if (info.getThietbi() != null) {
-                if (info.getTGMuon() != null) {
-                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
-                    // Set string true = "Đang mượn":
-                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
-                }
-                ngayMuon = info.getTGMuon().toString();
-                ngayTra = info.getTGTra().toString();
-            }
-            
-        }
-
-        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            // Set string false = "Không mượn":
-            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
-                                                                                                      // availability
-                                                                                                      // from the map
-
-            String studentId = "Không";
-            if (borrowedStudentId.containsKey(device.getMaTB())) {
-                studentId = borrowedStudentId.get(device.getMaTB()).toString();
-            }
-
-            model_table.addRow(new Object[] {
-                    device.getMaTB(),
-                    device.getTenTB(),
-                    device.getMoTaTB(),
-                    isDeviceAvailable, // Add device availability to the row
-                    studentId,
-                    ngayMuon,
-                    ngayTra
-            });
-        }
-    }
-    
-    public void updateThietbiDangMuon() {
-        deviceAvailabilityMap.clear();
-        thongtinsdBLL.getInstance().refresh();
-        thietbiBLL.getInstance().refresh();
-        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
-        model_table.setRowCount(0);
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        java.util.List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels();
-
-        Map<Integer, BigInteger> borrowedStudentId = new HashMap<>();
-        List<thongtinsd> listTTSD = thongtinsdBLL.getInstance().getAllModels();
-
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis()); 
-        // Use HashMap to store device availability
-        
-        for (thongtinsd info : allInfo) {
-            if (info.getThietbi() != null) {
-                if (info.getTGTra().compareTo(currentTimestamp) > 0) {
-                    borrowedStudentId.put(info.getThietbi(), info.getThanhvien());
-                    // Set string true = "Đang mượn":
-                    deviceAvailabilityMap.put(info.getThietbi(), "Có"); // Set device availability to true
-                }
-            }
-            
-        }
-
-        for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
-            // Set string false = "Không mượn":
-            String isDeviceAvailable = deviceAvailabilityMap.getOrDefault(device.getMaTB(), "Không"); // Get device
-            String ngayTra ="";                                                                       // availability
-                                                                                                      // from the map
-
-            String studentId = "Không";
-            if (borrowedStudentId.containsKey(device.getMaTB())) {
-                studentId = borrowedStudentId.get(device.getMaTB()).toString();
-            }
-            for(thongtinsd ttsd : listTTSD){
-                if (ttsd.getThietbi().equals(device.getMaTB())) {
-                    ngayTra = ttsd.getTGTra().toString();
-                }
-                
-            }
-
-            model_table.addRow(new Object[] {
-                    device.getMaTB(),
-                    device.getTenTB(),
-                    device.getMoTaTB(),
-                    isDeviceAvailable, // Add device availability to the row
-                    studentId,
-                    ngayTra
-            });
-        }
-    }// không hiểu vì sao không thể get value trong get thiết bị
-    
-    public void showSearchResult(java.util.List<thietbi> search) {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
-        
-        for (thietbi tb : search) {
-            for(thongtinsd ttsd : thongtinsdBLL.getInstance().getAllModels()){
-                for(thanhvien tv : thanhvienBLL.getInstance().getAllModels()){
-                    if (tb.getMaTB() == ttsd.getThietbi() && ttsd.getThanhvien() == tv.getMaTV()) {
-                        String maTV = ttsd.getThanhvien().toString();
-                        String HoTen = tv.getHoTen();
-                        String NgayMuon = ttsd.getTGMuon().toString();
-                        String NgayTra = ttsd.getTGTra().toString();
-                        model.addRow(new Object[] {
-                        tb.getMaTB(),
-                        tb.getTenTB(),
-                        tb.getMoTaTB(),
-                        maTV,
-                        HoTen,
-                        NgayMuon,
-                        NgayTra
-                    
-            });
+            for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+                if (device.getMaTB() == info.getThietbi()
+                        && ( search.equals("") || device.getTenTB().toLowerCase().contains(search.toLowerCase()) )
+                        && ( month.equals("") || month.equals(monthName) )
+                ) {
+                    for (thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+                        if (Objects.equals(member.getMaTV(), info.getThanhvien())) {
+                            model_table.addRow(new Object[] {
+                                    device.getMaTB(),
+                                    device.getTenTB(),
+                                    device.getMoTaTB(),
+                                    member.getMaTV(),
+                                    member.getHoTen(),
+                                    info.getTGMuon(),
+                                    info.getTGTra()
+                            });
+                        }
                     }
                 }
-                
             }
-            
         }
+        int devicesBorrowed = allInfo.size();
+        lbValueDaMuon.setText(String.valueOf(devicesBorrowed));
+        lbPercentDaMuon.setText(String.format(
+                "%d/%d thiết bị đã được mượn",
+                devicesBorrowed,
+                thietbiBLL.getInstance().getAllModels().size())
+        );
+    }
 
-        if (search.size() == 0) {
-            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
-            // Refresh table:
-            updateThietbiFromList();
+    public void showDevicesBorrowing(String search, String month) {
+        int monthIndex;
+        String monthName = null;
+        thongtinsdBLL.getInstance().refresh();
+        thietbiBLL.getInstance().refresh();
+        thanhvienBLL.getInstance().refresh();
+        DefaultTableModel model_table = (DefaultTableModel) table.getModel();
+        model_table.setRowCount(0);
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        List<thongtinsd> allInfo = thongtinsdBLL.getInstance().getAllModels()
+                .stream()
+                .filter(info -> info.getTGMuon() != null && info.getTGTra() == null)
+                .toList();
+
+        for (thongtinsd info : allInfo) {
+            if ( !month.equals("") ) {
+                calendar.setTimeInMillis(info.getTGMuon().getTime());
+                monthIndex = calendar.get(Calendar.MONTH);
+                monthName = cbMonth.getItemAt(monthIndex);
+            }
+            for (thietbi device : thietbiBLL.getInstance().getAllModels()) {
+                if (device.getMaTB() == info.getThietbi()
+                        && ( search.equals("") || device.getTenTB().toLowerCase().contains(search.toLowerCase()) )
+                        && ( month.equals("") || month.equals(monthName) )
+                ) {
+                    for (thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
+                        if (Objects.equals(member.getMaTV(), info.getThanhvien())) {
+                            model_table.addRow(new Object[] {
+                                    device.getMaTB(),
+                                    device.getTenTB(),
+                                    device.getMoTaTB(),
+                                    member.getMaTV(),
+                                    member.getHoTen(),
+                                    info.getTGMuon()
+                            });
+                        }
+                    }
+                }
+            }
         }
+        int devicesBorrowing = allInfo.size();
+        lbValueDangMuon.setText(String.valueOf(devicesBorrowing));
+        lbPercentDangMuon.setText(String.format(
+                "%d/%d thiết bị đang được mượn",
+                devicesBorrowing,
+                thietbiBLL.getInstance().getAllModels().size())
+        );
     }
 }

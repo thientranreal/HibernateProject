@@ -144,7 +144,7 @@ public class TKThanhVien extends JPanel {
                     List<thongtinsd> infoList = new ArrayList<>();
                     for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
                         for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                            if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && member.getNganh().equalsIgnoreCase(searchValueNganh)) {
+                            if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && member.getNganh().toLowerCase().contains(searchValueNganh.toLowerCase())) {
                                 infoList.add(info);
                             }
                         }
@@ -156,7 +156,7 @@ public class TKThanhVien extends JPanel {
                     List<thongtinsd> infoList = new ArrayList<>();
                     for(thanhvien member : thanhvienBLL.getInstance().getAllModels()) {
                         for(thongtinsd info : thongtinsdBLL.getInstance().getAllModels()) {
-                            if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && member.getKhoa().equalsIgnoreCase(searchValueKhoa)) {
+                            if(Objects.equals(member.getMaTV(), info.getMember().getMaTV()) && member.getKhoa().toLowerCase().contains(searchValueKhoa.toLowerCase())) {
                                 infoList.add(info);
                             }
                         }
